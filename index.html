@@ -3,104 +3,622 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Amazonite Store - Discover useful products, smart finds and great deals.">
-  <title>Amazonite Store</title>
+
+  <meta name="description"
+        content="Amazonite Store - Discover useful products, smart finds and great deals.">
+
+  <title>Amazonite Store | Smart Finds & Great Deals</title>
 
   <style>
+    * {
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+
     body {
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
       background: #f5f7fa;
       color: #1f2937;
-      line-height: 1.6;
-      text-align: center;
     }
 
     header {
       background: #111827;
       color: white;
-      padding: 35px 20px;
+      padding: 18px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
     }
 
-    header h1 {
-      margin: 0;
-      font-size: 42px;
+    .nav {
+      max-width: 1150px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
     }
 
-    header p {
-      font-size: 20px;
-      margin: 10px 0 0;
+    .logo {
+      font-size: 25px;
+      font-weight: bold;
+      color: #22d3ee;
+      text-decoration: none;
     }
 
-    main {
-      max-width: 900px;
-      margin: 50px auto;
-      padding: 20px;
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 18px;
+      font-weight: bold;
     }
 
-    .welcome {
+    nav a:hover {
+      color: #22d3ee;
+    }
+
+    .hero {
+      max-width: 1150px;
+      margin: 35px auto;
+      padding: 70px 25px;
+      text-align: center;
       background: white;
-      padding: 45px 25px;
-      border-radius: 15px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      border-radius: 18px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
     }
 
-    .welcome h2 {
-      font-size: 32px;
-      color: #1f2937;
+    .hero h1 {
+      font-size: 42px;
+      margin: 0 0 18px;
+      color: #111827;
     }
 
-    .welcome p {
+    .hero p {
+      max-width: 800px;
+      margin: 0 auto 30px;
       font-size: 18px;
+      line-height: 1.7;
+      color: #4b5563;
     }
 
     .button {
       display: inline-block;
-      margin-top: 20px;
-      padding: 14px 30px;
-      background: #0ea5e9;
+      padding: 15px 28px;
+      background: #06b6d4;
       color: white;
       text-decoration: none;
-      border-radius: 8px;
+      border-radius: 10px;
       font-weight: bold;
-      font-size: 18px;
+      font-size: 17px;
+      transition: 0.2s;
     }
 
     .button:hover {
-      background: #0284c7;
+      background: #0891b2;
+      transform: translateY(-2px);
+    }
+
+    section {
+      max-width: 1150px;
+      margin: 50px auto;
+      padding: 0 20px;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .section-title h2 {
+      font-size: 32px;
+      margin-bottom: 10px;
+      color: #111827;
+    }
+
+    .section-title p {
+      color: #6b7280;
+    }
+
+    .categories {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .category {
+      background: white;
+      padding: 25px 15px;
+      text-align: center;
+      border-radius: 14px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+      font-size: 18px;
+      font-weight: bold;
+      text-decoration: none;
+      color: #111827;
+      transition: 0.2s;
+    }
+
+    .category:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+    }
+
+    .category-icon {
+      font-size: 38px;
+      display: block;
+      margin-bottom: 12px;
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+    }
+
+    .product {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 6px 25px rgba(0,0,0,0.08);
+      transition: 0.2s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.13);
+    }
+
+    .product-image {
+      height: 190px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #eef2f7;
+      font-size: 75px;
+    }
+
+    .product-content {
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .product h3 {
+      margin: 0 0 10px;
+      font-size: 21px;
+      color: #111827;
+    }
+
+    .product p {
+      color: #6b7280;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .product .button {
+      margin-top: auto;
+      text-align: center;
+      width: 100%;
+    }
+
+    .badge {
+      display: inline-block;
+      width: fit-content;
+      background: #dcfce7;
+      color: #166534;
+      padding: 6px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+
+    .about {
+      background: #111827;
+      color: white;
+      padding: 45px 25px;
+      border-radius: 18px;
+      text-align: center;
+    }
+
+    .about h2 {
+      margin-top: 0;
+      font-size: 30px;
+    }
+
+    .about p {
+      max-width: 800px;
+      margin: auto;
+      line-height: 1.7;
+      color: #d1d5db;
     }
 
     footer {
       margin-top: 60px;
-      padding: 25px;
-      background: #111827;
-      color: white;
+      background: #0b1120;
+      color: #9ca3af;
+      text-align: center;
+      padding: 30px 20px;
+    }
+
+    footer strong {
+      color: #22d3ee;
+    }
+
+    @media (max-width: 850px) {
+      .categories {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .products {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .hero h1 {
+        font-size: 34px;
+      }
+
+      .nav {
+        flex-direction: column;
+      }
+
+      nav a {
+        margin: 0 7px;
+      }
+    }
+
+    @media (max-width: 550px) {
+      .categories,
+      .products {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        margin: 15px;
+        padding: 50px 18px;
+      }
+
+      .hero h1 {
+        font-size: 30px;
+      }
+
+      nav {
+        text-align: center;
+      }
     }
   </style>
 </head>
 
 <body>
 
+  <!-- HEADER -->
   <header>
-    <h1>Amazonite Store</h1>
-    <p>Discover useful products and great deals.</p>
+    <div class="nav">
+
+      <a href="#" class="logo">Amazonite Store</a>
+
+      <nav>
+        <a href="#">Home</a>
+        <a href="#categories">Categories</a>
+        <a href="#products">Products</a>
+        <a href="#about">About</a>
+      </nav>
+
+    </div>
   </header>
 
+
+  <!-- HERO -->
   <main>
-    <section class="welcome">
-      <h2>Welcome to Amazonite Store</h2>
+
+    <section class="hero">
+
+      <h1>Welcome to Amazonite Store</h1>
 
       <p>
         Discover carefully selected products, useful finds and great deals.
-        Our AI-powered affiliate marketing project is coming soon.
+        We search for smart products that can make everyday life easier.
       </p>
 
-      <a href="#products" class="button">Explore Products</a>
+      <a href="#products" class="button">
+        Explore Products
+      </a>
+
     </section>
+
+
+    <!-- CATEGORIES -->
+    <section id="categories">
+
+      <div class="section-title">
+        <h2>Shop by Category</h2>
+        <p>Explore our most interesting product categories.</p>
+      </div>
+
+      <div class="categories">
+
+        <a href="#products" class="category">
+          <span class="category-icon">🍔</span>
+          Food & Kitchen
+        </a>
+
+        <a href="#products" class="category">
+          <span class="category-icon">🏠</span>
+          Home
+        </a>
+
+        <a href="#products" class="category">
+          <span class="category-icon">💻</span>
+          Computers
+        </a>
+
+        <a href="#products" class="category">
+          <span class="category-icon">📱</span>
+          Electronics
+        </a>
+
+      </div>
+
+    </section>
+
+
+    <!-- PRODUCTS -->
+    <section id="products">
+
+      <div class="section-title">
+
+        <h2>Featured Products</h2>
+
+        <p>
+          A selection of useful products and smart finds.
+        </p>
+
+      </div>
+
+
+      <div class="products">
+
+
+        <!-- PRODUCT 1 -->
+        <article class="product">
+
+          <div class="product-image">
+            🎧
+          </div>
+
+          <div class="product-content">
+
+            <span class="badge">
+              Smart Find
+            </span>
+
+            <h3>Wireless Bluetooth Headphones</h3>
+
+            <p>
+              Comfortable wireless headphones for music,
+              videos and everyday use.
+            </p>
+
+            <a
+              class="button"
+              href="https://www.aliexpress.com/wholesale?SearchText=wireless+bluetooth+headphones"
+              target="_blank"
+              rel="noopener noreferrer">
+              View Deal
+            </a>
+
+          </div>
+
+        </article>
+
+
+        <!-- PRODUCT 2 -->
+        <article class="product">
+
+          <div class="product-image">
+            💡
+          </div>
+
+          <div class="product-content">
+
+            <span class="badge">
+              Popular
+            </span>
+
+            <h3>LED Desk Lamp</h3>
+
+            <p>
+              A practical LED lamp for your desk,
+              study area or home office.
+            </p>
+
+            <a
+              class="button"
+              href="https://www.aliexpress.com/wholesale?SearchText=LED+desk+lamp"
+              target="_blank"
+              rel="noopener noreferrer">
+              View Deal
+            </a>
+
+          </div>
+
+        </article>
+
+
+        <!-- PRODUCT 3 -->
+        <article class="product">
+
+          <div class="product-image">
+            ⌨️
+          </div>
+
+          <div class="product-content">
+
+            <span class="badge">
+              Computer
+            </span>
+
+            <h3>Wireless Keyboard</h3>
+
+            <p>
+              A clean and practical wireless keyboard
+              for computers and laptops.
+            </p>
+
+            <a
+              class="button"
+              href="https://www.aliexpress.com/wholesale?SearchText=wireless+keyboard"
+              target="_blank"
+              rel="noopener noreferrer">
+              View Deal
+            </a>
+
+          </div>
+
+        </article>
+
+
+        <!-- PRODUCT 4 -->
+        <article class="product">
+
+          <div class="product-image">
+            🔌
+          </div>
+
+          <div class="product-content">
+
+            <span class="badge">
+              Useful
+            </span>
+
+            <h3>USB Charging Hub</h3>
+
+            <p>
+              Add more USB connections and keep
+              your devices organized.
+            </p>
+
+            <a
+              class="button"
+              href="https://www.aliexpress.com/wholesale?SearchText=USB+charging+hub"
+              target="_blank"
+              rel="noopener noreferrer">
+              View Deal
+            </a>
+
+          </div>
+
+        </article>
+
+
+        <!-- PRODUCT 5 -->
+        <article class="product">
+
+          <div class="product-image">
+            🏠
+          </div>
+
+          <div class="product-content">
+
+            <span class="badge">
+              Home
+            </span>
+
+            <h3>Smart Home Gadget</h3>
+
+            <p>
+              Discover practical gadgets designed
+              to make everyday home tasks easier.
+            </p>
+
+            <a
+              class="button"
+              href="https://www.aliexpress.com/wholesale?SearchText=smart+home+gadgets"
+              target="_blank"
+              rel="noopener noreferrer">
+              View Deal
+            </a>
+
+          </div>
+
+        </article>
+
+
+        <!-- PRODUCT 6 -->
+        <article class="product">
+
+          <div class="product-image">
+            📱
+          </div>
+
+          <div class="product-content">
+
+            <span class="badge">
+              Electronics
+            </span>
+
+            <h3>Phone Accessories</h3>
+
+            <p>
+              Useful accessories for smartphones,
+              charging and everyday mobile use.
+            </p>
+
+            <a
+              class="button"
+              href="https://www.aliexpress.com/wholesale?SearchText=phone+accessories"
+              target="_blank"
+              rel="noopener noreferrer">
+              View Deal
+            </a>
+
+          </div>
+
+        </article>
+
+      </div>
+
+    </section>
+
+
+    <!-- ABOUT -->
+    <section id="about">
+
+      <div class="about">
+
+        <h2>About Amazonite Store</h2>
+
+        <p>
+          Amazonite Store is an independent product discovery project.
+          Our goal is to find useful products, interesting gadgets and
+          great deals from online marketplaces.
+          More products and affiliate offers will be added soon.
+        </p>
+
+      </div>
+
+    </section>
+
   </main>
 
+
+  <!-- FOOTER -->
   <footer>
-    <p>© 2026 Amazonite Store</p>
+
+    <p>
+      © 2026 <strong>Amazonite Store</strong>.
+      All rights reserved.
+    </p>
+
+    <p>
+      Product links may contain affiliate links.
+    </p>
+
   </footer>
 
 </body>
