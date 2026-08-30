@@ -1,1 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://storeamazonite-bot.github.io/amazonite-store/</loc></url><url><loc>https://storeamazonite-bot.github.io/amazonite-store/reviews/haylou-s30.html</loc></url><url><loc>https://storeamazonite-bot.github.io/amazonite-store/categories/audio-tech.html</loc></url><url><loc>https://storeamazonite-bot.github.io/amazonite-store/categories/smart-home.html</loc></url><url><loc>https://storeamazonite-bot.github.io/amazonite-store/categories/kitchen-everyday.html</loc></url></urlset>
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://amazonite-store.vercel.app/</loc></url>
+  <url><loc>https://amazonite-store.vercel.app/reviews/haylou-s30.html</loc></url>
+  <url><loc>https://amazonite-store.vercel.app/categories/audio-tech.html</loc></url>
+  <url><loc>https://amazonite-store.vercel.app/categories/smart-home.html</loc></url>
+  <url><loc>https://amazonite-store.vercel.app/categories/kitchen-everyday.html</loc></url>
+  <url><loc>https://amazonite-store.vercel.app/customer-care.html</loc></url>
+</urlset>
