@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://storeamazonite-bot.github.io/amazonite-store/sitemap.xml
