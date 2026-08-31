@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.0.0",
+  "affiliateProgram": "AliExpress Affiliate",
+  "linkPolicy": {
+    "mainStoreAffiliateUrl": null,
+    "requireProductLevelAffiliateUrl": true,
+    "openExternalLinksInNewTab": true,
+    "validateBeforePublish": true
+  },
+  "products": [],
+  "statuses": ["draft", "active", "needs_review", "out_of_stock", "link_invalid", "retired"]
+}
