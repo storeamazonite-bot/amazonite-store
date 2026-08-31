@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Amazonite Store — Organic Marketing</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{navy:'#0A1E2E',teal:'#2A9D8F',orange:'#FF7A2F',bg:'#E6F0FA'}}}}</script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body class="bg-bg text-navy min-h-screen">
+  <header class="bg-navy text-white sticky top-0 z-20 shadow-lg">
+    <div class="max-w-7xl mx-auto px-5 py-4 flex items-center justify-between">
+      <a href="../index.html" class="font-black text-lg"><span class="text-yellow-300">Amazonite</span> Store</a>
+      <a href="../index.html" class="text-sm font-bold hover:text-teal-300"><i class="fa-solid fa-store mr-2"></i>Store</a>
+    </div>
+  </header>
+  <main class="max-w-7xl mx-auto px-5 py-8">
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+      <div>
+        <p class="text-teal font-black uppercase tracking-widest text-xs">AI Growth Center</p>
+        <h1 class="text-3xl md:text-4xl font-black mt-2">Organic Marketing Engine</h1>
+        <p class="text-slate-500 mt-2 max-w-2xl">Turn verified products into SEO, video and social content opportunities without paid advertising.</p>
+      </div>
+      <button id="refresh" class="px-5 py-3 rounded-xl bg-orange text-white font-black hover:brightness-110 transition"><i class="fa-solid fa-rotate mr-2"></i>Refresh</button>
+    </div>
+
+    <section class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
+      <div class="bg-white rounded-2xl p-5 shadow-sm border-l-4 border-teal"><p class="text-slate-500 text-sm font-bold">Products ready</p><strong id="products" class="text-3xl font-black">0</strong></div>
+      <div class="bg-white rounded-2xl p-5 shadow-sm border-l-4 border-orange"><p class="text-slate-500 text-sm font-bold">Content ideas</p><strong id="ideas" class="text-3xl font-black">0</strong></div>
+      <div class="bg-white rounded-2xl p-5 shadow-sm border-l-4 border-emerald-500"><p class="text-slate-500 text-sm font-bold">Published</p><strong id="published" class="text-3xl font-black">0</strong></div>
+      <div class="bg-white rounded-2xl p-5 shadow-sm border-l-4 border-yellow-500"><p class="text-slate-500 text-sm font-bold">Needs refresh</p><strong id="refreshCount" class="text-3xl font-black">0</strong></div>
+    </section>
+
+    <section class="mt-8 bg-white rounded-3xl shadow-sm p-6">
+      <div class="flex items-center justify-between gap-3 mb-5"><h2 class="font-black text-xl">Content Queue</h2><span id="status" class="text-xs font-bold text-slate-400">Loading…</span></div>
+      <div class="overflow-x-auto"><table class="w-full text-left min-w-[720px]"><thead><tr class="border-b text-xs uppercase tracking-wider text-slate-400"><th class="p-3">Product</th><th class="p-3">Content type</th><th class="p-3">Intent</th><th class="p-3">Status</th></tr></thead><tbody id="queue"></tbody></table></div>
+      <div id="empty" class="hidden text-center py-14 text-slate-500"><i class="fa-solid fa-lightbulb text-3xl text-teal mb-3"></i><p class="font-black">No content items yet.</p><p class="text-sm mt-1">Verified products will be turned into content opportunities as the catalog grows.</p></div>
+    </section>
+  </main>
+  <script>
+    async function load(){
+      try{
+        const r=await fetch('../data/marketing/content-queue.json',{cache:'no-store'});
+        const data=await r.json(); const items=data.items||[];
+        const counts={published:0,refresh:0};
+        items.forEach(x=>{if(x.status==='published')counts.published++;if(x.status==='refresh')counts.refresh++;});
+        document.getElementById('products').textContent=new Set(items.map(x=>x.product_id).filter(Boolean)).size;
+        document.getElementById('ideas').textContent=items.length;
+        document.getElementById('published').textContent=counts.published;
+        document.getElementById('refreshCount').textContent=counts.refresh;
+        const q=document.getElementById('queue'); q.innerHTML='';
+        items.slice(0,100).forEach(x=>{q.insertAdjacentHTML('beforeend',`<tr class="border-b last:border-0"><td class="p-3 font-bold">${escapeHtml(x.product_id||'—')}</td><td class="p-3">${escapeHtml(x.content_type||'—')}</td><td class="p-3 text-slate-500">${escapeHtml(x.search_intent||'—')}</td><td class="p-3"><span class="px-2.5 py-1 rounded-full text-xs font-black bg-slate-100">${escapeHtml(x.status||'idea')}</span></td></tr>`)});
+        document.getElementById('empty').classList.toggle('hidden',items.length>0); document.getElementById('queue').classList.toggle('hidden',items.length===0);
+        document.getElementById('status').textContent='Loaded '+new Date().toLocaleTimeString();
+      }catch(e){document.getElementById('status').textContent='Queue unavailable';}
+    }
+    function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
+    document.getElementById('refresh').addEventListener('click',load); load();
+  </script>
+</body></html>
