@@ -1,11 +1,27 @@
 {
-  "schemaVersion": "1.1.0",
+  "schemaVersion": "1.2.0",
   "affiliateProgram": "AliExpress Affiliate",
   "linkPolicy": {
     "mainStoreAffiliateUrl": null,
     "requireProductLevelAffiliateUrl": true,
     "openExternalLinksInNewTab": true,
     "validateBeforePublish": true
+  },
+  "intelligence": {
+    "scoreVersion": "1.0.0",
+    "weights": {
+      "affiliateLink": 20,
+      "availability": 20,
+      "commission": 20,
+      "demand": 15,
+      "contentPotential": 15,
+      "dataFreshness": 10
+    },
+    "decisionBands": {
+      "high_potential": 80,
+      "test": 60,
+      "watch": 40
+    }
   },
   "products": [
     {
@@ -19,6 +35,19 @@
       "currency": "USD",
       "commissionRate": null,
       "lastCheckedAt": null,
+      "intelligence": {
+        "score": 0,
+        "decision": "watch",
+        "signals": {
+          "affiliateLink": 0,
+          "availability": 0,
+          "commission": 0,
+          "demand": 0,
+          "contentPotential": 0,
+          "dataFreshness": 0
+        },
+        "reasons": ["Affiliate URL and current product data are not verified yet."]
+      },
       "notes": "Existing review. Awaiting the exact AliExpress Affiliate URL before monetized publication."
     }
   ],
