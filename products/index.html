@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Products | Amazonite Store</title>
+<meta name="description" content="Browse Amazonite Store's curated product catalog and practical buying picks.">
+<link rel="canonical" href="https://amazonite-store.vercel.app/products/">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+.catalog-hero{padding:64px 0 35px;background:linear-gradient(135deg,#edf8f4,#f7f9fb)}
+.catalog-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:24px 0}.filter{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 14px;font-weight:800;color:var(--muted);cursor:pointer}.filter.active,.filter:hover{background:var(--accent2);color:#fff;border-color:var(--accent2)}
+.catalog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.product-card{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column}.product-visual{height:190px;background:linear-gradient(145deg,#122436,#3b566c);display:grid;place-items:center;color:#fff}.product-visual i{font-size:4rem;color:#7dd8bb}.product-body{padding:22px;display:flex;flex-direction:column;flex:1}.product-body h2{font-size:1.35rem;line-height:1.15;margin:8px 0}.product-body p{color:var(--muted);font-size:.9rem}.status{font-size:.7rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#9a6700;background:#fff4d6;border-radius:999px;padding:5px 9px;align-self:flex-start}.product-card .btn{margin-top:auto}.locked{opacity:.8}
+@media(max-width:800px){.catalog-grid{grid-template-columns:1fr}.catalog-hero{padding:48px 0 25px}}
+</style>
+</head>
+<body>
+<header class="site-header"><div class="container nav"><a class="brand" href="../index.html"><span>◆</span> Amazonite</a><nav aria-label="Primary navigation"><a href="../index.html#featured">Featured</a><a href="./">Products</a><a href="../index.html#categories">Categories</a><a href="../customer-care.html">Buying Help</a></nav><a class="nav-cta" href="../reviews/haylou-s30.html">Top review <span>→</span></a></div></header>
+<main>
+<section class="catalog-hero"><div class="container"><p class="eyebrow">AMAZONITE PRODUCT CATALOG</p><h1>Products worth a closer look.</h1><p class="hero-copy">Curated products with practical context. Every monetized product will use its own verified AliExpress Affiliate link.</p></div></section>
+<section class="section"><div class="container"><div class="catalog-toolbar" role="group" aria-label="Product categories"><button class="filter active" data-filter="all">All</button><button class="filter" data-filter="Audio & Tech">Audio & Tech</button><button class="filter" data-filter="Smart Home">Smart Home</button><button class="filter" data-filter="Kitchen & Everyday">Kitchen & Everyday</button></div>
+<div id="catalog" class="catalog-grid"></div>
+<div class="notice" style="margin-top:28px">Affiliate links are activated only after the exact product-level link is verified. Prices, availability and commission data are not presented as current until checked from an authoritative source.</div>
+</div></section>
+</main>
+<footer><div class="container footer-grid"><div><a class="brand" href="../index.html"><span>◆</span> Amazonite</a><p>Smart finds for better buying decisions.</p></div><div class="footer-links"><a href="../index.html">Home</a><a href="../reviews/haylou-s30.html">HAYLOU S30 Review</a><a href="../customer-care.html">Buying Help</a></div></div><p class="copyright">© 2026 Amazonite Store · Affiliate disclosure: qualifying purchases may earn us a commission.</p></footer>
+<script>
+const PRODUCTS=[{id:'AE-001',name:'HAYLOU S30 ANC',category:'Audio & Tech',description:'Budget-focused ANC headphones with modern connectivity and long everyday listening.',icon:'fa-headphones',status:'needs_review',review:'../reviews/haylou-s30.html'}];
+const catalog=document.getElementById('catalog');
+function render(filter='all'){catalog.innerHTML=PRODUCTS.filter(p=>filter==='all'||p.category===filter).map(p=>`<article class="product-card"><div class="product-visual"><i class="fa-solid ${p.icon}"></i></div><div class="product-body"><span class="status">${p.status.replace('_',' ')}</span><h2>${p.name}</h2><p>${p.description}</p><a class="btn primary" href="${p.review}">Read review <span>→</span></a></div></article>`).join('')}
+document.querySelectorAll('.filter').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.filter').forEach(b=>b.classList.remove('active'));btn.classList.add('active');render(btn.dataset.filter)}));
+render();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js"></script>
+</body></html>
