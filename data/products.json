@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.1.0",
   "affiliateProgram": "AliExpress Affiliate",
   "linkPolicy": {
     "mainStoreAffiliateUrl": null,
@@ -7,6 +7,20 @@
     "openExternalLinksInNewTab": true,
     "validateBeforePublish": true
   },
-  "products": [],
+  "products": [
+    {
+      "id": "AE-001",
+      "name": "HAYLOU S30 ANC",
+      "category": "Audio & Tech",
+      "status": "needs_review",
+      "affiliateUrl": null,
+      "sourceProductUrl": null,
+      "price": null,
+      "currency": "USD",
+      "commissionRate": null,
+      "lastCheckedAt": null,
+      "notes": "Existing review. Awaiting the exact AliExpress Affiliate URL before monetized publication."
+    }
+  ],
   "statuses": ["draft", "active", "needs_review", "out_of_stock", "link_invalid", "retired"]
 }
