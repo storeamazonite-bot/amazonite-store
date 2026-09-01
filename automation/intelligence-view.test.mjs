@@ -26,7 +26,8 @@ assert.equal(item.publicationStatus, 'blocked');
 assert.equal(item.affiliateVerification.verified, false);
 assert.equal(item.intelligence.checks.orders, true);
 assert.equal(item.intelligence.checks.rating, true);
-assert.equal(item.intelligence.checks.commission, true);
+assert.equal(item.intelligence.checks.commission, false);
 assert.equal(item.intelligence.checks.affiliateUrl, false);
+assert.equal(item.commissionPercent, null);
 
-console.log('PASS: Discovery staging remains blocked without exact Affiliate verification.');
+console.log('PASS: Discovery staging fails closed without exact Affiliate verification or authoritative commission.');
