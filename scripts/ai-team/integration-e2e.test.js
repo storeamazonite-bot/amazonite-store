@@ -5,6 +5,15 @@ const path = require('path');
 
 const root = path.resolve(__dirname, '../..');
 const run = (script, args) => JSON.parse(execFileSync('node', [path.join(root, script), ...args], { encoding: 'utf8' }));
+const runAllowFailure = (script, args) => {
+  try {
+    return run(script, args);
+  } catch (error) {
+    const stdout = error.stdout?.toString();
+    if (!stdout) throw error;
+    return JSON.parse(stdout);
+  }
+};
 
 // 1) Create a normal task through the runtime.
 const task = run('scripts/ai-team/task-runner.js', ['create', 'research', 'Validate the current launch checklist']);
@@ -44,7 +53,8 @@ assert(github.status === 'ready_for_provider_execution');
 assert(github.capability === 'read');
 
 // 6) Safe-write capability must still require approval.
-const blockedWrite = run('scripts/ai-team/adapter-executor.js', [JSON.stringify({
+// The command exits non-zero by design; capture stdout so the test can assert the rejection.
+const blockedWrite = runAllowFailure('scripts/ai-team/adapter-executor.js', [JSON.stringify({
   request_id: `e2e-write-${Date.now()}`,
   agent_id: plan.task.assigned_agent,
   capability: 'safe-write',
