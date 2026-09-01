@@ -1,0 +1,22 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "title":"Amazonite Task Queue Item",
+  "type":"object",
+  "required":["task_id","type","request","status","created_at"],
+  "properties":{
+    "task_id":{"type":"string","minLength":1},
+    "parent_task_id":{"type":["string","null"]},
+    "type":{"type":"string","minLength":1},
+    "priority":{"enum":["critical","high","normal","low"]},
+    "request":{"type":"string","minLength":1},
+    "context_refs":{"type":"array","items":{"type":"string"}},
+    "assigned_agent":{"type":["string","null"]},
+    "required_tools":{"type":"array","items":{"type":"string"}},
+    "approval":{"enum":["none","review_required","human_approval","security_veto"]},
+    "status":{"enum":["queued","claimed","blocked","running","verification","completed","failed","cancelled"]},
+    "created_at":{"type":"string","format":"date-time"},
+    "updated_at":{"type":"string","format":"date-time"},
+    "result_ref":{"type":["string","null"]}
+  },
+  "additionalProperties":false
+}
