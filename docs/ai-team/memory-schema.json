@@ -1,0 +1,19 @@
+{
+  "version": "1.0",
+  "purpose": "Shared, auditable knowledge for Amazonite agents.",
+  "memory_types": {
+    "decision": {"required":["id","date","decision","reason","owner","status"],"retention":"long"},
+    "fact": {"required":["id","fact","source","verified_at","confidence"],"retention":"long"},
+    "task_result": {"required":["id","task","agent","result","evidence","date"],"retention":"medium"},
+    "experiment": {"required":["id","hypothesis","change","metric","result","next_action"],"retention":"long"},
+    "incident": {"required":["id","detected_at","symptom","root_cause","fix","verification","status"],"retention":"long"},
+    "tool_observation": {"required":["tool","task_type","outcome","quality","latency","cost_class","date"],"retention":"medium"}
+  },
+  "rules": [
+    "Store evidence with important facts and decisions.",
+    "Never store secrets, passwords, access tokens, or private credentials.",
+    "Prefer verified current facts over stale assumptions.",
+    "Record reversals and superseded decisions instead of silently overwriting history.",
+    "Agents may read shared memory; writes should identify the responsible agent."
+  ]
+}
