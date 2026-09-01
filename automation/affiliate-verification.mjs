@@ -44,7 +44,12 @@ export async function loadAffiliateRegistry() {
   try {
     const raw = await fs.readFile(REGISTRY, 'utf8');
     const data = JSON.parse(raw);
-    return Array.isArray(data.records) ? data.records.map(normalizeAffiliateRecord) : [];
+    const records = Array.isArray(data.records)
+      ? data.records
+      : Array.isArray(data.products)
+        ? data.products
+        : [];
+    return records.map(normalizeAffiliateRecord);
   } catch (error) {
     if (error.code === 'ENOENT') return [];
     throw error;
