@@ -1,0 +1,31 @@
+name: Amazonite Launch Readiness Gate
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'docs/launch/**'
+      - 'scripts/ai-team/launch-gate.js'
+      - '.github/workflows/amazonite-launch-gate.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  launch-gate:
+    runs-on: ubuntu-latest
+    env:
+      LAUNCH_TECHNICAL: 'false'
+      AFFILIATE_APPROVED: 'false'
+      PRODUCT_LINKS_VERIFIED: 'false'
+      PRODUCT_IDENTITY_VERIFIED: 'false'
+      STORE_SOURCE_VERIFIED: 'false'
+      CONVERSION_READY: 'false'
+      OPERATIONS_READY: 'false'
+      MAIN_PROTECTED: 'false'
+      REQUIRED_CHECKS: 'false'
+      SECRETS_SAFE: 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Evaluate launch gate
+        run: node scripts/ai-team/launch-gate.js
