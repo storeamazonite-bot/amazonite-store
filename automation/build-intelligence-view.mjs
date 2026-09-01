@@ -73,7 +73,7 @@ export function buildIntelligenceView(catalog = { products: [] }, staging = { re
   const items = [
     ...catalogProducts.map(product => buildItem(product, registry, 'catalog')),
     ...stagedProducts
-      .filter(product => !String(product.id) || !catalogIds.has(String(product.id)) === false)
+      .filter(product => !catalogIds.has(String(product.id)))
       .map(product => buildItem(product, registry, 'discovery-staging')),
   ];
 
