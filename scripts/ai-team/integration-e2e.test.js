@@ -24,7 +24,7 @@ const gateway = run('scripts/ai-team/integration-gateway.js', [JSON.stringify({
 })]);
 assert(gateway.valid === true);
 
-// 4) Execute only as a provider-neutral adapter handoff.
+// 4) Read operations must not inherit GitHub safe-write approval.
 const execution = run('scripts/ai-team/adapter-executor.js', [JSON.stringify({
   request_id: gateway.request_id,
   agent_id: plan.task.assigned_agent,
@@ -43,4 +43,14 @@ const github = run('scripts/ai-team/adapters/github.js', [JSON.stringify({
 assert(github.status === 'ready_for_provider_execution');
 assert(github.capability === 'read');
 
-console.log(JSON.stringify({ status: 'PASS', stages: 5 }, null, 2));
+// 6) Safe-write capability must still require approval.
+const blockedWrite = run('scripts/ai-team/adapter-executor.js', [JSON.stringify({
+  request_id: `e2e-write-${Date.now()}`,
+  agent_id: plan.task.assigned_agent,
+  capability: 'safe-write',
+  input: { operation: 'inspect_file' }
+})]);
+assert(blockedWrite.status === 'rejected');
+assert(blockedWrite.reason === 'approval_required');
+
+console.log(JSON.stringify({ status: 'PASS', stages: 6 }, null, 2));
