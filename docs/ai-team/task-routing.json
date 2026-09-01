@@ -1,0 +1,18 @@
+{
+  "version": "1.0",
+  "default_agent": "amazonite-core",
+  "routes": [
+    {"task":"research","agents":["research-intelligence","analytics"],"tools":["web-research"]},
+    {"task":"product-selection","agents":["product-intelligence","research-intelligence"],"tools":["web-research","affiliate-source"]},
+    {"task":"affiliate-verification","agents":["product-intelligence","security-trust"],"tools":["affiliate-source","web-research"],"approval":"required-before-activation"},
+    {"task":"code-change","agents":["engineering","qa"],"tools":["github"],"verification":"tests-and-qa"},
+    {"task":"bug-fix","agents":["engineering","qa","self-healing"],"tools":["github"],"verification":"reproduce-fix-regression"},
+    {"task":"seo","agents":["growth-marketing","content","analytics"],"tools":["web-research","github"]},
+    {"task":"content","agents":["research-intelligence","content","qa"],"tools":["web-research","github"]},
+    {"task":"creative","agents":["creative","content"],"tools":["image-generation"]},
+    {"task":"analytics","agents":["analytics","growth-marketing"],"tools":["analytics"]},
+    {"task":"automation","agents":["automation","engineering","security-trust"],"tools":["automation","n8n","github"]},
+    {"task":"security-review","agents":["security-trust","engineering"],"tools":["github"],"approval":"required-for-risky-actions"},
+    {"task":"launch-readiness","agents":["core","product-intelligence","engineering","qa","security-trust","growth-marketing"],"tools":["github","web-research","affiliate-source","analytics"],"gate":"go-no-go"}
+  ]
+}
