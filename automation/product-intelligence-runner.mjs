@@ -14,32 +14,36 @@ async function writeStaging(payload) {
   await fs.writeFile(STAGING, JSON.stringify(payload, null, 2) + '\n', 'utf8');
 }
 
-async function main() {
-  const query = arg('query', 'HAYLOU S30 wireless ANC headphones');
-  const page = Number(arg('page', '1')) || 1;
+export function buildIntelligenceSignals(product) {
+  return {
+    trendMomentum: 0,
+    googleDemand: 0,
+    marketEvidence: 0,
+    reviewsRating: product.rating > 4.5 ? 100 : 0,
+    affiliateCommission: 0,
+    profitPotential: 0,
+    competition: 0,
+  };
+}
+
+export async function runProductIntelligence({ query, page = 1 } = {}) {
+  const resolvedQuery = query || 'HAYLOU S30 wireless ANC headphones';
+  const resolvedPage = Number(page) || 1;
   const startedAt = new Date().toISOString();
 
   try {
-    const products = await searchAliExpress(query, { sort: 'orders', page });
+    const products = await searchAliExpress(resolvedQuery, { sort: 'orders', page: resolvedPage });
     const results = products.map(product => ({
       ...product,
-      intelligence: evaluateProduct(product, {
-        trendMomentum: 0,
-        googleDemand: 0,
-        marketEvidence: 0,
-        reviewsRating: product.rating > 4.5 ? 100 : 0,
-        affiliateCommission: 0,
-        profitPotential: 0,
-        competition: 0,
-      }),
+      intelligence: evaluateProduct(product, buildIntelligenceSignals(product)),
       stagingStatus: 'not-publishable-until-verified',
     }));
 
-    const payload = {
+    return {
       generatedAt: new Date().toISOString(),
       source: 'aliexpress-mcp',
-      query,
-      page,
+      query: resolvedQuery,
+      page: resolvedPage,
       count: results.length,
       results,
       policy: {
@@ -48,26 +52,32 @@ async function main() {
         requiresAuthoritativeCommission: true,
         hardGates: 'orders > 500; rating > 4.5; commission > 8%',
       },
+      startedAt,
     };
-
-    await writeStaging(payload);
-    console.log(JSON.stringify(payload, null, 2));
   } catch (error) {
-    const payload = {
+    return {
       generatedAt: new Date().toISOString(),
       source: 'aliexpress-mcp',
-      query,
-      page,
+      query: resolvedQuery,
+      page: resolvedPage,
       count: 0,
       results: [],
       error: error.message,
       failedClosed: true,
       startedAt,
     };
-    await writeStaging(payload);
-    console.error(`Product intelligence runner failed closed: ${error.message}`);
-    process.exitCode = 1;
   }
 }
 
-main();
+async function main() {
+  const payload = await runProductIntelligence({
+    query: arg('query', 'HAYLOU S30 wireless ANC headphones'),
+    page: arg('page', '1'),
+  });
+
+  await writeStaging(payload);
+  console.log(JSON.stringify(payload, null, 2));
+  if (payload.failedClosed) process.exitCode = 1;
+}
+
+if (import.meta.url === `file://${process.argv[1]}`) main();
