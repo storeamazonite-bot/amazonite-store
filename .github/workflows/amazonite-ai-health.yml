@@ -1,0 +1,23 @@
+name: Amazonite AI Team Health
+
+on:
+  push:
+    paths:
+      - 'docs/ai-team/**'
+      - 'scripts/ai-team/**'
+      - '.github/workflows/amazonite-ai-health.yml'
+  workflow_dispatch:
+  schedule:
+    - cron: '17 */6 * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Check AI Team runtime contracts
+        run: node scripts/ai-team/health-check.js
