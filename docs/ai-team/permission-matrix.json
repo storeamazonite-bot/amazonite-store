@@ -1,0 +1,17 @@
+{
+  "version": "1.0",
+  "actions": {
+    "research": "auto",
+    "read_repository": "auto",
+    "safe_code_change": "auto_with_tests",
+    "reversible_config_change": "auto_with_tests",
+    "publish_content": "review_required",
+    "activate_affiliate_link": "review_required",
+    "financial_commitment": "human_approval",
+    "delete_important_data": "human_approval",
+    "secret_access_or_exposure": "human_approval",
+    "production_irreversible_change": "human_approval",
+    "legal_or_compliance_commitment": "human_approval",
+    "security_risk": "security_veto"
+  }
+}
