@@ -12,11 +12,18 @@ fs.mkdirSync(state, { recursive: true });
 const id = p => `${p}-${Date.now()}-${crypto.randomBytes(3).toString('hex')}`;
 const append = x => fs.appendFileSync(events, JSON.stringify(x) + '\n');
 
+function requiresApproval(adapter, request) {
+  // Adapter approval policies apply to the capability actually being requested.
+  // GitHub's policy protects safe-write; read operations remain read-only.
+  if (request.capability === 'safe-write') return adapter.approval !== 'none';
+  return adapter.approval === 'always' || adapter.approval === 'policy-dependent';
+}
+
 function execute(request) {
   const adapter = gateway.adapters.find(a => a.capabilities.includes(request.capability));
   if (!adapter) return reject(request, 'no_registered_adapter');
   if (!request.agent_id || !request.request_id || !request.capability) return reject(request, 'missing_required_fields');
-  if (adapter.approval !== 'none' && !request.approval_token) return reject(request, 'approval_required');
+  if (requiresApproval(adapter, request) && !request.approval_token) return reject(request, 'approval_required');
 
   const execution_id = id('exec');
   const result = {
