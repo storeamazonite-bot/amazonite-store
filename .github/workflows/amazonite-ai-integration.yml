@@ -1,0 +1,25 @@
+name: Amazonite AI Integration
+
+on:
+  push:
+    paths:
+      - 'docs/ai-team/**'
+      - 'scripts/ai-team/**'
+      - '.github/workflows/amazonite-ai-integration.yml'
+  pull_request:
+    paths:
+      - 'docs/ai-team/**'
+      - 'scripts/ai-team/**'
+      - '.github/workflows/amazonite-ai-integration.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run end-to-end AI team integration checks
+        run: node scripts/ai-team/integration-e2e.test.js
