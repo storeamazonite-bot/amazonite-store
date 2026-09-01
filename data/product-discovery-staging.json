@@ -1,0 +1,10 @@
+{
+  "generatedAt": null,
+  "source": "aliexpress-mcp",
+  "query": null,
+  "page": 1,
+  "count": 0,
+  "results": [],
+  "status": "not-run",
+  "note": "This staging file is intentionally empty until the local AliExpress MCP endpoint is reachable. It must never be treated as live product evidence."
+}
