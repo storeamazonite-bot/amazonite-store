@@ -23,3 +23,4 @@ jobs:
       - uses: actions/checkout@v4
       - name: Run end-to-end AI team integration checks
         run: node scripts/ai-team/integration-e2e.test.js
+      # Keep this workflow path-sensitive so AI Team runtime changes are always re-tested.
