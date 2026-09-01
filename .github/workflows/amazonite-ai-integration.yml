@@ -17,6 +17,8 @@ on:
       - 'Amazonite AI Team Health'
     types:
       - completed
+  schedule:
+    - cron: '47 */6 * * *'
 
 permissions:
   contents: read
