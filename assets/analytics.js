@@ -14,7 +14,7 @@
     var safe = {};
     Object.keys(properties || {}).forEach(function (key) {
       var value = properties[key];
-      if (key === 'product_id' || key === 'category' || key === 'cta_location' || key === 'reason' || key === 'destination_class') {
+      if (key === 'product_id' || key === 'category' || key === 'cta_location' || key === 'reason' || key === 'destination_class' || key === 'page_type') {
         var cleaned = clean(String(value));
         if (cleaned) safe[key] = cleaned;
       }
