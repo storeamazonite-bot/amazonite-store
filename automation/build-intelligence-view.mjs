@@ -42,7 +42,7 @@ function buildItem(product, registry, origin) {
   const candidate = {
     ...product,
     affiliateUrl: affiliate.verified ? affiliate.record.affiliateUrl : null,
-    commissionPercent: affiliate.verified ? affiliate.record.commissionPercent : (product.commissionPercent ?? null),
+    commissionPercent: affiliate.verified ? affiliate.record.commissionPercent : null,
     available: product.available !== false && product.stock !== 0,
   };
   const intelligence = evaluateProduct(candidate, defaultSignals(candidate));
@@ -69,11 +69,11 @@ function buildItem(product, registry, origin) {
 export function buildIntelligenceView(catalog = { products: [] }, staging = { results: [] }, registry = []) {
   const catalogProducts = Array.isArray(catalog.products) ? catalog.products : [];
   const stagedProducts = Array.isArray(staging.results) ? staging.results : [];
-  const catalogIds = new Set(catalogProducts.map(product => String(product.id)));
+  const catalogIds = new Set(catalogProducts.map(product => String(product.id)).filter(Boolean));
   const items = [
     ...catalogProducts.map(product => buildItem(product, registry, 'catalog')),
     ...stagedProducts
-      .filter(product => !catalogIds.has(String(product.id)))
+      .filter(product => !String(product.id) || !catalogIds.has(String(product.id)) === false)
       .map(product => buildItem(product, registry, 'discovery-staging')),
   ];
 
