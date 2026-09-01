@@ -1,0 +1,15 @@
+{
+  "version": "1.0",
+  "policy": "Prefer native/connected tools first; external providers are replaceable capabilities.",
+  "tools": [
+    {"id":"github","category":"engineering","capabilities":["repository-read","repository-write","issues","pull-requests","ci"],"status":"connected"},
+    {"id":"web-research","category":"research","capabilities":["web-search","source-verification","current-information"],"status":"available"},
+    {"id":"image-generation","category":"creative","capabilities":["image-generation","image-editing"],"status":"available"},
+    {"id":"automation","category":"workflow","capabilities":["scheduling","recurring-jobs","conditional-checks"],"status":"available"},
+    {"id":"mcp-gateway","category":"integration","capabilities":["tool-discovery","tool-bridging","agent-tool-communication"],"status":"architecture"},
+    {"id":"n8n","category":"workflow","capabilities":["workflow-automation","integrations","agent-workflows"],"status":"planned"},
+    {"id":"analytics","category":"data","capabilities":["traffic","affiliate-clicks","conversion-analysis"],"status":"planned"},
+    {"id":"affiliate-source","category":"commerce","capabilities":["product-links","affiliate-verification","product-data"],"status":"blocked-pending-credentials"}
+  ],
+  "selection_rule": "Use the smallest reliable tool chain that completes the task; escalate to specialized external tools only when they materially improve quality or capability."
+}
