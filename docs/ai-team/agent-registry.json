@@ -1,0 +1,18 @@
+{
+  "version": "1.0",
+  "orchestrator": "amazonite-core",
+  "agents": [
+    {"id":"amazonite-core","role":"orchestrator","authority":"high","status":"active"},
+    {"id":"research-intelligence","role":"research","authority":"medium","status":"planned"},
+    {"id":"product-intelligence","role":"product","authority":"medium","status":"planned"},
+    {"id":"engineering","role":"engineering","authority":"high-safe-changes","status":"planned"},
+    {"id":"growth-marketing","role":"growth","authority":"medium","status":"planned"},
+    {"id":"content","role":"content","authority":"medium","status":"planned"},
+    {"id":"creative","role":"creative","authority":"medium","status":"planned"},
+    {"id":"analytics","role":"analytics","authority":"medium","status":"planned"},
+    {"id":"qa","role":"quality-assurance","authority":"read-only","status":"planned"},
+    {"id":"security-trust","role":"security","authority":"veto-security-risk","status":"planned"},
+    {"id":"automation","role":"automation","authority":"medium","status":"planned"},
+    {"id":"self-healing","role":"reliability","authority":"allowlisted-fixes","status":"planned"}
+  ]
+}
