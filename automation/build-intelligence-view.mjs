@@ -66,13 +66,9 @@ function buildItem(product, registry, origin) {
   };
 }
 
-async function main() {
-  const catalog = await readJson(PRODUCTS, { products: [] });
-  const staging = await readJson(STAGING, { results: [] });
-  const registry = await loadAffiliateRegistry();
+export function buildIntelligenceView(catalog = { products: [] }, staging = { results: [] }, registry = []) {
   const catalogProducts = Array.isArray(catalog.products) ? catalog.products : [];
   const stagedProducts = Array.isArray(staging.results) ? staging.results : [];
-
   const catalogIds = new Set(catalogProducts.map(product => String(product.id)));
   const items = [
     ...catalogProducts.map(product => buildItem(product, registry, 'catalog')),
@@ -93,7 +89,7 @@ async function main() {
     return acc;
   }, { total: 0, publishable: 0, blocked: 0, discovered: 0, affiliateVerified: 0, winners: 0, strongOrTest: 0, watchOrReject: 0 });
 
-  const payload = {
+  return {
     version: 1,
     generatedAt: new Date().toISOString(),
     source: 'products.json + product-discovery-staging.json + affiliate-verification.json',
@@ -106,7 +102,13 @@ async function main() {
     summary,
     items,
   };
+}
 
+async function main() {
+  const catalog = await readJson(PRODUCTS, { products: [] });
+  const staging = await readJson(STAGING, { results: [] });
+  const registry = await loadAffiliateRegistry();
+  const payload = buildIntelligenceView(catalog, staging, registry);
   await fs.writeFile(OUTPUT, JSON.stringify(payload, null, 2) + '\n', 'utf8');
   console.log(JSON.stringify(payload, null, 2));
 }
