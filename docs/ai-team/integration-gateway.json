@@ -1,0 +1,16 @@
+{
+  "version":"1.0",
+  "purpose":"Single controlled gateway between Amazonite agents and external capabilities.",
+  "principles":["least-privilege","validated-inputs","structured-results","audit-events","bounded-retries","verification-before-success"],
+  "adapters":[
+    {"id":"github","capabilities":["read","safe-write"],"status":"connected","approval":"safe-write-policy"},
+    {"id":"web-research","capabilities":["search","source-verification"],"status":"available","approval":"none"},
+    {"id":"automation","capabilities":["schedule","workflow-execution"],"status":"available","approval":"policy-dependent"},
+    {"id":"mcp","capabilities":["tool-discovery","tool-bridging"],"status":"architecture","approval":"policy-dependent"}
+  ],
+  "request_contract":{
+    "required":["request_id","agent_id","capability","input"],
+    "optional":["task_id","approval_token","idempotency_key"]
+  },
+  "result_contract":{"required":["request_id","status","output","evidence"]}
+}
