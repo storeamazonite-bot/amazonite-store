@@ -1,0 +1,18 @@
+{
+  "version":"1.0",
+  "purpose":"Prevent Amazonite Store launch until operational, affiliate, technical and safety prerequisites are verified.",
+  "gates":{
+    "technical":["site_build_passes","critical_routes_work","mobile_review_complete","no_blocking_runtime_errors"],
+    "affiliate":["affiliate_program_approved","every_active_product_has_verified_affiliate_url","product_url_matches_product_identity","store_level_affiliate_source_verified_when_used"],
+    "conversion":["product_ctas_use_verified_links","pricing_disclaimer_present_when_needed","clear_buy_flow","trust_content_present"],
+    "operations":["monitoring_enabled","error_logging_enabled","recovery_path_defined","launch_owner_confirmed"],
+    "security":["main_branch_protected","required_checks_enforced","secrets_outside_source","no_unreviewed_production_changes"]
+  },
+  "blocking_rules":[
+    "No product becomes active without its own verified affiliate URL.",
+    "A generic AliExpress store/source URL cannot substitute for a product-level affiliate URL when product attribution is required.",
+    "Unknown or unverified affiliate destinations remain disabled.",
+    "A failed critical gate blocks launch."
+  ],
+  "status":"prelaunch"
+}
