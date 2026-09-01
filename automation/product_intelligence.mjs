@@ -36,7 +36,13 @@ export function eligibility(product = {}, limits = {}) {
   const minCommission = Number(limits.minCommissionPercent ?? process.env.MIN_COMMISSION_PERCENT ?? 8);
   const orders = Number(product.orders ?? product.orderCount ?? product.sold ?? 0);
   const rating = Number(product.rating ?? product.averageRating ?? 0);
-  const commission = Number(product.commissionPercent ?? product.commission_rate ?? product.commission ?? 0);
+  const commission = Number(
+    product.commissionPercent ??
+    product.commissionRate ??
+    product.commission_rate ??
+    product.commission ??
+    0,
+  );
 
   return {
     orders: orders > minOrders,
