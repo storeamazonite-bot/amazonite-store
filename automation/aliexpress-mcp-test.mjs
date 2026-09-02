@@ -4,6 +4,7 @@ import { getAliExpressProduct, searchAliExpress } from './aliexpress-mcp-adapter
 async function main() {
   const previousMode = process.env.ALIEXPRESS_SOURCE_MODE;
   const previousKey = process.env.ALIEXPRESS_SCRAPER_API_KEY;
+  const previousBase = process.env.ALIEXPRESS_SCRAPER_API_BASE;
 
   try {
     delete process.env.ALIEXPRESS_SCRAPER_API_KEY;
@@ -26,12 +27,28 @@ async function main() {
       'remote-only mode must fail clearly when the API key is absent',
     );
 
-    console.log('PASS: AliExpress adapter local fallback and remote-only guard validated.');
+    process.env.ALIEXPRESS_SOURCE_MODE = 'auto';
+    process.env.ALIEXPRESS_SCRAPER_API_KEY = 'test-key';
+    process.env.ALIEXPRESS_SCRAPER_API_BASE = 'http://127.0.0.1:1';
+
+    const remoteFailureResults = await searchAliExpress('HAYLOU S30');
+    assert(Array.isArray(remoteFailureResults), 'remote failure fallback must return an array');
+    assert(remoteFailureResults.length >= 1, 'remote failure fallback should use the local catalog');
+    assert.equal(remoteFailureResults[0].source, 'local-catalog');
+    assert.match(remoteFailureResults[0].name, /HAYLOU S30/i);
+
+    const remoteFailureProduct = await getAliExpressProduct('AE-001');
+    assert.equal(remoteFailureProduct.id, 'AE-001');
+    assert.equal(remoteFailureProduct.source, 'local-catalog');
+
+    console.log('PASS: AliExpress adapter local fallback, remote-only guard, and remote-failure fallback validated.');
   } finally {
     if (previousMode === undefined) delete process.env.ALIEXPRESS_SOURCE_MODE;
     else process.env.ALIEXPRESS_SOURCE_MODE = previousMode;
     if (previousKey === undefined) delete process.env.ALIEXPRESS_SCRAPER_API_KEY;
     else process.env.ALIEXPRESS_SCRAPER_API_KEY = previousKey;
+    if (previousBase === undefined) delete process.env.ALIEXPRESS_SCRAPER_API_BASE;
+    else process.env.ALIEXPRESS_SCRAPER_API_BASE = previousBase;
   }
 }
 
