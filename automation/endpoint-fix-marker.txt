@@ -1,0 +1,1 @@
+AliExpress endpoint contract fixed: documented /aliexpress/search and /aliexpress/product paths.
