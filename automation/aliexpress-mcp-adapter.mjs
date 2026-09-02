@@ -16,12 +16,12 @@ function sourceMode() {
 }
 
 function hasRemoteCredentials() {
-  return Boolean(process.env.ALIEXPRESS_SCRAPER_API_KEY);
+  return Boolean(process.env.ALIEXPRESS_SCRAPER_API_KEY?.trim());
 }
 
 async function getJson(url) {
   const headers = { accept: 'application/json' };
-  headers['API-Key'] = process.env.ALIEXPRESS_SCRAPER_API_KEY;
+  if (hasRemoteCredentials()) headers['API-Key'] = process.env.ALIEXPRESS_SCRAPER_API_KEY.trim();
 
   const response = await fetch(url, { headers });
   const text = await response.text();
@@ -44,14 +44,7 @@ function numberFrom(value) {
 function normalizeProduct(raw = {}) {
   const pricing = raw.pricing ?? {};
   const store = raw.store;
-  const sourceUrl = raw.sourceProductUrl
-    ?? raw.source_url
-    ?? raw.url
-    ?? raw.productUrl
-    ?? raw.link
-    ?? raw.listing_url
-    ?? raw.product_url
-    ?? '';
+  const sourceUrl = raw.sourceProductUrl ?? raw.source_url ?? raw.url ?? raw.productUrl ?? raw.link ?? raw.listing_url ?? raw.product_url ?? '';
 
   return {
     id: String(raw.id ?? raw.productId ?? raw.product_id ?? raw.itemId ?? ''),
@@ -92,8 +85,10 @@ async function readLocalCatalog() {
 }
 
 function matchesQuery(product, query) {
+  const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
+  if (!terms.length) return true;
   const haystack = `${product.name ?? ''} ${product.category ?? ''} ${product.notes ?? ''}`.toLowerCase();
-  return query.toLowerCase().split(/\s+/).filter(Boolean).every(term => haystack.includes(term));
+  return terms.every(term => haystack.includes(term));
 }
 
 async function searchLocalCatalog(query, sort = 'orders') {
@@ -115,58 +110,34 @@ async function searchLocalCatalog(query, sort = 'orders') {
 async function getLocalProduct(productIdOrUrl) {
   const products = await readLocalCatalog();
   const needle = String(productIdOrUrl).toLowerCase();
-  const product = products.find(item => String(item.id ?? '').toLowerCase() === needle
-    || String(item.sourceProductUrl ?? '').toLowerCase() === needle
-    || String(item.affiliateUrl ?? '').toLowerCase() === needle);
+  const product = products.find(item => String(item.id ?? '').toLowerCase() === needle || String(item.sourceProductUrl ?? '').toLowerCase() === needle || String(item.affiliateUrl ?? '').toLowerCase() === needle);
   return product ? normalizeProduct({ ...product, source: 'local-catalog' }) : null;
 }
 
 export async function searchAliExpress(query, { sort = 'orders', page = 1 } = {}) {
   if (!hasRemoteCredentials()) {
-    if (sourceMode() === 'remote-only') {
-      throw new Error('AliExpress remote source is not configured: ALIEXPRESS_SCRAPER_API_KEY is missing.');
-    }
+    if (sourceMode() === 'remote-only') throw new Error('AliExpress remote source is not configured: ALIEXPRESS_SCRAPER_API_KEY is missing.');
     return searchLocalCatalog(query, sort);
   }
 
-  const sortMap = {
-    orders: 'most_orders',
-    price: 'price_low_to_high',
-    rating: 'best_match',
-  };
-
-  const params = new URLSearchParams({
-    query,
-    page: String(page),
-    country_code: countryCode(),
-    sort_by: sortMap[sort] || 'best_match',
-  });
-
+  const sortMap = { orders: 'most_orders', price: 'price_low_to_high', rating: 'best_match' };
+  const params = new URLSearchParams({ query, page: String(page), country_code: countryCode(), sort_by: sortMap[sort] || 'best_match' });
   const data = await getJson(`${apiBase()}/aliexpress/v2/search?${params}`);
   let products = Array.isArray(data?.results) ? data.results : [];
 
-  if (sort === 'rating') {
-    products = [...products].sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0));
-  }
-
+  if (sort === 'rating') products = [...products].sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0));
   return products.map(normalizeProduct);
 }
 
 export async function getAliExpressProduct(productIdOrUrl) {
   if (!hasRemoteCredentials()) {
-    if (sourceMode() === 'remote-only') {
-      throw new Error('AliExpress remote source is not configured: ALIEXPRESS_SCRAPER_API_KEY is missing.');
-    }
+    if (sourceMode() === 'remote-only') throw new Error('AliExpress remote source is not configured: ALIEXPRESS_SCRAPER_API_KEY is missing.');
     const localProduct = await getLocalProduct(productIdOrUrl);
     if (!localProduct) throw new Error('Product is not present in the local catalog and the remote AliExpress source is not configured.');
     return localProduct;
   }
 
-  const params = new URLSearchParams({
-    product: productIdOrUrl,
-    country_code: countryCode(),
-  });
-
+  const params = new URLSearchParams({ product: productIdOrUrl, country_code: countryCode() });
   const data = await getJson(`${apiBase()}/aliexpress/v2/product?${params}`);
   return normalizeProduct(data?.product ?? data);
 }
@@ -174,13 +145,9 @@ export async function getAliExpressProduct(productIdOrUrl) {
 if (import.meta.url === `file://${process.argv[1]}`) {
   const [command, ...args] = process.argv.slice(2);
   try {
-    if (command === 'search') {
-      console.log(JSON.stringify(await searchAliExpress(args.join(' ')), null, 2));
-    } else if (command === 'product') {
-      console.log(JSON.stringify(await getAliExpressProduct(args.join(' ')), null, 2));
-    } else {
-      console.log('Usage: node automation/aliexpress-mcp-adapter.mjs search <query> | product <id-or-url>');
-    }
+    if (command === 'search') console.log(JSON.stringify(await searchAliExpress(args.join(' ')), null, 2));
+    else if (command === 'product') console.log(JSON.stringify(await getAliExpressProduct(args.join(' ')), null, 2));
+    else console.log('Usage: node automation/aliexpress-mcp-adapter.mjs search <query> | product <id-or-url>');
   } catch (error) {
     console.error(`AliExpress source error: ${error.message}`);
     process.exitCode = 1;
