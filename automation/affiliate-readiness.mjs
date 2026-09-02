@@ -5,9 +5,9 @@ const MIN_COMMISSION_PERCENT = Number(process.env.MIN_COMMISSION_PERCENT || 8);
 export function evaluateAffiliateReadiness(product) {
   const orders = Number(product.orders_count ?? product.orders ?? 0);
   const rating = Number(product.rating ?? 0);
-  const commission = Number(product.commission_percent ?? product.commissionRate ?? 0);
+  const commission = Number(product.commission_percent ?? product.commissionPercent ?? product.commissionRate ?? 0);
   const affiliateUrl = String(product.affiliate_url ?? product.affiliateUrl ?? '').trim();
-  const sourceUrl = String(product.source_url ?? product.product_url ?? product.link ?? '').trim();
+  const sourceUrl = String(product.source_url ?? product.sourceUrl ?? product.product_url ?? product.link ?? '').trim();
   const available = product.available !== false;
 
   const checks = {
