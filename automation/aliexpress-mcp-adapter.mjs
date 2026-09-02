@@ -22,16 +22,10 @@ function hasRemoteCredentials() {
 async function getJson(url) {
   const headers = { accept: 'application/json' };
   if (hasRemoteCredentials()) headers['API-Key'] = process.env.ALIEXPRESS_SCRAPER_API_KEY.trim();
-
   const response = await fetch(url, { headers });
   const text = await response.text();
   if (!response.ok) throw new Error(`Omkar HTTP ${response.status}: ${text.slice(0, 500)}`);
-
-  try {
-    return JSON.parse(text);
-  } catch {
-    throw new Error('Omkar returned a non-JSON response');
-  }
+  try { return JSON.parse(text); } catch { throw new Error('Omkar returned a non-JSON response'); }
 }
 
 function numberFrom(value) {
@@ -43,9 +37,8 @@ function numberFrom(value) {
 
 function normalizeProduct(raw = {}) {
   const pricing = raw.pricing ?? {};
-  const store = raw.store;
+  const store = raw.store ?? raw.seller;
   const sourceUrl = raw.sourceProductUrl ?? raw.source_url ?? raw.url ?? raw.productUrl ?? raw.link ?? raw.listing_url ?? raw.product_url ?? '';
-
   return {
     id: String(raw.id ?? raw.productId ?? raw.product_id ?? raw.itemId ?? ''),
     name: raw.name ?? raw.title ?? raw.product_title ?? raw.productTitle ?? '',
@@ -63,8 +56,8 @@ function normalizeProduct(raw = {}) {
     stock: raw.stock ?? raw.available_count ?? null,
     store: typeof store === 'object' && store !== null ? store.name ?? null : (store ?? raw.store_name ?? raw.seller_name ?? null),
     shipping: raw.shipping ?? raw.shipping_cost ?? null,
-    images: Array.isArray(raw.images) ? raw.images : (raw.image ? [raw.image] : []),
-    image: raw.image ?? raw.images?.[0] ?? null,
+    images: Array.isArray(raw.images) ? raw.images : (raw.image_url ? [raw.image_url] : (raw.image ? [raw.image] : [])),
+    image: raw.image ?? raw.image_url ?? raw.images?.[0] ?? null,
     isChoice: raw.is_choice ?? raw.isChoice ?? false,
     isHotSale: raw.is_hot_sale ?? raw.isHotSale ?? false,
     tags: Array.isArray(raw.tags) ? raw.tags : [],
@@ -79,9 +72,7 @@ async function readLocalCatalog() {
     const text = await fs.readFile(LOCAL_CATALOG, 'utf8');
     const data = JSON.parse(text);
     return Array.isArray(data?.products) ? data.products : [];
-  } catch {
-    return [];
-  }
+  } catch { return []; }
 }
 
 function matchesQuery(product, query) {
@@ -94,17 +85,10 @@ function matchesQuery(product, query) {
 async function searchLocalCatalog(query, sort = 'orders') {
   const products = (await readLocalCatalog()).filter(product => matchesQuery(product, query));
   const normalized = products.map(product => normalizeProduct({
-    ...product,
-    source: 'local-catalog',
-    orders_count: product.orders ?? product.orderCount ?? 0,
+    ...product, source: 'local-catalog', orders_count: product.orders ?? product.orderCount ?? 0,
     commissionPercent: product.commissionRate ?? product.commissionPercent ?? null,
   }));
-
-  return normalized.sort((a, b) => {
-    if (sort === 'rating') return b.rating - a.rating;
-    if (sort === 'price') return a.price - b.price;
-    return b.orders - a.orders;
-  });
+  return normalized.sort((a, b) => sort === 'rating' ? b.rating - a.rating : sort === 'price' ? a.price - b.price : b.orders - a.orders);
 }
 
 async function getLocalProduct(productIdOrUrl) {
@@ -114,24 +98,21 @@ async function getLocalProduct(productIdOrUrl) {
   return product ? normalizeProduct({ ...product, source: 'local-catalog' }) : null;
 }
 
-function remoteFailure(error) {
-  return new Error(`AliExpress remote source failed: ${error.message}`);
-}
+function remoteFailure(error) { return new Error(`AliExpress remote source failed: ${error.message}`); }
 
 export async function searchAliExpress(query, { sort = 'orders', page = 1 } = {}) {
   if (!hasRemoteCredentials()) {
     if (sourceMode() === 'remote-only') throw new Error('AliExpress remote source is not configured: ALIEXPRESS_SCRAPER_API_KEY is missing.');
     return searchLocalCatalog(query, sort);
   }
-
-  const sortMap = { orders: 'most_orders', price: 'price_low_to_high', rating: 'best_match' };
-  const params = new URLSearchParams({ query, page: String(page), country_code: countryCode(), sort_by: sortMap[sort] || 'best_match' });
-
+  const params = new URLSearchParams({ query, page: String(page) });
   try {
-    const data = await getJson(`${apiBase()}/aliexpress/v2/search?${params}`);
-    let products = Array.isArray(data?.results) ? data.results : [];
-    if (sort === 'rating') products = [...products].sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0));
-    return products.map(normalizeProduct);
+    const data = await getJson(`${apiBase()}/aliexpress/search?${params}`);
+    let products = Array.isArray(data?.results) ? data.results.map(normalizeProduct) : [];
+    if (sort === 'rating') products.sort((a, b) => b.rating - a.rating);
+    else if (sort === 'price') products.sort((a, b) => a.price - b.price);
+    else products.sort((a, b) => b.orders - a.orders);
+    return products;
   } catch (error) {
     if (sourceMode() === 'remote-only') throw remoteFailure(error);
     return searchLocalCatalog(query, sort);
@@ -145,10 +126,10 @@ export async function getAliExpressProduct(productIdOrUrl) {
     if (!localProduct) throw new Error('Product is not present in the local catalog and the remote AliExpress source is not configured.');
     return localProduct;
   }
-
-  const params = new URLSearchParams({ product: productIdOrUrl, country_code: countryCode() });
+  const productId = String(productIdOrUrl).match(/(?:item\/|\/)(\d{8,})(?:\.html)?/)?.[1] ?? String(productIdOrUrl);
+  const params = new URLSearchParams({ product_id: productId });
   try {
-    const data = await getJson(`${apiBase()}/aliexpress/v2/product?${params}`);
+    const data = await getJson(`${apiBase()}/aliexpress/product?${params}`);
     return normalizeProduct(data?.product ?? data);
   } catch (error) {
     if (sourceMode() === 'remote-only') throw remoteFailure(error);
