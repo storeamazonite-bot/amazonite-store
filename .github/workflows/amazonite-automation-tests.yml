@@ -34,3 +34,5 @@ jobs:
         run: node automation/affiliate-readiness-test.mjs
       - name: Run AliExpress adapter tests
         run: node automation/aliexpress-mcp-test.mjs
+      - name: Run AliExpress API contract test
+        run: node automation/aliexpress-api-contract-test.mjs
