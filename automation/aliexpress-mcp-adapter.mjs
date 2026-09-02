@@ -114,6 +114,10 @@ async function getLocalProduct(productIdOrUrl) {
   return product ? normalizeProduct({ ...product, source: 'local-catalog' }) : null;
 }
 
+function remoteFailure(error) {
+  return new Error(`AliExpress remote source failed: ${error.message}`);
+}
+
 export async function searchAliExpress(query, { sort = 'orders', page = 1 } = {}) {
   if (!hasRemoteCredentials()) {
     if (sourceMode() === 'remote-only') throw new Error('AliExpress remote source is not configured: ALIEXPRESS_SCRAPER_API_KEY is missing.');
@@ -122,11 +126,16 @@ export async function searchAliExpress(query, { sort = 'orders', page = 1 } = {}
 
   const sortMap = { orders: 'most_orders', price: 'price_low_to_high', rating: 'best_match' };
   const params = new URLSearchParams({ query, page: String(page), country_code: countryCode(), sort_by: sortMap[sort] || 'best_match' });
-  const data = await getJson(`${apiBase()}/aliexpress/v2/search?${params}`);
-  let products = Array.isArray(data?.results) ? data.results : [];
 
-  if (sort === 'rating') products = [...products].sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0));
-  return products.map(normalizeProduct);
+  try {
+    const data = await getJson(`${apiBase()}/aliexpress/v2/search?${params}`);
+    let products = Array.isArray(data?.results) ? data.results : [];
+    if (sort === 'rating') products = [...products].sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0));
+    return products.map(normalizeProduct);
+  } catch (error) {
+    if (sourceMode() === 'remote-only') throw remoteFailure(error);
+    return searchLocalCatalog(query, sort);
+  }
 }
 
 export async function getAliExpressProduct(productIdOrUrl) {
@@ -138,8 +147,15 @@ export async function getAliExpressProduct(productIdOrUrl) {
   }
 
   const params = new URLSearchParams({ product: productIdOrUrl, country_code: countryCode() });
-  const data = await getJson(`${apiBase()}/aliexpress/v2/product?${params}`);
-  return normalizeProduct(data?.product ?? data);
+  try {
+    const data = await getJson(`${apiBase()}/aliexpress/v2/product?${params}`);
+    return normalizeProduct(data?.product ?? data);
+  } catch (error) {
+    if (sourceMode() === 'remote-only') throw remoteFailure(error);
+    const localProduct = await getLocalProduct(productIdOrUrl);
+    if (localProduct) return localProduct;
+    throw remoteFailure(error);
+  }
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
