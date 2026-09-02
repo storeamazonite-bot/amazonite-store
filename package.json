@@ -1,0 +1,14 @@
+{
+  "name": "amazonite-store",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/node": "latest",
+    "@modelcontextprotocol/server": "latest",
+    "zod": "^4.1.0"
+  }
+}
