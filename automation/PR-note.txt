@@ -1,1 +1,0 @@
-Endpoint contract work is in the branch; this file will be removed before merge.
