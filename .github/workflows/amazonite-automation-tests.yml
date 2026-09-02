@@ -30,5 +30,7 @@ jobs:
           node-version: 20
       - name: Run Product Intelligence tests
         run: node automation/product-intelligence-test.mjs
+      - name: Run Affiliate Readiness tests
+        run: node automation/affiliate-readiness-test.mjs
       - name: Run AliExpress adapter tests
         run: node automation/aliexpress-mcp-test.mjs
