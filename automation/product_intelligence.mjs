@@ -1,3 +1,5 @@
+import { evaluateAffiliateReadiness } from './affiliate-readiness.mjs';
+
 const DEFAULT_WEIGHTS = Object.freeze({
   trendMomentum: 20,
   googleDemand: 20,
@@ -54,18 +56,29 @@ export function eligibility(product = {}, limits = {}) {
 }
 
 export function evaluateProduct(product = {}, signals = {}, limits = {}) {
+  const affiliateReadiness = evaluateAffiliateReadiness({
+    ...product,
+    orders_count: product.orders ?? product.orderCount ?? product.sold,
+    rating: product.rating ?? product.averageRating,
+    commission_percent: product.commissionPercent ?? product.commissionRate ?? product.commission_rate ?? product.commission,
+    affiliate_url: product.affiliateUrl,
+    source_url: product.sourceUrl ?? product.source_url ?? product.productUrl ?? product.product_url ?? product.link,
+  });
+
   const checks = eligibility(product, limits);
   const score = calculateWinningScore(signals);
   const decision = decisionForScore(score);
-  const hardPass = checks.orders && checks.rating && checks.commission && checks.affiliateUrl && checks.available;
+  const hardPass = affiliateReadiness.eligible && checks.orders && checks.rating && checks.commission && checks.affiliateUrl && checks.available;
 
   return {
     score,
     decision: hardPass ? decision : 'reject',
     hardPass,
+    affiliateReadiness,
     checks,
     signals: Object.fromEntries(Object.entries(signals).map(([key, value]) => [key, clamp(value)])),
     reasons: [
+      ...affiliateReadiness.eligible ? [] : [affiliateReadiness.reason],
       !checks.orders && 'Orders do not exceed the minimum threshold.',
       !checks.rating && 'Rating does not exceed the minimum threshold.',
       !checks.commission && 'Commission does not exceed the minimum threshold.',
