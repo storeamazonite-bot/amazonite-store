@@ -6,6 +6,7 @@ const base = {
   rating: 4.51,
   commissionPercent: 8.01,
   affiliateUrl: 'https://example.com/affiliate',
+  sourceUrl: 'https://www.aliexpress.com/item/example',
   available: true,
 };
 
