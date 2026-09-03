@@ -105,9 +105,14 @@ export async function searchAliExpress(query, { sort = 'orders', page = 1 } = {}
     if (sourceMode() === 'remote-only') throw new Error('AliExpress remote source is not configured: ALIEXPRESS_SCRAPER_API_KEY is missing.');
     return searchLocalCatalog(query, sort);
   }
-  const params = new URLSearchParams({ query, page: String(page) });
+  const params = new URLSearchParams({
+    query,
+    page: String(page),
+    country_code: countryCode(),
+    sort_by: sort === 'rating' ? 'best_match' : sort === 'price' ? 'price_low_to_high' : 'most_orders',
+  });
   try {
-    const data = await getJson(`${apiBase()}/aliexpress/search?${params}`);
+    const data = await getJson(`${apiBase()}/aliexpress/v2/search?${params}`);
     let products = Array.isArray(data?.results) ? data.results.map(normalizeProduct) : [];
     if (sort === 'rating') products.sort((a, b) => b.rating - a.rating);
     else if (sort === 'price') products.sort((a, b) => a.price - b.price);
@@ -127,9 +132,9 @@ export async function getAliExpressProduct(productIdOrUrl) {
     return localProduct;
   }
   const productId = String(productIdOrUrl).match(/(?:item\/|\/)(\d{8,})(?:\.html)?/)?.[1] ?? String(productIdOrUrl);
-  const params = new URLSearchParams({ product_id: productId });
+  const params = new URLSearchParams({ product: productId, country_code: countryCode() });
   try {
-    const data = await getJson(`${apiBase()}/aliexpress/product?${params}`);
+    const data = await getJson(`${apiBase()}/aliexpress/v2/product?${params}`);
     return normalizeProduct(data?.product ?? data);
   } catch (error) {
     if (sourceMode() === 'remote-only') throw remoteFailure(error);
