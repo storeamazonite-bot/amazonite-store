@@ -4,12 +4,14 @@ on:
   push:
     paths:
       - 'automation/**'
+      - 'api/**'
       - 'data/products.json'
       - '.github/workflows/amazonite-automation-tests.yml'
       - 'package.json'
   pull_request:
     paths:
       - 'automation/**'
+      - 'api/**'
       - 'data/products.json'
       - '.github/workflows/amazonite-automation-tests.yml'
       - 'package.json'
@@ -36,3 +38,5 @@ jobs:
         run: node automation/aliexpress-mcp-test.mjs
       - name: Run AliExpress API contract test
         run: node automation/aliexpress-api-contract-test.mjs
+      - name: Run Vercel proxy security test
+        run: node automation/aliexpress-proxy-test.mjs
