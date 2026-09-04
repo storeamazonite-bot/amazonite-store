@@ -1,1 +1,74 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Analytics · Amazonite</title><meta name="robots" content="noindex,nofollow"><link rel="stylesheet" href="../assets/admin.css"></head><body><aside class="sidebar"><a class="brand" href="../index.html">◆ Amazonite</a><p class="label">COMMAND CENTER</p><nav><a href="index.html">Overview</a><a href="products.html">Products</a><a href="add-product.html">+ Add Affiliate</a><a href="links.html">Affiliate Links</a><a href="marketing.html">Marketing</a><a class="active" href="analytics.html">Analytics</a><a href="automation.html">Automation</a><a href="settings.html">Settings</a></nav></aside><main class="main"><header class="top"><div><p class="eyebrow">MEASUREMENT</p><h1>Analytics</h1><p class="sub">The measurement layer for visitors, product views and outbound affiliate clicks.</p></div></header><section class="stats"><article><span>Visitors</span><strong>—</strong><small>Awaiting connector</small></article><article><span>Outbound clicks</span><strong>—</strong><small>Event tracking</small></article><article><span>Top market</span><strong>—</strong><small>By traffic</small></article><article><span>Top product</span><strong>—</strong><small>By click-through</small></article></section><section class="panel"><p class="eyebrow">DATA RULE</p><h2>Measure before scaling</h2><p class="sub">We will connect analytics and event tracking before any paid acquisition test.</p></section></main></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Analytics · Amazonite</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="stylesheet" href="../assets/admin.css">
+<style>
+.metric-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:22px 0}.metric-grid article{background:#fff;border:1px solid rgba(15,23,42,.08);border-radius:16px;padding:18px}.metric-grid span{display:block;font-size:13px;color:#64748b}.metric-grid strong{display:block;font-size:30px;margin:7px 0}.metric-grid small{color:#64748b}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.panel{background:#fff;border:1px solid rgba(15,23,42,.08);border-radius:16px;padding:20px;margin-bottom:18px}.table{width:100%;border-collapse:collapse}.table th,.table td{text-align:left;padding:11px 8px;border-bottom:1px solid #e2e8f0;font-size:13px}.table th{color:#64748b;font-weight:600}.pill{display:inline-block;padding:4px 8px;border-radius:999px;background:#f1f5f9;font-size:12px}.good{font-weight:700}.empty{color:#64748b;padding:20px 0}.toolbar{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-bottom:12px}.btn{border:1px solid #cbd5e1;background:#fff;border-radius:10px;padding:8px 12px;cursor:pointer}.insight{padding:12px;border-radius:12px;background:#f8fafc;margin-top:12px}.bar{height:8px;background:#e2e8f0;border-radius:999px;overflow:hidden}.bar i{display:block;height:100%;background:#0f172a;border-radius:999px}@media(max-width:900px){.metric-grid{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}}@media(max-width:520px){.metric-grid{grid-template-columns:1fr}.table{font-size:12px}}
+</style>
+</head>
+<body>
+<aside class="sidebar"><a class="brand" href="../index.html">◆ Amazonite</a><p class="label">COMMAND CENTER</p><nav><a href="index.html">Overview</a><a href="products.html">Products</a><a href="add-product.html">+ Add Affiliate</a><a href="links.html">Affiliate Links</a><a href="marketing.html">Marketing</a><a class="active" href="analytics.html">Analytics</a><a href="automation.html">Automation</a><a href="settings.html">Settings</a></nav></aside>
+<main class="main">
+<header class="top"><div><p class="eyebrow">MEASUREMENT</p><h1>Analytics Dashboard</h1><p class="sub">Live V1 dashboard powered by AmazoniteTracker events stored in this browser.</p></div></header>
+<section class="metric-grid">
+<article><span>Product views</span><strong id="views">0</strong><small>Total tracked views</small></article>
+<article><span>Affiliate clicks</span><strong id="clicks">0</strong><small>Outbound tracked clicks</small></article>
+<article><span>CTR</span><strong id="ctr">0%</strong><small>Clicks ÷ views</small></article>
+<article><span>Events</span><strong id="events">0</strong><small>All tracked events</small></article>
+</section>
+<section class="grid">
+<div class="panel"><div class="toolbar"><div><p class="eyebrow">PRODUCT PERFORMANCE</p><h2>Top Products</h2></div><button class="btn" id="refresh">Refresh</button></div><div id="products"></div></div>
+<div class="panel"><p class="eyebrow">DECISION LAYER</p><h2>What the numbers say</h2><div id="insights" class="empty">No events yet. Start generating product views and affiliate clicks.</div></div>
+</section>
+<section class="panel"><p class="eyebrow">EVENT STREAM</p><h2>Recent Events</h2><div id="recent"></div></section>
+<section class="panel"><p class="eyebrow">V1 DATA RULE</p><p class="sub">This dashboard reads <code>amazonite_events_v1</code> from localStorage. It is ideal for validation on one browser/device; it is not yet a shared production analytics database.</p></section>
+</main>
+<script>
+(function(){
+  const KEY='amazonite_events_v1';
+  const moneyless = n => Number(n||0).toLocaleString();
+  function load(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return []}}
+  function render(){
+    const events=load();
+    const views=events.filter(e=>e.type==='product_view');
+    const clicks=events.filter(e=>e.type==='affiliate_click');
+    const ctr=views.length ? (clicks.length/views.length*100) : 0;
+    document.getElementById('views').textContent=moneyless(views.length);
+    document.getElementById('clicks').textContent=moneyless(clicks.length);
+    document.getElementById('ctr').textContent=ctr.toFixed(1)+'%';
+    document.getElementById('events').textContent=moneyless(events.length);
+
+    const map={};
+    events.forEach(e=>{const id=e.product_id||'unknown';if(!map[id])map[id]={id,views:0,clicks:0};if(e.type==='product_view')map[id].views++;if(e.type==='affiliate_click')map[id].clicks++});
+    const rows=Object.values(map).sort((a,b)=>b.clicks-a.clicks||b.views-a.views);
+    const products=document.getElementById('products');
+    if(!rows.length){products.innerHTML='<div class="empty">No product events yet.</div>'}else{
+      const max=Math.max(...rows.map(r=>r.views),1);
+      products.innerHTML='<table class="table"><thead><tr><th>Product</th><th>Views</th><th>Clicks</th><th>CTR</th></tr></thead><tbody>'+rows.slice(0,10).map(r=>{const rate=r.views?r.clicks/r.views*100:0;return '<tr><td><strong>'+escapeHtml(r.id)+'</strong><div class="bar"><i style="width:'+Math.min(100,r.views/max*100)+'%"></i></div></td><td>'+moneyless(r.views)+'</td><td class="good">'+moneyless(r.clicks)+'</td><td>'+rate.toFixed(1)+'%</td></tr>'}).join('')+'</tbody></table>';
+    }
+
+    const insights=document.getElementById('insights');
+    if(!events.length){insights.innerHTML='No events yet. Start generating product views and affiliate clicks.'}
+    else{
+      const top=rows[0];
+      const clickRate=views.length?clicks.length/views.length*100:0;
+      let verdict=clickRate>=5?'Strong early intent':'Collect more data before scaling';
+      if(clickRate===0) verdict='Traffic is being measured, but no affiliate intent is recorded yet.';
+      insights.innerHTML='<div><strong>'+escapeHtml(verdict)+'</strong></div><div class="insight">Top product: <strong>'+escapeHtml(top?top.id:'—')+'</strong> · '+(top?top.clicks:0)+' clicks from '+(top?top.views:0)+' views.</div><div class="insight">Rule: use clicks and CTR as early conversion signals; do not declare a winner from tiny samples.</div>';
+    }
+
+    const recent=document.getElementById('recent');
+    if(!events.length){recent.innerHTML='<div class="empty">No events recorded.</div>'}else{
+      recent.innerHTML='<table class="table"><thead><tr><th>Time</th><th>Event</th><th>Product</th><th>Page</th></tr></thead><tbody>'+events.slice().sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp)).slice(0,20).map(e=>'<tr><td>'+formatTime(e.timestamp)+'</td><td><span class="pill">'+escapeHtml(e.type||'event')+'</span></td><td>'+escapeHtml(e.product_id||'—')+'</td><td>'+escapeHtml(e.page||'—')+'</td></tr>').join('')+'</tbody></table>';
+    }
+  }
+  function escapeHtml(v){return String(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+  function formatTime(v){const d=new Date(v);return isNaN(d)?'—':d.toLocaleString()}
+  document.getElementById('refresh').addEventListener('click',render); render();
+})();
+</script>
+</body></html>
