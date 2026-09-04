@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "1.0.0",
+  "storeName": "Amazonite Store",
+  "markets": "USA · UK · Canada",
+  "visitorCta": "Check price on AliExpress ↗",
+  "catalogMode": "Verified offers only",
+  "sorting": "Best fit first",
+  "description": "Smart finds for better buying decisions.",
+  "launchLocked": true,
+  "referralButtonsRequireVerifiedUrl": true
+}
