@@ -34,7 +34,7 @@ function render(filter='all'){
   if(window.AmazoniteTracker){visible.forEach(p=>window.AmazoniteTracker.track('product_view',{product_id:p.id,page:location.pathname}));}
 }
 document.querySelectorAll('.filter').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.filter').forEach(b=>b.classList.remove('active'));btn.classList.add('active');render(btn.dataset.filter)}));
-render();
+document.addEventListener('DOMContentLoaded',()=>render());
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js"></script>
 </body></html>
