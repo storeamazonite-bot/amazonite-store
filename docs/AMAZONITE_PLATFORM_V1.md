@@ -69,15 +69,14 @@ Performance decisions:
 
 A product with a non-READY affiliate destination is blocked from performance promotion even if its product-quality score is high.
 
-## Admin modules
-1. Overview / Command Center
-2. Products
-3. Add Affiliate Product (manual + automatic import)
-4. Affiliate Links / Offers
-5. Marketing
-6. Analytics
-7. Automation
-8. Settings
+## Tracking architecture
+V1 uses one canonical first-party tracker: `assets/affiliate-tracker.js`, exposing `window.AmazoniteTracker` and storing events under `amazonite_events_v1`.
+
+Legacy duplicate trackers were removed after repository-wide reference checks showed no active references:
+- `assets/js/affiliate-tracking.js`
+- `assets/js/conversion.js`
+
+This prevents multiple event stores and duplicate `product_view` / `affiliate_click` signals from competing with the canonical analytics pipeline.
 
 ## Tracking events
 Use first-party event names that do not alter the affiliate destination:
@@ -92,12 +91,23 @@ Recommended event payload:
 
 V1 currently stores events in browser `localStorage`. This is suitable for controlled MVP validation, but it is not shared production analytics across visitors/devices.
 
+## Admin modules
+1. Overview / Command Center
+2. Products
+3. Add Affiliate Product (manual + automatic import)
+4. Affiliate Links / Offers
+5. Marketing
+6. Analytics
+7. Automation
+8. Settings
+
 ## Security boundary
 The public storefront must never expose admin controls. Production admin requires authentication and server-side authorization before real data, affiliate configuration, or integrations are connected.
 
 ## Current implementation status
 Implemented in V1:
 - first-party product-view/click instrumentation
+- one canonical tracking system
 - AliExpress structural affiliate-link validator
 - affiliate-link status and validation metadata in product data
 - Admin link revalidation
