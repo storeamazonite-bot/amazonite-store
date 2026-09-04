@@ -30,45 +30,35 @@
 <script>
 (function(){
   const KEY='amazonite_events_v1';
-  const moneyless = n => Number(n||0).toLocaleString();
-  function load(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return []}}
-  function render(){
-    const events=load();
-    const views=events.filter(e=>e.type==='product_view');
-    const clicks=events.filter(e=>e.type==='affiliate_click');
-    const ctr=views.length ? (clicks.length/views.length*100) : 0;
-    document.getElementById('views').textContent=moneyless(views.length);
-    document.getElementById('clicks').textContent=moneyless(clicks.length);
-    document.getElementById('ctr').textContent=ctr.toFixed(1)+'%';
-    document.getElementById('events').textContent=moneyless(events.length);
-
-    const map={};
-    events.forEach(e=>{const id=e.product_id||'unknown';if(!map[id])map[id]={id,views:0,clicks:0};if(e.type==='product_view')map[id].views++;if(e.type==='affiliate_click')map[id].clicks++});
-    const rows=Object.values(map).sort((a,b)=>b.clicks-a.clicks||b.views-a.views);
-    const products=document.getElementById('products');
-    if(!rows.length){products.innerHTML='<div class="empty">No product events yet.</div>'}else{
-      const max=Math.max(...rows.map(r=>r.views),1);
-      products.innerHTML='<table class="table"><thead><tr><th>Product</th><th>Views</th><th>Clicks</th><th>CTR</th></tr></thead><tbody>'+rows.slice(0,10).map(r=>{const rate=r.views?r.clicks/r.views*100:0;return '<tr><td><strong>'+escapeHtml(r.id)+'</strong><div class="bar"><i style="width:'+Math.min(100,r.views/max*100)+'%"></i></div></td><td>'+moneyless(r.views)+'</td><td class="good">'+moneyless(r.clicks)+'</td><td>'+rate.toFixed(1)+'%</td></tr>'}).join('')+'</tbody></table>';
-    }
-
-    const insights=document.getElementById('insights');
-    if(!events.length){insights.innerHTML='No events yet. Start generating product views and affiliate clicks.'}
-    else{
-      const top=rows[0];
-      const clickRate=views.length?clicks.length/views.length*100:0;
-      let verdict=clickRate>=5?'Strong early intent':'Collect more data before scaling';
-      if(clickRate===0) verdict='Traffic is being measured, but no affiliate intent is recorded yet.';
-      insights.innerHTML='<div><strong>'+escapeHtml(verdict)+'</strong></div><div class="insight">Top product: <strong>'+escapeHtml(top?top.id:'—')+'</strong> · '+(top?top.clicks:0)+' clicks from '+(top?top.views:0)+' views.</div><div class="insight">Rule: use clicks and CTR as early conversion signals; do not declare a winner from tiny samples.</div>';
-    }
-
-    const recent=document.getElementById('recent');
-    if(!events.length){recent.innerHTML='<div class="empty">No events recorded.</div>'}else{
-      recent.innerHTML='<table class="table"><thead><tr><th>Time</th><th>Event</th><th>Product</th><th>Page</th></tr></thead><tbody>'+events.slice().sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp)).slice(0,20).map(e=>'<tr><td>'+formatTime(e.timestamp)+'</td><td><span class="pill">'+escapeHtml(e.type||'event')+'</span></td><td>'+escapeHtml(e.product_id||'—')+'</td><td>'+escapeHtml(e.page||'—')+'</td></tr>').join('')+'</tbody></table>';
-    }
+  const MIN_VIEWS=30;
+  const MIN_CLICKS=3;
+  const WINNER_CTR=8;
+  const TEST_CTR=5;
+  const DROP_CTR=1;
+  const moneyless=n=>Number(n||0).toLocaleString();
+  function load(){try{const v=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(v)?v:[]}catch(e){return []}}
+  function decision(r){
+    if(r.views<MIN_VIEWS)return {label:'COLLECT DATA',note:'Needs at least '+MIN_VIEWS+' views.'};
+    if(r.clicks<MIN_CLICKS)return {label:'COLLECT DATA',note:'Needs at least '+MIN_CLICKS+' affiliate clicks.'};
+    const rate=r.views?r.clicks/r.views*100:0;
+    if(rate>=WINNER_CTR)return {label:'WINNER',note:'Strong intent with enough sample.'};
+    if(rate>=TEST_CTR)return {label:'PROMOTE',note:'Strong test signal; validate with more volume.'};
+    if(rate<DROP_CTR)return {label:'DROP',note:'Weak intent after minimum sample.'};
+    return {label:'TEST',note:'Keep testing before scaling.'};
   }
-  function escapeHtml(v){return String(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
-  function formatTime(v){const d=new Date(v);return isNaN(d)?'—':d.toLocaleString()}
-  document.getElementById('refresh').addEventListener('click',render); render();
+  function render(){
+    const events=load(),views=events.filter(e=>e.type==='product_view'),clicks=events.filter(e=>e.type==='affiliate_click');
+    const ctr=views.length?clicks.length/views.length*100:0;
+    document.getElementById('views').textContent=moneyless(views.length);document.getElementById('clicks').textContent=moneyless(clicks.length);document.getElementById('ctr').textContent=ctr.toFixed(1)+'%';document.getElementById('events').textContent=moneyless(events.length);
+    const map={};events.forEach(e=>{const id=e.product_id||'unknown';if(!map[id])map[id]={id,views:0,clicks:0};if(e.type==='product_view')map[id].views++;if(e.type==='affiliate_click')map[id].clicks++});
+    const rows=Object.values(map).sort((a,b)=>b.clicks-a.clicks||b.views-a.views),products=document.getElementById('products');
+    if(!rows.length)products.innerHTML='<div class="empty">No product events yet.</div>';else{const max=Math.max(...rows.map(r=>r.views),1);products.innerHTML='<table class="table"><thead><tr><th>Product</th><th>Views</th><th>Clicks</th><th>CTR</th><th>Decision</th></tr></thead><tbody>'+rows.slice(0,10).map(r=>{const rate=r.views?r.clicks/r.views*100:0,d=decision(r);return '<tr><td><strong>'+escapeHtml(r.id)+'</strong><div class="bar"><i style="width:'+Math.min(100,r.views/max*100)+'%"></i></div></td><td>'+moneyless(r.views)+'</td><td class="good">'+moneyless(r.clicks)+'</td><td>'+rate.toFixed(1)+'%</td><td><span class="pill">'+d.label+'</span></td></tr>'}).join('')+'</tbody></table>'}
+    const insights=document.getElementById('insights');
+    if(!events.length)insights.innerHTML='No events yet. Start generating product views and affiliate clicks.';else{const ranked=rows.slice().sort((a,b)=>(b.clicks/b.views||0)-(a.clicks/a.views||0));const top=rows[0],best=ranked[0],d=best?decision(best):null;insights.innerHTML='<div><strong>'+escapeHtml(d?d.label:'COLLECT DATA')+'</strong></div><div class="insight">Best observed product: <strong>'+escapeHtml(best?best.id:'—')+'</strong> · '+(best?best.clicks:0)+' clicks / '+(best?best.views:0)+' views · '+(best&&best.views?(best.clicks/best.views*100).toFixed(1):'0.0')+'% CTR.</div><div class="insight">Top volume: <strong>'+escapeHtml(top?top.id:'—')+'</strong>. '+escapeHtml(d?d.note:'Collect more data.')+'</div><div class="insight">Winner rule: minimum '+MIN_VIEWS+' views + '+MIN_CLICKS+' clicks, then CTR ≥ '+WINNER_CTR+'% = WINNER; '+TEST_CTR+'–'+(WINNER_CTR-0.1).toFixed(1)+'% = PROMOTE; below '+DROP_CTR+'% = DROP; otherwise TEST.</div>}
+    const recent=document.getElementById('recent');if(!events.length)recent.innerHTML='<div class="empty">No events recorded.</div>';else recent.innerHTML='<table class="table"><thead><tr><th>Time</th><th>Event</th><th>Product</th><th>Page</th></tr></thead><tbody>'+events.slice().sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp)).slice(0,20).map(e=>'<tr><td>'+formatTime(e.timestamp)+'</td><td><span class="pill">'+escapeHtml(e.type||'event')+'</span></td><td>'+escapeHtml(e.product_id||'—')+'</td><td>'+escapeHtml(e.page||'—')+'</td></tr>').join('')+'</tbody></table>';
+  }
+  function escapeHtml(v){return String(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}function formatTime(v){const d=new Date(v);return isNaN(d)?'—':d.toLocaleString()}
+  document.getElementById('refresh').addEventListener('click',render);render();
 })();
 </script>
 </body></html>
