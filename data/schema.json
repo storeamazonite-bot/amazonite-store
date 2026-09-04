@@ -1,0 +1,45 @@
+{
+  "product": {
+    "id": "string",
+    "name": "string",
+    "slug": "string",
+    "category": "string",
+    "description": "string",
+    "image_url": "string",
+    "price": "number|null",
+    "currency": "string",
+    "rating": "number|null",
+    "orders": "number|null",
+    "commission_rate": "number|null",
+    "score": "number|null",
+    "status": "draft|review|active|testing|winner|dropped|archived",
+    "market": ["string"],
+    "created_at": "ISO-8601",
+    "updated_at": "ISO-8601"
+  },
+  "offer": {
+    "id": "string",
+    "product_id": "string",
+    "provider": "string",
+    "network": "string|null",
+    "original_url": "string",
+    "affiliate_url": "string",
+    "market": "string",
+    "currency": "string",
+    "commission_rate": "number|null",
+    "status": "draft|active|invalid|paused",
+    "last_validated_at": "ISO-8601|null"
+  },
+  "event": {
+    "id": "string",
+    "type": "product_view|affiliate_click|search|category_view|campaign_visit",
+    "product_id": "string|null",
+    "offer_id": "string|null",
+    "source": "string|null",
+    "medium": "string|null",
+    "campaign": "string|null",
+    "market": "string|null",
+    "device": "string|null",
+    "timestamp": "ISO-8601"
+  }
+}
