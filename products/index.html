@@ -13,6 +13,7 @@
 .catalog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.product-card{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column}.product-visual{height:190px;background:linear-gradient(145deg,#122436,#3b566c);display:grid;place-items:center;color:#fff}.product-visual i{font-size:4rem;color:#7dd8bb}.product-body{padding:22px;display:flex;flex-direction:column;flex:1}.product-body h2{font-size:1.35rem;line-height:1.15;margin:8px 0}.product-body p{color:var(--muted);font-size:.9rem}.status{font-size:.7rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#9a6700;background:#fff4d6;border-radius:999px;padding:5px 9px;align-self:flex-start}.product-card .btn{margin-top:auto}.locked{opacity:.8}
 @media(max-width:800px){.catalog-grid{grid-template-columns:1fr}.catalog-hero{padding:48px 0 25px}}
 </style>
+<script src="../assets/affiliate-tracker.js" defer></script>
 </head>
 <body>
 <header class="site-header"><div class="container nav"><a class="brand" href="../index.html"><span>◆</span> Amazonite</a><nav aria-label="Primary navigation"><a href="../index.html#featured">Featured</a><a href="./">Products</a><a href="../index.html#categories">Categories</a><a href="../customer-care.html">Buying Help</a></nav><a class="nav-cta" href="../reviews/haylou-s30.html">Top review <span>→</span></a></div></header>
@@ -27,7 +28,11 @@
 <script>
 const PRODUCTS=[{id:'AE-001',name:'HAYLOU S30 ANC',category:'Audio & Tech',description:'Budget-focused ANC headphones with modern connectivity and long everyday listening.',icon:'fa-headphones',status:'needs_review',review:'../reviews/haylou-s30.html'}];
 const catalog=document.getElementById('catalog');
-function render(filter='all'){catalog.innerHTML=PRODUCTS.filter(p=>filter==='all'||p.category===filter).map(p=>`<article class="product-card"><div class="product-visual"><i class="fa-solid ${p.icon}"></i></div><div class="product-body"><span class="status">${p.status.replace('_',' ')}</span><h2>${p.name}</h2><p>${p.description}</p><a class="btn primary" href="${p.review}">Read review <span>→</span></a></div></article>`).join('')}
+function render(filter='all'){
+  const visible=PRODUCTS.filter(p=>filter==='all'||p.category===filter);
+  catalog.innerHTML=visible.map(p=>`<article class="product-card" data-product-id="${p.id}"><div class="product-visual"><i class="fa-solid ${p.icon}"></i></div><div class="product-body"><span class="status">${p.status.replace('_',' ')}</span><h2>${p.name}</h2><p>${p.description}</p><a class="btn primary" href="${p.review}" data-review-product="${p.id}">Read review <span>→</span></a></div></article>`).join('');
+  if(window.AmazoniteTracker){visible.forEach(p=>window.AmazoniteTracker.track('product_view',{product_id:p.id,page:location.pathname}));}
+}
 document.querySelectorAll('.filter').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.filter').forEach(b=>b.classList.remove('active'));btn.classList.add('active');render(btn.dataset.filter)}));
 render();
 </script>
