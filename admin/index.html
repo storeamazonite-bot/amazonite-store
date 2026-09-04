@@ -8,10 +8,42 @@
 </head>
 <body>
 <aside class="sidebar"><a class="brand" href="../index.html">◆ Amazonite</a><p class="label">COMMAND CENTER</p><nav><a class="active" href="index.html">Overview</a><a href="products.html">Products</a><a href="add-product.html">+ Add Affiliate</a><a href="links.html">Affiliate Links</a><a href="marketing.html">Marketing</a><a href="analytics.html">Analytics</a><a href="automation.html">Automation</a><a href="settings.html">Settings</a></nav><div class="side-note">NOVA Ops<br><span>Affiliate Commerce V1</span></div></aside>
-<main class="main"><header class="top"><div><p class="eyebrow">NOVA · COMMAND CENTER</p><h1>Good morning. Here is the store pulse.</h1></div><a class="button primary" href="add-product.html">+ Add affiliate product</a></header>
-<section class="stats"><article><span>Visitors</span><strong>—</strong><small>Connect analytics</small></article><article><span>Product views</span><strong>—</strong><small>Awaiting live data</small></article><article><span>Affiliate clicks</span><strong>—</strong><small>Tracking ready</small></article><article><span>CTR</span><strong>—</strong><small>Calculated from clicks</small></article></section>
-<section class="grid"><article class="panel"><div class="panel-head"><div><p class="eyebrow">PRODUCT INTELLIGENCE</p><h2>Catalog health</h2></div><a href="products.html">Manage →</a></div><div class="rows"><div><b>HAYLOU S30 ANC</b><span class="tag green">Featured</span><em>Review ready</em></div><div><b>New affiliate imports</b><span class="tag amber">0</span><em>Manual or automatic</em></div><div><b>Link health</b><span class="tag blue">Ready</span><em>Validation module</em></div></div></article>
-<article class="panel"><div class="panel-head"><div><p class="eyebrow">NOVA DECISION LAYER</p><h2>Next actions</h2></div></div><ul class="actions"><li><span>01</span><div><b>Finish verified product catalog</b><small>Keep the first launch focused on the strongest products.</small></div></li><li><span>02</span><div><b>Add affiliate links</b><small>Manual now; automatic importing can be connected next.</small></div></li><li><span>03</span><div><b>Connect measurement</b><small>Track outbound clicks before paid traffic.</small></div></li></ul></article></section>
-<section class="panel launch"><div><p class="eyebrow">LAUNCH GATE</p><h2>Organic first. Paid later.</h2><p>Do not spend on ads until products, tracking and creatives have enough evidence to justify a test.</p></div><div class="gate"><span>01 Catalog</span><span>02 Tracking</span><span>03 Content</span><span>04 Test Ads</span></div></section>
+<main class="main"><header class="top"><div><p class="eyebrow">NOVA · COMMAND CENTER</p><h1>Good morning. Here is the store pulse.</h1><p class="sub">Catalog quality, affiliate readiness and observed performance in one place.</p></div><a class="button primary" href="add-product.html">+ Add affiliate product</a></header>
+<section class="stats"><article><span>Products</span><strong id="productsCount">0</strong><small>Local V1 catalog</small></article><article><span>Links ready</span><strong id="linksReady">0</strong><small>Structural validation passed</small></article><article><span>Affiliate clicks</span><strong id="clicks">0</strong><small>Tracked in this browser</small></article><article><span>CTR</span><strong id="ctr">0%</strong><small>Clicks ÷ product views</small></article></section>
+<section class="grid"><article class="panel"><div class="panel-head"><div><p class="eyebrow">PRODUCT INTELLIGENCE</p><h2>Catalog health</h2></div><a href="products.html">Manage →</a></div><div class="rows"><div><b id="qualityState">No products yet</b><span class="tag green" id="qualityTag">—</span><em>Quality score state</em></div><div><b id="linkState">Affiliate links</b><span class="tag blue" id="linkTag">0</span><em>Ready links</em></div><div><b id="winnerState">Performance winners</b><span class="tag amber" id="winnerTag">0</span><em>Requires minimum sample</em></div></div></article>
+<article class="panel"><div class="panel-head"><div><p class="eyebrow">NOVA DECISION LAYER</p><h2>Next actions</h2></div></div><ul class="actions"><li><span>01</span><div><b>Verify the strongest catalog</b><small>Use Product Intelligence before activating products.</small></div></li><li><span>02</span><div><b>Publish only READY affiliate links</b><small>Structural validation is required; tracking must still be confirmed through the affiliate workflow.</small></div></li><li><span>03</span><div><b>Collect organic evidence</b><small>Do not scale paid traffic until views and clicks provide a meaningful signal.</small></div></li></ul></article></section>
+<section class="panel launch"><div><p class="eyebrow">LAUNCH GATE</p><h2 id="launchTitle">Build evidence before scaling.</h2><p id="launchText">Catalog, affiliate destinations, measurement and content should be ready before any paid test.</p></div><div class="gate"><span id="gateCatalog">01 Catalog · CHECK</span><span id="gateLinks">02 Links · CHECK</span><span id="gateTracking">03 Tracking · CHECK</span><span>04 Test Ads · LATER</span></div></section>
 <footer>Amazonite Store · Admin interface · No affiliate links are cloaked or modified here.</footer></main>
+<script>
+(function(){
+  const PRODUCT_KEY='amazonite_products_v1',EVENT_KEY='amazonite_events_v1';
+  const MIN_VIEWS=30,MIN_CLICKS=3,WINNER_CTR=8;
+  function read(key,fallback){try{const v=JSON.parse(localStorage.getItem(key)||'null');return v==null?fallback:v}catch(e){return fallback}}
+  function render(){
+    const products=Array.isArray(read(PRODUCT_KEY,[]))?read(PRODUCT_KEY,[]):[];
+    const events=Array.isArray(read(EVENT_KEY,[]))?read(EVENT_KEY,[]):[];
+    const views=events.filter(e=>e.type==='product_view'),clicks=events.filter(e=>e.type==='affiliate_click');
+    const ready=products.filter(p=>p.link_status==='READY'||(window.AmazoniteLinkValidator&&p.affiliate_url&&window.AmazoniteLinkValidator.validate(p.affiliate_url).status==='READY')).length;
+    const winners=products.filter(p=>{const id=p.id||p.slug;const v=views.filter(e=>e.product_id===id).length;const c=clicks.filter(e=>e.product_id===id).length;return v>=MIN_VIEWS&&c>=MIN_CLICKS&&(c/v*100)>=WINNER_CTR}).length;
+    document.getElementById('productsCount').textContent=products.length;
+    document.getElementById('linksReady').textContent=ready;
+    document.getElementById('clicks').textContent=clicks.length.toLocaleString();
+    document.getElementById('ctr').textContent=(views.length?clicks.length/views.length*100:0).toFixed(1)+'%';
+    const strong=products.filter(p=>Number(p.score)>=75).length;
+    document.getElementById('qualityState').textContent=strong?strong+' strong product'+(strong===1?'':'s'):'Catalog needs products';
+    document.getElementById('qualityTag').textContent=strong?'≥75 score':'—';
+    document.getElementById('linkState').textContent=ready+' affiliate link'+(ready===1?'':'s')+' ready';
+    document.getElementById('linkTag').textContent=ready;
+    document.getElementById('winnerState').textContent=winners+' observed winner'+(winners===1?'':'s');
+    document.getElementById('winnerTag').textContent=winners;
+    const catalogOK=products.length>0,linksOK=products.length>0&&ready===products.length,trackingOK=events.length>0;
+    document.getElementById('gateCatalog').textContent='01 Catalog · '+(catalogOK?'READY':'CHECK');
+    document.getElementById('gateLinks').textContent='02 Links · '+(linksOK?'READY':'CHECK');
+    document.getElementById('gateTracking').textContent='03 Tracking · '+(trackingOK?'ACTIVE':'CHECK');
+    document.getElementById('launchTitle').textContent=linksOK&&trackingOK?'Organic validation gate active.':'Build evidence before scaling.';
+    document.getElementById('launchText').textContent=linksOK&&trackingOK?'All current product links pass structural checks and tracking is receiving events. Keep paid traffic off until performance data reaches the minimum sample.':'Catalog, affiliate destinations and measurement should be ready before any paid test.';
+  }
+  render();window.addEventListener('storage',render);
+})();
+</script>
 </body></html>
