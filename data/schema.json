@@ -14,6 +14,10 @@
     "score": "number|null",
     "status": "draft|review|active|testing|winner|dropped|archived",
     "market": ["string"],
+    "affiliate_url": "string|null",
+    "link_status": "READY|REVIEW|INVALID|NEEDS LINK|null",
+    "link_validation_reason": "string|null",
+    "last_validated_at": "ISO-8601|null",
     "created_at": "ISO-8601",
     "updated_at": "ISO-8601"
   },
@@ -40,6 +44,7 @@
     "campaign": "string|null",
     "market": "string|null",
     "device": "string|null",
+    "page": "string|null",
     "timestamp": "ISO-8601"
   }
 }
