@@ -7,7 +7,7 @@
   function affiliateClick(productId,offerId,affiliateUrl){
     let destination=null;
     try{destination=affiliateUrl?new URL(affiliateUrl,location.href).hostname:null;}catch(_){}
-    track('affiliate_click',{product_id:productId||null,offer_id:offerId||null,destination:destination});
+    track('affiliate_click',{product_id:productId||null,offer_id:offerId||null,destination_domain:destination});
   }
   window.AmazoniteTracker={track:track,affiliateClick:affiliateClick};
   document.addEventListener('DOMContentLoaded',function(){
