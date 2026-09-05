@@ -11,6 +11,18 @@
   }
   window.AmazoniteTracker={track:track,affiliateClick:affiliateClick};
   document.addEventListener('DOMContentLoaded',function(){
+    const topBar=document.querySelector('.shipping-bar');
+    if(topBar) topBar.remove();
+    const hero=document.querySelector('.hero');
+    if(hero){
+      const style=document.createElement('style');
+      style.textContent='.amazonite-hero-image-wrap{width:100%;margin:0;padding:0;background:#020607;line-height:0}.amazonite-hero-image{display:block;width:100%;height:auto;max-height:none;object-fit:contain;margin:0}';
+      document.head.appendChild(style);
+      hero.innerHTML='<div class="amazonite-hero-image-wrap"><img src="assets/picun-f8-pro-hero.webp" alt="Picun F8 Pro ANC wireless headphones product showcase" class="amazonite-hero-image"></div>';
+      hero.style.padding='0';
+      hero.style.minHeight='0';
+      hero.style.background='#020607';
+    }
     document.querySelectorAll('[data-product-view]').forEach(function(el){track('product_view',{product_id:el.dataset.productView});});
     document.querySelectorAll('[data-affiliate-url]').forEach(function(el){
       el.addEventListener('click',function(){affiliateClick(el.dataset.productId,el.dataset.offerId,el.dataset.affiliateUrl);});
