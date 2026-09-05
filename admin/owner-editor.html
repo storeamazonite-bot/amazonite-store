@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Amazonite Store — Owner Editor</title>
+<style>body{font-family:Arial,sans-serif;background:#07100a;color:#f5fff5;margin:0}main{max-width:1100px;margin:auto;padding:28px}.panel{background:#0d1810;border:1px solid #29472d;border-radius:16px;padding:22px;margin-bottom:18px}h1{margin-top:0}label{display:block;font-size:13px;font-weight:700;margin:15px 0 7px}input,textarea,select{width:100%;box-sizing:border-box;background:#07100a;color:#fff;border:1px solid #35543a;border-radius:9px;padding:12px}textarea{min-height:110px}button{margin-top:18px;background:#d9ff3f;color:#050805;border:0;border-radius:9px;padding:12px 18px;font-weight:900;cursor:pointer}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.note{color:#9eb5a1;font-size:12px;line-height:1.6}.ok{color:#b9ff72}@media(max-width:700px){.grid{grid-template-columns:1fr}main{padding:15px}}</style>
+</head>
+<body><main>
+<div class="panel"><h1>Amazonite Store — Owner Editor</h1><p class="note">Private management workspace. Edit storefront content here. Affiliate URLs are stored exactly as entered and are never cloaked or rewritten.</p></div>
+<div class="panel"><h2>Storefront</h2><div class="grid"><div><label>Store name</label><input id="storeName"></div><div><label>Visitor CTA</label><input id="visitorCta"></div></div><label>Store description</label><textarea id="description"></textarea><label>Markets</label><input id="markets"><button id="save">Save storefront settings</button><p id="status" class="ok"></p></div>
+<div class="panel"><h2>Affiliate safety</h2><p class="note">Only verified AliExpress destinations should be published. Keep raw affiliate URLs exactly as supplied by the affiliate portal. Do not paste passwords, API keys, or private credentials here.</p></div>
+<script src="../assets/store-control.js"></script><script>
+(function(){const s=window.AmazoniteStore.get();storeName.value=s.storeName;visitorCta.value=s.visitorCta;description.value=s.description;markets.value=s.markets;save.onclick=function(){window.AmazoniteStore.save({storeName:storeName.value.trim()||'Amazonite Store',visitorCta:visitorCta.value.trim(),description:description.value.trim(),markets:markets.value.trim()});status.textContent='Saved locally for this browser. A secure server-backed owner account is required for production persistence.'}})();
+</script></main></body></html>
