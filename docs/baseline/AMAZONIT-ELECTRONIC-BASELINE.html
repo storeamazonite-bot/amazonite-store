@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>Amazonit Electronic</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#0d1b2a; color:#fff; margin:0; }
+    .container { width:100%; text-align:center; padding:20px; }
+    .box { width:300px; margin:50px auto; padding:20px; background:#1b263b; border-radius:8px; }
+    input, select { width:90%; padding:10px; margin:10px 0; border:none; border-radius:5px; }
+    button, .buy-btn { padding:10px 20px; background:#e63946; color:#fff; border:none; border-radius:5px; cursor:pointer; text-decoration:none; display:inline-block; }
+    button:hover, .buy-btn:hover { background:#f77f00; }
+    header { background:#1b263b; padding:15px; display:flex; justify-content:space-between; align-items:center; }
+    header h1 { margin:0; font-size:20px; }
+    footer { background:#1b263b; padding:10px; text-align:center; margin-top:50px; }
+    .products { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:20px; }
+    .product { background:#1b263b; padding:15px; border-radius:8px; }
+    .product img { width:100%; border-radius:5px; }
+  </style>
+</head>
+<body>
+
+<!-- صفحة تسجيل الدخول -->
+<div id="loginPage" class="container">
+  <div class="box">
+    <h2>🔒 تسجيل الدخول</h2>
+    <form id="loginForm">
+      <input type="text" id="loginUser" placeholder="اسم المستخدم" required><br>
+      <input type="password" id="loginPass" placeholder="كلمة المرور" required><br>
+      <button type="submit">دخول</button>
+    </form>
+    <p id="loginError" style="color:red;"></p>
+  </div>
+</div>
+
+<!-- لوحة التحكم -->
+<div id="dashboardPage" style="display:none;">
+  <header>
+    <h1>لوحة التحكم - Amazonit Electronic</h1>
+    <button id="logoutBtn">🚪 تسجيل الخروج</button>
+  </header>
+
+  <!-- قسم المنتجات -->
+  <section class="container">
+    <h2>🛒 المنتجات</h2>
+    <div class="products">
+      <!-- 20 منتج -->
+      <div class="product"><img src="images/phone1.jpg"><h3>هاتف ذكي شاشة 6.5 بوصة</h3><p>299.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/smartwatch1.jpg"><h3>ساعة ذكية مقاومة للماء</h3><p>49.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/headphones1.jpg"><h3>سماعة رأس لاسلكية</h3><p>59.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/laptop1.jpg"><h3>حاسوب محمول i7</h3><p>699.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/tablet1.jpg"><h3>جهاز لوحي 10 بوصة</h3><p>199.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/camera1.jpg"><h3>كاميرا رقمية 24MP</h3><p>349.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/tv1.jpg"><h3>تلفاز ذكي 55 بوصة</h3><p>499.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/speaker1.jpg"><h3>مكبر صوت بلوتوث</h3><p>39.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/keyboard1.jpg"><h3>لوحة مفاتيح ميكانيكية</h3><p>89.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/mouse1.jpg"><h3>فأرة ألعاب RGB</h3><p>49.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/router1.jpg"><h3>راوتر واي فاي سريع</h3><p>59.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/projector1.jpg"><h3>بروجكتور منزلي</h3><p>129.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/console1.jpg"><h3>جهاز ألعاب حديث</h3><p>399.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/drone1.jpg"><h3>طائرة بدون طيار</h3><p>249.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/printer1.jpg"><h3>طابعة ليزر ملونة</h3><p>149.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/ssd1.jpg"><h3>قرص SSD 1TB</h3><p>99.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/powerbank1.jpg"><h3>باور بنك 20000mAh</h3><p>29.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/earbuds1.jpg"><h3>سماعات أذن لاسلكية</h3><p>39.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/monitor1.jpg"><h3>شاشة كمبيوتر 27 بوصة</h3><p>199.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+    </div>
+  </section>
+
+  <!-- إعدادات الحساب -->
+  <section id="account-settings" class="container">
+    <h2>⚙️ إعدادات الحساب</h2>
+    <form id="accountForm">
+      <input type="text" id="username" placeholder="أدخل اسم الدخول الجديد">
+      <input type="password" id="password" placeholder="أدخل كلمة المرور الجديدة">
+      <input type="email" id="email" placeholder="أدخل بريدك الإلكتروني">
+
+      <label for="language">اختر اللغة المفضلة</label>
+      <select id="language">
+        <option value="ar">العربية</option>
+        <option value="en">English</option>
+        <option value="fr">Français</option>
+      </select>
+
+      <button type="
+</button>
+</form>
+</section>
+</main>
+
+</body>
+</html>
