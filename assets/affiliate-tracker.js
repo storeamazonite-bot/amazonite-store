@@ -3,7 +3,11 @@
   function local(event){try{const a=JSON.parse(localStorage.getItem(KEY)||'[]');a.push(event);localStorage.setItem(KEY,JSON.stringify(a.slice(-5000)))}catch(_) {}}
   function send(event){
     const payload=Object.assign({timestamp:new Date().toISOString(),page:location.pathname},event||{});
-    try{const body=JSON.stringify(payload);if(navigator.sendBeacon){navigator.sendBeacon('/api/analytics/event',new Blob([body],{type:'application/json'}));}else{fetch('/api/analytics/event',{method:'POST',headers:{'content-type':'application/json'},body,keepalive:true}).catch(()=>{});} }catch(_){ }
+    try{
+      const body=JSON.stringify(payload);
+      if(navigator.sendBeacon){navigator.sendBeacon('/api/analytics/events',new Blob([body],{type:'application/json'}));}
+      else{fetch('/api/analytics/events',{method:'POST',headers:{'content-type':'application/json'},body,keepalive:true}).catch(()=>{});}
+    }catch(_){}
     local(payload);
   }
   function track(type,data){send(Object.assign({type},data||{}));}
