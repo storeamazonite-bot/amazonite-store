@@ -1,5 +1,6 @@
 import { requireOwner } from '../../lib/auth.js';
 import { supabaseAdmin } from '../../lib/supabase.js';
+import { enforceSameOrigin, rateLimit, setSecurityHeaders } from '../../lib/http-security.js';
 
 const FIELDS = 'id,name,category,price,rating,badge,image,affiliate_url,status,created_at,updated_at';
 const ID_RE = /^[0-9a-fA-F-]{36}$/;
@@ -22,6 +23,7 @@ function updatePayload(input) {
 }
 
 export default async function handler(req, res) {
+  setSecurityHeaders(res, { noStore: true });
   if (!supabaseAdmin) return res.status(503).json({ error: 'Database service is not configured.' });
   const id = String(req.query?.id || '').trim();
   if (!ID_RE.test(id)) return res.status(400).json({ error: 'Invalid product id.' });
@@ -33,13 +35,15 @@ export default async function handler(req, res) {
     return res.status(200).json({ product: data });
   }
 
-  const owner = await requireOwner(req, res);
-  if (!owner) return;
-
   if (!['PUT', 'PATCH', 'DELETE'].includes(req.method)) {
     res.setHeader('Allow', 'GET, PUT, PATCH, DELETE');
     return res.status(405).json({ error: 'Method not allowed.' });
   }
+  if (!enforceSameOrigin(req, res)) return;
+  if (!rateLimit(req, res, { limit: 60, windowMs: 60 * 1000, prefix: 'products-write' })) return;
+
+  const owner = await requireOwner(req, res);
+  if (!owner) return;
 
   if (req.method === 'DELETE') {
     const { error } = await supabaseAdmin.from('products').delete().eq('id', id);
