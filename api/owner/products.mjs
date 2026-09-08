@@ -36,6 +36,7 @@ function allowedAffiliateUrl(value) {
 }
 
 function cleanProduct(input, existing = {}) {
+  if (!input || typeof input !== 'object' || Array.isArray(input)) throw new Error('invalid_product');
   const allowed = ['name', 'category', 'status', 'affiliate_url', 'original_url', 'price', 'currency', 'commission_rate', 'rating', 'orders', 'market', 'image_url', 'notes', 'score', 'link_status', 'link_validation_reason'];
   const out = { ...existing };
   for (const key of allowed) if (input[key] !== undefined) out[key] = input[key];
