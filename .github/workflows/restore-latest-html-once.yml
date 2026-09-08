@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'automation/_secure_index_payload/part4.b64'
+      - '.github/workflows/restore-latest-html-once.yml'
 
 permissions:
   contents: write
