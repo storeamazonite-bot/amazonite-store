@@ -6,6 +6,9 @@
   "engines": {
     "node": ">=20"
   },
+  "scripts": {
+    "test:owner-auth": "node --test tests/owner-auth.test.mjs"
+  },
   "dependencies": {
     "@modelcontextprotocol/node": "latest",
     "@modelcontextprotocol/server": "latest",
