@@ -3,44 +3,42 @@ import assert from 'node:assert/strict';
 
 const html = fs.readFileSync('index.html', 'utf8');
 
-// Original storefront/dashboard structure must remain present.
+// The latest user-supplied dashboard structure is authoritative.
 for (const marker of [
-  'id="products"',
-  'id="grid"',
-  'id="adminLauncher"',
-  'id="adminPanel"',
-  'id="productForm"',
-  'id="adminList"',
-  'id="adminCount"',
-  'class="card"',
-  'class="buy"',
-  'class="hero"',
-]) assert.ok(html.includes(marker), `Missing original/dashboard marker: ${marker}`);
+  'id="loginPage"',
+  'id="loginForm"',
+  'id="loginUser"',
+  'id="loginPass"',
+  'id="loginError"',
+  'id="dashboardPage"',
+  'id="logoutBtn"',
+  'id="account-settings"',
+  'id="accountForm"',
+  'id="username"',
+  'id="password"',
+  'id="email"',
+  'id="language"',
+  'class="products"',
+  'class="product"',
+  'class="buy-btn"',
+]) assert.ok(html.includes(marker), `Missing latest dashboard marker: ${marker}`);
 
-// Dashboard data/auth must use server APIs rather than client-side credentials/data storage.
+// Auth is server-backed and uses the existing visual controls; no client-side credentials are stored.
 for (const marker of [
   '/api/auth/session',
   '/api/auth/login',
   '/api/auth/logout',
-  '/api/products?status=active',
-  '/api/products?status=all',
-  'method:\'POST\'',
-  'method:\'PUT\'',
-  'method:\'DELETE\'',
-]) assert.ok(html.includes(marker), `Missing secure integration marker: ${marker}`);
+  "method: 'POST'",
+  "credentials: 'include'",
+]) assert.ok(html.includes(marker), `Missing secure auth integration marker: ${marker}`);
 
 assert.doesNotMatch(html, /AMZ-OWNER-2026/);
 assert.doesNotMatch(html, /localStorage\s*\./);
 assert.doesNotMatch(html, /localStorage\s*\[/);
 assert.doesNotMatch(html, /password\s*[:=]\s*['"][^'"]+['"]/i);
-assert.match(html, /credentials:\s*['"]include['"]/);
-assert.match(html, /data-buy-id/);
-assert.match(html, /affiliate_url/);
-assert.match(html, /id="adminLogout"/);
-assert.match(html, /<button[^>]+id="adminLogout"[^>]*>تسجيل الخروج<\/button>/);
-assert.match(html, /id="adminClose"/);
-assert.match(html, /adminLogout/);
 assert.match(html, /\/api\/auth\/logout/);
+assert.match(html, /\/api\/auth\/session/);
+assert.match(html, /\/api\/auth\/login/);
 
 console.log('Dashboard integration contract: PASS');
-console.log('Covered: original storefront/dashboard markers, API-backed auth/products/logout, visible logout control, preserved close control, no localStorage credentials/data source, no hardcoded owner password.');
+console.log('Covered: latest login/dashboard/account structure, server-backed owner auth/session/logout, credentials-in-cookie flow, no localStorage credentials, no hardcoded owner password.');
