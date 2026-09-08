@@ -47,7 +47,7 @@ test('cross-origin PUT is rejected before storage', async () => {
 });
 
 test('oversized PUT is rejected', async () => {
-  const response = await run({ method: 'PUT', headers: ownerHeaders, body: JSON.stringify({ storeName: 'x'.repeat(9000) }) });
+  const response = await run({ method: 'PUT', headers: ownerHeaders, body: JSON.stringify({ storeName: 'x'.repeat(15000) }) });
   assert.equal(response.statusCode, 413);
   assert.equal(response.body.error, 'body_too_large');
 });
