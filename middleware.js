@@ -1,9 +1,17 @@
 const COOKIE_NAME = 'amazonite_owner_session';
 
+function safeDecode(value) {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return '';
+  }
+}
+
 function cookieValue(request) {
   const raw = request.headers.get('cookie') || '';
   const item = raw.split(';').map(v => v.trim()).find(v => v.startsWith(`${COOKIE_NAME}=`));
-  return item ? decodeURIComponent(item.slice(COOKIE_NAME.length + 1)) : '';
+  return item ? safeDecode(item.slice(COOKIE_NAME.length + 1)) : '';
 }
 
 function base64urlToBytes(value) {
