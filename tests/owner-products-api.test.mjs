@@ -69,6 +69,19 @@ test('rejects invalid affiliate destination before storage access', async () => 
   } finally { globalThis.fetch = originalFetch; }
 });
 
+test('rejects non-object product payload before storage access', async () => {
+  const originalFetch = globalThis.fetch;
+  let called = false;
+  globalThis.fetch = async () => { called = true; throw new Error('storage should not be reached'); };
+  try {
+    const response = responseMock();
+    await handler({ method: 'POST', headers: { host: 'example.test', cookie: validCookie }, body: 'null' }, response);
+    assert.equal(response.statusCode, 400);
+    assert.equal(response.body.error, 'invalid_product');
+    assert.equal(called, false);
+  } finally { globalThis.fetch = originalFetch; }
+});
+
 test('valid owner session reaches server-side storage and does not expose storage errors', async () => {
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async () => { throw new Error('simulated storage failure'); };
