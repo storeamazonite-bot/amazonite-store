@@ -9,6 +9,30 @@
 <div class="panel"><h1>Amazonite Store — Owner Editor</h1><p class="note">Private management workspace. Edit storefront content here. Affiliate URLs are stored exactly as entered and are never cloaked or rewritten.</p></div>
 <div class="panel"><h2>Storefront</h2><div class="grid"><div><label>Store name</label><input id="storeName"></div><div><label>Visitor CTA</label><input id="visitorCta"></div></div><label>Store description</label><textarea id="description"></textarea><label>Markets</label><input id="markets"><button id="save">Save storefront settings</button><p id="status" class="ok"></p></div>
 <div class="panel"><h2>Affiliate safety</h2><p class="note">Only verified AliExpress destinations should be published. Keep raw affiliate URLs exactly as supplied by the affiliate portal. Do not paste passwords, API keys, or private credentials here.</p></div>
-<script src="../assets/store-control.js"></script><script>
-(function(){const s=window.AmazoniteStore.get();storeName.value=s.storeName;visitorCta.value=s.visitorCta;description.value=s.description;markets.value=s.markets;save.onclick=function(){window.AmazoniteStore.save({storeName:storeName.value.trim()||'Amazonite Store',visitorCta:visitorCta.value.trim(),description:description.value.trim(),markets:markets.value.trim()});status.textContent='Saved locally for this browser. A secure server-backed owner account is required for production persistence.'}})();
+<script>
+(async function(){
+  const fields={storeName:document.getElementById('storeName'),visitorCta:document.getElementById('visitorCta'),description:document.getElementById('description'),markets:document.getElementById('markets')};
+  const status=document.getElementById('status');
+  const button=document.getElementById('save');
+  try{
+    const response=await fetch('../api/owner/settings',{credentials:'same-origin',headers:{accept:'application/json'}});
+    if(response.status===401){location.href='../owner-login.html?next='+encodeURIComponent(location.pathname);return;}
+    if(!response.ok) throw new Error('load_failed');
+    const data=await response.json();
+    const settings=data.settings||{};
+    Object.keys(fields).forEach(key=>{fields[key].value=String(settings[key]??'');});
+  }catch{status.textContent='Unable to load secure settings.';}
+  button.onclick=async function(){
+    button.disabled=true;status.textContent='Saving securely…';
+    try{
+      const payload={storeName:fields.storeName.value.trim()||'Amazonite Store',visitorCta:fields.visitorCta.value.trim(),description:fields.description.value.trim(),markets:fields.markets.value.trim()};
+      const response=await fetch('../api/owner/settings',{method:'PUT',credentials:'same-origin',headers:{'content-type':'application/json',accept:'application/json'},body:JSON.stringify(payload)});
+      if(response.status===401){location.href='../owner-login.html?next='+encodeURIComponent(location.pathname);return;}
+      const data=await response.json().catch(()=>({}));
+      if(!response.ok) throw new Error(data.error||'save_failed');
+      status.textContent='Saved securely through the Owner API.';
+    }catch{status.textContent='Secure save failed. Nothing was saved locally.';}
+    finally{button.disabled=false;}
+  };
+})();
 </script></main></body></html>
