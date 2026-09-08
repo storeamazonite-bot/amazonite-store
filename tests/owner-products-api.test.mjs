@@ -23,6 +23,7 @@ function responseMock() {
 }
 
 const validCookie = ownerCookie(createOwnerSession());
+const sameOrigin = { host: 'example.test', origin: 'https://example.test' };
 
 const baseProduct = {
   name: 'Test product', category: 'Audio & Tech', status: 'draft',
@@ -56,13 +57,37 @@ test('rejects cross-origin mutation before storage access', async () => {
   } finally { globalThis.fetch = originalFetch; }
 });
 
+test('rejects mutation with missing Origin before storage access', async () => {
+  const originalFetch = globalThis.fetch;
+  let called = false;
+  globalThis.fetch = async () => { called = true; throw new Error('storage should not be reached'); };
+  try {
+    const response = responseMock();
+    await handler({ method: 'POST', headers: { host: 'example.test', cookie: validCookie }, body: JSON.stringify(baseProduct) }, response);
+    assert.equal(response.statusCode, 403);
+    assert.equal(response.body.error, 'origin_not_allowed');
+    assert.equal(called, false);
+  } finally { globalThis.fetch = originalFetch; }
+});
+
+test('allows authenticated GET without Origin to reach storage', async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => { throw new Error('simulated storage failure'); };
+  try {
+    const response = responseMock();
+    await handler({ method: 'GET', headers: { host: 'example.test', cookie: validCookie } }, response);
+    assert.equal(response.statusCode, 503);
+    assert.deepEqual(response.body, { ok: false, error: 'storage_unavailable' });
+  } finally { globalThis.fetch = originalFetch; }
+});
+
 test('rejects invalid affiliate destination before storage access', async () => {
   const originalFetch = globalThis.fetch;
   let called = false;
   globalThis.fetch = async () => { called = true; throw new Error('storage should not be reached'); };
   try {
     const response = responseMock();
-    await handler({ method: 'POST', headers: { host: 'example.test', cookie: validCookie }, body: JSON.stringify({ ...baseProduct, affiliate_url: 'https://evil.example/track' }) }, response);
+    await handler({ method: 'POST', headers: { ...sameOrigin, cookie: validCookie }, body: JSON.stringify({ ...baseProduct, affiliate_url: 'https://evil.example/track' }) }, response);
     assert.equal(response.statusCode, 400);
     assert.equal(response.body.error, 'invalid_affiliate_url');
     assert.equal(called, false);
@@ -75,7 +100,7 @@ test('rejects non-object product payload before storage access', async () => {
   globalThis.fetch = async () => { called = true; throw new Error('storage should not be reached'); };
   try {
     const response = responseMock();
-    await handler({ method: 'POST', headers: { host: 'example.test', cookie: validCookie }, body: 'null' }, response);
+    await handler({ method: 'POST', headers: { ...sameOrigin, cookie: validCookie }, body: 'null' }, response);
     assert.equal(response.statusCode, 400);
     assert.equal(response.body.error, 'invalid_product');
     assert.equal(called, false);
