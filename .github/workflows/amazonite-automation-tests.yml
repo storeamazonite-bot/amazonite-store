@@ -40,6 +40,8 @@ jobs:
         run: node automation/owner-auth-security-test.mjs
       - name: Run HTTP security contract test
         run: node automation/http-security-contract-test.mjs
+      - name: Run Dashboard integration contract test
+        run: node automation/dashboard-integration-test.mjs
       - name: Run Product Intelligence tests
         run: node automation/product-intelligence-test.mjs
       - name: Run Affiliate Readiness tests
