@@ -2,8 +2,8 @@ import { isOwnerRequest } from '../../lib/owner-auth.mjs';
 import { getSettings, replaceSettings } from '../../lib/google-sheets-settings-store.mjs';
 
 const METHODS = new Set(['GET', 'PUT']);
-const MAX_BODY = 8_000;
-const LIMITS = { storeName: 120, visitorCta: 180, description: 2_000, markets: 500 };
+const MAX_BODY = 12_000;
+const LIMITS = { storeName: 120, currency: 3, seoTitle: 180, seoDescription: 2_000, disclosure: 2_000, heroTag: 120, heroTitle: 180, heroHighlight: 180, heroText: 2_000, heroCta: 120, heroUrl: 500, heroImage: 500, heroVideo: 500 };
 
 function json(response, status, body) {
   response.setHeader('Cache-Control', 'no-store');
@@ -33,6 +33,7 @@ function cleanSettings(input) {
     out[key] = value;
   }
   if (!out.storeName) throw new Error('invalid_storeName');
+  if (!/^[A-Z]{3}$/.test(out.currency)) throw new Error('invalid_currency');
   return out;
 }
 
