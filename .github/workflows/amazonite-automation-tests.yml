@@ -4,13 +4,21 @@ on:
   push:
     paths:
       - 'automation/**'
+      - 'api/**'
+      - 'lib/**'
+      - 'supabase/**'
       - 'data/products.json'
+      - 'index.html'
       - '.github/workflows/amazonite-automation-tests.yml'
       - 'package.json'
   pull_request:
     paths:
       - 'automation/**'
+      - 'api/**'
+      - 'lib/**'
+      - 'supabase/**'
       - 'data/products.json'
+      - 'index.html'
       - '.github/workflows/amazonite-automation-tests.yml'
       - 'package.json'
   workflow_dispatch:
@@ -28,6 +36,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Run Owner Auth security contract test
+        run: node automation/owner-auth-security-test.mjs
       - name: Run Product Intelligence tests
         run: node automation/product-intelligence-test.mjs
       - name: Run Affiliate Readiness tests
