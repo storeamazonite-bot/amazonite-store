@@ -1,1 +1,26 @@
-<!doctype html>PLACEHOLDER
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Amazonite Electronic — Electronics Affiliate Store</title>
+<meta name="description" content="Amazonite Electronic — متجر أفلييت احترافي للإلكترونيات والمنتجات التقنية.">
+<style>html,body{margin:0;min-height:100%;font-family:Arial,sans-serif;background:#fff;color:#123c39}#boot{min-height:100vh;display:grid;place-items:center;padding:24px;text-align:center}#boot small{display:block;margin-top:8px;color:#718582}</style>
+</head>
+<body>
+<div id="boot">جاري تحميل Amazonite Electronic…<small>النسخة الآمنة تحافظ على القالب الأصلي وتربط Dashboard عبر API.</small></div>
+<script>
+(async function(){
+  const source='https://raw.githubusercontent.com/storeamazonite-bot/amazonite-store/b2660f128f97fda17f244cf14ff312f90f8c6a74/index.html';
+  try{
+    const r=await fetch(source,{cache:'no-store'});
+    if(!r.ok)throw new Error('template fetch failed');
+    let html=await r.text();
+    html=html.replace(/<script>\s*const cards=.*?<\/script>/s,'<script src="/assets/dashboard-secure.js" defer></script>');
+    html=html.replace('مهم: هذه نسخة Static. لوحة الإدارة مخفية داخل الصفحة وليست مصادقة خادمية حقيقية بعد. عند ربط Backend/Auth لاحقاً تصبح الحماية فعلية.','مهم: لوحة الإدارة مخفية للزوار، والمصادقة وحفظ المنتجات تتم عبر API خادمي محمي بصلاحية OWNER. لا تُحفظ كلمة المرور أو بيانات الإدارة في الصفحة.');
+    document.open();document.write(html);document.close();
+  }catch(e){document.getElementById('boot').innerHTML='تعذر تحميل القالب الأصلي حالياً.<small>يرجى المحاولة مرة أخرى.</small>';console.error(e);}
+})();
+</script>
+</body>
+</html>
