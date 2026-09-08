@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test:owner-auth": "node --test tests/owner-auth.test.mjs",
-    "test:security-boundary": "node --test tests/owner-auth.test.mjs tests/middleware-boundary.test.mjs tests/owner-products-api.test.mjs"
+    "test:security-boundary": "node --test tests/owner-auth.test.mjs tests/middleware-boundary.test.mjs tests/owner-products-api.test.mjs tests/owner-settings-api.test.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/node": "latest",
