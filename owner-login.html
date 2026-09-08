@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Amazonite Electronic — Owner Login</title>
+  <style>
+    body{margin:0;min-height:100vh;display:grid;place-items:center;font:16px system-ui,sans-serif;background:#f4f7f7;color:#173b3b}
+    main{width:min(420px,calc(100% - 32px));padding:28px;box-sizing:border-box;background:#fff;border:1px solid #dbe6e5;border-radius:18px;box-shadow:0 12px 40px #173b3b18}
+    h1{margin:0 0 8px;font-size:24px}.muted{color:#667b7b;margin:0 0 22px}
+    label{display:block;margin-bottom:8px;font-weight:600}input{width:100%;box-sizing:border-box;padding:13px;border:1px solid #c8d8d7;border-radius:10px;font:inherit}
+    button{width:100%;margin-top:16px;padding:13px;border:0;border-radius:10px;background:#c9973e;color:#fff;font-weight:700;cursor:pointer}
+    .error{min-height:22px;margin-top:14px;color:#a12828}.back{display:block;margin-top:18px;text-align:center;color:#356767;text-decoration:none}
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Owner access</h1>
+    <p class="muted">Amazonite Electronic private management area.</p>
+    <form id="loginForm" autocomplete="on">
+      <label for="password">Owner password</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" required maxlength="1024">
+      <button type="submit">Sign in</button>
+      <div id="error" class="error" role="alert" aria-live="polite"></div>
+    </form>
+    <a class="back" href="/">Back to store</a>
+  </main>
+  <script>
+    const form=document.getElementById('loginForm'), input=document.getElementById('password'), error=document.getElementById('error');
+    const next=new URLSearchParams(location.search).get('next');
+    form.addEventListener('submit',async e=>{
+      e.preventDefault(); error.textContent='';
+      try{
+        const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({password:input.value})});
+        const data=await r.json().catch(()=>({}));
+        if(!r.ok||!data.ok) throw new Error('invalid');
+        location.replace(next && next.startsWith('/') && !next.startsWith('//') ? next : '/admin/');
+      }catch{ error.textContent='Access denied. Check the owner password.'; input.select(); }
+    });
+  </script>
+</body>
+</html>
