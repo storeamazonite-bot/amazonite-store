@@ -36,6 +36,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Run Original baseline integrity test
+        run: node automation/original-baseline-integrity-test.mjs
       - name: Run Owner Auth security contract test
         run: node automation/owner-auth-security-test.mjs
       - name: Run HTTP security contract test
