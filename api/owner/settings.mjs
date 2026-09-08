@@ -1,9 +1,9 @@
 import { isOwnerRequest } from '../../lib/owner-auth.mjs';
-import { getSettings, replaceSettings } from '../../lib/google-sheets-settings-store.mjs';
+import { getSettings, replaceSettings, SETTINGS_KEYS } from '../../lib/google-sheets-settings-store.mjs';
 
 const METHODS = new Set(['GET', 'PUT']);
 const MAX_BODY = 12_000;
-const LIMITS = { storeName: 120, currency: 3, seoTitle: 180, seoDescription: 2_000, disclosure: 2_000, heroTag: 120, heroTitle: 180, heroHighlight: 180, heroText: 2_000, heroCta: 120, heroUrl: 500, heroImage: 500, heroVideo: 500 };
+const LIMITS = { storeName: 120, currency: 3, seoTitle: 180, seoDescription: 2_000, disclosure: 2_000, heroTag: 120, heroTitle: 180, heroHighlight: 180, heroText: 2_000, heroCta: 120, heroUrl: 500, heroImage: 500, heroVideo: 500, visitorCta: 180, description: 2_000, markets: 500 };
 
 function json(response, status, body) {
   response.setHeader('Cache-Control', 'no-store');
@@ -24,16 +24,16 @@ function readBody(request) {
   return JSON.parse(raw);
 }
 
-function cleanSettings(input) {
+function cleanPatch(input) {
   if (!input || typeof input !== 'object' || Array.isArray(input)) throw new Error('invalid_settings');
   const out = {};
-  for (const key of Object.keys(LIMITS)) {
+  for (const key of SETTINGS_KEYS) {
+    if (!(key in input)) continue;
     const value = String(input[key] ?? '').trim();
     if (value.length > LIMITS[key]) throw new Error(`invalid_${key}`);
     out[key] = value;
   }
-  if (!out.storeName) throw new Error('invalid_storeName');
-  if (!/^[A-Z]{3}$/.test(out.currency)) throw new Error('invalid_currency');
+  if ('currency' in out && !/^[A-Z]{3}$/.test(out.currency)) throw new Error('invalid_currency');
   return out;
 }
 
@@ -44,7 +44,11 @@ export default async function handler(request, response) {
 
   try {
     if (request.method === 'GET') return json(response, 200, { ok: true, settings: await getSettings() });
-    const settings = cleanSettings(readBody(request));
+    const patch = cleanPatch(readBody(request));
+    const current = await getSettings();
+    const settings = { ...current, ...patch };
+    if (!settings.storeName) throw new Error('invalid_storeName');
+    if (!/^[A-Z]{3}$/.test(settings.currency)) throw new Error('invalid_currency');
     await replaceSettings(settings);
     return json(response, 200, { ok: true, settings });
   } catch (error) {
