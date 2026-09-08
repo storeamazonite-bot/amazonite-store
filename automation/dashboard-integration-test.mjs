@@ -37,8 +37,10 @@ assert.match(html, /credentials:\s*['"]include['"]/);
 assert.match(html, /data-buy-id/);
 assert.match(html, /affiliate_url/);
 assert.match(html, /id="adminLogout"/);
+assert.match(html, /<button[^>]+id="adminLogout"[^>]*>تسجيل الخروج<\/button>/);
+assert.match(html, /id="adminClose"/);
 assert.match(html, /adminLogout/);
 assert.match(html, /\/api\/auth\/logout/);
 
 console.log('Dashboard integration contract: PASS');
-console.log('Covered: original storefront/dashboard markers, API-backed auth/products/logout, visible logout control, no localStorage credentials/data source, no hardcoded owner password.');
+console.log('Covered: original storefront/dashboard markers, API-backed auth/products/logout, visible logout control, preserved close control, no localStorage credentials/data source, no hardcoded owner password.');
