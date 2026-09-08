@@ -7,7 +7,8 @@
     "node": ">=20"
   },
   "scripts": {
-    "test:owner-auth": "node --test tests/owner-auth.test.mjs"
+    "test:owner-auth": "node --test tests/owner-auth.test.mjs",
+    "test:security-boundary": "node --test tests/owner-auth.test.mjs tests/middleware-boundary.test.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/node": "latest",
