@@ -24,7 +24,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   test:
@@ -32,26 +32,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Restore approved original-preserved storefront
-        run: |
-          set -euo pipefail
-          if [ -f automation/restore-index.gz.b64 ]; then
-            base64 -d automation/restore-index.gz.b64 | gzip -d > index.html
-            sha256sum index.html
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add index.html
-            git commit -m "fix: restore approved original storefront integration" || true
-            git rm -f automation/restore-index.gz.b64 .github/workflows/restore-approved-index.yml || true
-            git commit -m "chore: remove one-time restore assets" || true
-            git push origin HEAD:${GITHUB_REF_NAME}
-          fi
       - name: Run Original baseline integrity test
         run: node automation/original-baseline-integrity-test.mjs
       - name: Run Owner Auth security contract test
