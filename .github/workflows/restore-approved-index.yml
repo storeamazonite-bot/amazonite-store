@@ -1,6 +1,7 @@
 name: Restore Approved Index
 on:
-  workflow_dispatch:
+  push:
+    branches: [security/supabase-owner-auth]
 permissions:
   contents: write
 jobs:
@@ -19,7 +20,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.html
-          git commit -m "fix: restore approved original storefront integration" || true
+          git commit -m "fix: restore approved original storefront integration"
           git push origin HEAD:security/supabase-owner-auth
       - name: Remove temporary restore assets
         run: |
