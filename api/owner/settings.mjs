@@ -33,6 +33,7 @@ function cleanPatch(input) {
     if (value.length > LIMITS[key]) throw new Error(`invalid_${key}`);
     out[key] = value;
   }
+  if ('storeName' in out && !out.storeName) throw new Error('invalid_storeName');
   if ('currency' in out && !/^[A-Z]{3}$/.test(out.currency)) throw new Error('invalid_currency');
   return out;
 }
