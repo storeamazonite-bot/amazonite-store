@@ -10,6 +10,7 @@ on:
       - 'lib/owner-auth.mjs'
       - 'lib/product-store.mjs'
       - 'lib/analytics-store.mjs'
+      - 'lib/product-intelligence.mjs'
       - 'middleware.js'
       - 'owner-login.html'
       - 'test/**'
@@ -24,6 +25,7 @@ on:
       - 'lib/owner-auth.mjs'
       - 'lib/product-store.mjs'
       - 'lib/analytics-store.mjs'
+      - 'lib/product-intelligence.mjs'
       - 'middleware.js'
       - 'owner-login.html'
       - 'test/**'
@@ -44,5 +46,5 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Run owner authentication, storage and analytics tests
-        run: node --test test/owner-auth.test.mjs test/internal-auth.test.mjs test/product-api-auth.test.mjs test/product-store.test.mjs test/analytics-store.test.mjs
+      - name: Run owner authentication, storage and intelligence tests
+        run: node --test test/owner-auth.test.mjs test/internal-auth.test.mjs test/product-api-auth.test.mjs test/product-store.test.mjs test/analytics-store.test.mjs test/product-intelligence.test.mjs
