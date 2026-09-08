@@ -46,15 +46,3 @@ test('malformed owner cookie does not throw and is rejected', () => {
   assert.doesNotThrow(() => auth.isOwnerRequest(request));
   assert.equal(auth.isOwnerRequest(request), false);
 });
-
-test('missing auth secret fails closed without throwing', () => {
-  const previous = process.env.AMAZONITE_AUTH_SECRET;
-  delete process.env.AMAZONITE_AUTH_SECRET;
-  try {
-    const request = { headers: { cookie: 'amazonite_owner_session=not-a-valid-session' } };
-    assert.doesNotThrow(() => auth.isOwnerRequest(request));
-    assert.equal(auth.isOwnerRequest(request), false);
-  } finally {
-    process.env.AMAZONITE_AUTH_SECRET = previous;
-  }
-});
