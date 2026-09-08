@@ -36,11 +36,7 @@ function allowedAffiliateUrl(value) {
 }
 
 function cleanProduct(input, existing = {}) {
-  const allowed = [
-    'name', 'category', 'status', 'affiliate_url', 'original_url', 'price', 'currency',
-    'commission_rate', 'rating', 'orders', 'market', 'image_url', 'notes', 'score',
-    'link_status', 'link_validation_reason'
-  ];
+  const allowed = ['name', 'category', 'status', 'affiliate_url', 'original_url', 'price', 'currency', 'commission_rate', 'rating', 'orders', 'market', 'image_url', 'notes', 'score', 'link_status', 'link_validation_reason'];
   const out = { ...existing };
   for (const key of allowed) if (input[key] !== undefined) out[key] = input[key];
   out.name = String(out.name || '').trim();
@@ -54,7 +50,6 @@ function cleanProduct(input, existing = {}) {
   out.notes = String(out.notes || '').trim();
   out.link_status = String(out.link_status || 'REVIEW').trim();
   out.link_validation_reason = String(out.link_validation_reason || '').trim();
-
   if (!out.name || out.name.length > 180) throw new Error('invalid_name');
   if (!STATUS.has(out.status)) throw new Error('invalid_status');
   if (!MARKETS.has(out.market)) throw new Error('invalid_market');
@@ -62,7 +57,6 @@ function cleanProduct(input, existing = {}) {
   if (!allowedAffiliateUrl(out.affiliate_url)) throw new Error('invalid_affiliate_url');
   if (out.original_url && !/^https?:\/\//i.test(out.original_url)) throw new Error('invalid_original_url');
   if (out.image_url && !/^https?:\/\//i.test(out.image_url)) throw new Error('invalid_image_url');
-
   for (const key of ['price', 'commission_rate', 'rating', 'orders', 'score']) {
     if (out[key] === '' || out[key] === null || out[key] === undefined) { delete out[key]; continue; }
     const n = Number(out[key]);
@@ -81,25 +75,25 @@ export default async function handler(request, response) {
   if (!isOwnerRequest(request)) return json(response, 401, { ok: false, error: 'unauthorized' });
 
   try {
-    const products = await listProducts();
-    if (request.method === 'GET') return json(response, 200, { ok: true, products });
+    if (request.method === 'GET') {
+      const products = await listProducts();
+      return json(response, 200, { ok: true, products });
+    }
 
     const body = readBody(request);
     const id = String(body?.id || '').trim();
     if (request.method === 'POST') {
       if (id) return json(response, 400, { ok: false, error: 'id_not_allowed_on_create' });
       const now = new Date().toISOString();
-      const product = cleanProduct(body, {
-        id: `AMZ-${Date.now().toString(36).toUpperCase()}`,
-        status: 'draft',
-        created_at: now,
-      });
+      const product = cleanProduct(body, { id: `AMZ-${Date.now().toString(36).toUpperCase()}`, status: 'draft', created_at: now });
       product.updated_at = now;
+      const products = await listProducts();
       await replaceProducts([product, ...products]);
       return json(response, 201, { ok: true, product });
     }
 
     if (!id) return json(response, 400, { ok: false, error: 'id_required' });
+    const products = await listProducts();
     const index = products.findIndex(product => product.id === id);
     if (index === -1) return json(response, 404, { ok: false, error: 'product_not_found' });
 
@@ -119,9 +113,7 @@ export default async function handler(request, response) {
     return json(response, 200, { ok: true, product: updated });
   } catch (error) {
     if (error?.message === 'body_too_large') return json(response, 413, { ok: false, error: 'body_too_large' });
-    if (error?.message?.startsWith('invalid_') || error?.message === 'id_not_allowed_on_create') {
-      return json(response, 400, { ok: false, error: error.message });
-    }
+    if (error?.message?.startsWith('invalid_') || error?.message === 'id_not_allowed_on_create') return json(response, 400, { ok: false, error: error.message });
     return json(response, 503, { ok: false, error: 'storage_unavailable' });
   }
 }
