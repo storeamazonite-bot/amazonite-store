@@ -27,6 +27,14 @@ test('product API rejects requests without an owner session', async () => {
   assert.deepEqual(JSON.parse(response.body), { ok: false, error: 'Unauthorized' });
 });
 
+test('product API rejects unauthenticated deletion before touching storage', async () => {
+  const { default: handler } = await import('../api/admin/products.mjs');
+  const response = responseStub();
+  await handler({ method: 'DELETE', query: { id: 'AE-001' }, headers: {} }, response);
+  assert.equal(response.statusCode, 401);
+  assert.deepEqual(JSON.parse(response.body), { ok: false, error: 'Unauthorized' });
+});
+
 test('product API accepts a valid owner session for catalog reads', async () => {
   const { default: handler } = await import('../api/admin/products.mjs');
   const response = responseStub();
