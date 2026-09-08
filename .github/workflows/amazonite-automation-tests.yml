@@ -5,12 +5,14 @@ on:
     paths:
       - 'automation/**'
       - 'data/products.json'
+      - 'tests/**'
       - '.github/workflows/amazonite-automation-tests.yml'
       - 'package.json'
   pull_request:
     paths:
       - 'automation/**'
       - 'data/products.json'
+      - 'tests/**'
       - '.github/workflows/amazonite-automation-tests.yml'
       - 'package.json'
   workflow_dispatch:
@@ -36,3 +38,5 @@ jobs:
         run: node automation/aliexpress-mcp-test.mjs
       - name: Run AliExpress API contract test
         run: node automation/aliexpress-api-contract-test.mjs
+      - name: Run Security regression tests
+        run: node --test tests/owner-auth.test.mjs tests/middleware-boundary.test.mjs tests/owner-products-api.test.mjs tests/owner-settings-api.test.mjs tests/admin-data-source.test.mjs
