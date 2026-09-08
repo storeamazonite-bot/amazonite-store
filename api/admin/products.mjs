@@ -1,4 +1,5 @@
 import { createProduct, deleteProduct, getProductCatalog, updateProduct } from '../../lib/product-store.mjs';
+import { enrichProduct } from '../../lib/product-intelligence.mjs';
 import { isOwnerRequest } from '../../lib/owner-auth.mjs';
 
 function json(response, status, body) {
@@ -14,6 +15,23 @@ function requestBody(request) {
     try { return JSON.parse(request.body); } catch { return null; }
   }
   return null;
+}
+
+function intelligenceOptions() {
+  return {
+    minOrders: Number(process.env.MIN_ORDERS || 500),
+    minRating: Number(process.env.MIN_RATING || 4.5),
+    minCommissionPercent: Number(process.env.MIN_COMMISSION_PERCENT || 8)
+  };
+}
+
+function enrichCatalog(catalog) {
+  return {
+    ...catalog,
+    products: Array.isArray(catalog.products)
+      ? catalog.products.map((product) => enrichProduct(product, intelligenceOptions()))
+      : []
+  };
 }
 
 function storageError(response, error) {
@@ -38,14 +56,14 @@ export default async function handler(request, response) {
   try {
     if (request.method === 'GET') {
       const catalog = await getProductCatalog();
-      return json(response, 200, { ok: true, ...catalog });
+      return json(response, 200, { ok: true, ...enrichCatalog(catalog) });
     }
 
     if (request.method === 'POST') {
       const body = requestBody(request);
       if (!body || typeof body !== 'object') return json(response, 400, { ok: false, error: 'Invalid JSON body' });
       const product = await createProduct(body);
-      return json(response, 201, { ok: true, product });
+      return json(response, 201, { ok: true, product: enrichProduct(product, intelligenceOptions()) });
     }
 
     if (request.method === 'PATCH' || request.method === 'PUT') {
@@ -54,7 +72,7 @@ export default async function handler(request, response) {
       if (!id) return json(response, 400, { ok: false, error: 'Product id is required' });
       if (!body || typeof body !== 'object') return json(response, 400, { ok: false, error: 'Invalid JSON body' });
       const product = await updateProduct(id, body);
-      return json(response, 200, { ok: true, product });
+      return json(response, 200, { ok: true, product: enrichProduct(product, intelligenceOptions()) });
     }
 
     if (request.method === 'DELETE') {
