@@ -40,3 +40,9 @@ test('owner cookie is HttpOnly, Secure and SameSite=Strict', () => {
   assert.match(cookie, /Secure/);
   assert.match(cookie, /SameSite=Strict/);
 });
+
+test('malformed owner cookie does not throw and is rejected', () => {
+  const request = { headers: { cookie: 'amazonite_owner_session=%E0%A4%A' } };
+  assert.doesNotThrow(() => auth.isOwnerRequest(request));
+  assert.equal(auth.isOwnerRequest(request), false);
+});
