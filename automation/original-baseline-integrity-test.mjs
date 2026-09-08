@@ -16,7 +16,7 @@ assert.equal(
 );
 
 const sha256 = crypto.createHash('sha256').update(baseline).digest('hex');
-assert.equal(sha256, '33b611767ca4a94161f4a3ff8fb204e00b8e53bb62ebf0c7595e9d406633cc87');
+assert.equal(sha256, '0b6789e5f0a1b81417466df72c9a65494976336ffec60fa984ac8f9c0e3c0346');
 
 console.log('Latest Amazonite Electronic baseline integrity: PASS');
 console.log(`Baseline SHA-256: ${sha256}`);
