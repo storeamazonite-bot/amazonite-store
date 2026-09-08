@@ -16,7 +16,7 @@ const auth = await import('../lib/owner-auth.mjs');
 const { default: middleware } = await import('../middleware.js');
 
 const request = (path, headers = {}) => new Request(`https://example.test${path}`, { headers });
-const ownerCookie = () => auth.ownerCookie(auth.createOwnerSession(1_700_000_000));
+const ownerCookie = () => auth.ownerCookie(auth.createOwnerSession(Math.floor(Date.now() / 1000)));
 
 async function run(path, headers = {}) {
   return middleware(request(path, headers));
@@ -24,21 +24,21 @@ async function run(path, headers = {}) {
 
 test('blocks dashboard without owner session', async () => {
   const response = await run('/dashboard/');
-  assert.equal(response.status, 307);
+  assert.equal(response.status, 302);
   assert.match(response.headers.get('location'), /\/owner-login\.html\?next=%2Fdashboard%2F?$/);
 });
 
 test('blocks admin with malformed owner cookie without throwing', async () => {
   const response = await run('/admin/index.html', { cookie: 'amazonite_owner_session=%E0%A4%A' });
-  assert.equal(response.status, 307);
+  assert.equal(response.status, 302);
   assert.match(response.headers.get('location'), /\/owner-login\.html\?next=%2Fadmin%2Findex\.html$/);
 });
 
 test('blocks admin with tampered owner session', async () => {
-  const token = auth.createOwnerSession(1_700_000_000);
+  const token = auth.createOwnerSession(Math.floor(Date.now() / 1000));
   const tampered = `${token.slice(0, -1)}${token.endsWith('a') ? 'b' : 'a'}`;
   const response = await run('/admin/index.html', { cookie: `amazonite_owner_session=${encodeURIComponent(tampered)}` });
-  assert.equal(response.status, 307);
+  assert.equal(response.status, 302);
 });
 
 test('allows dashboard with a valid owner session', async () => {
