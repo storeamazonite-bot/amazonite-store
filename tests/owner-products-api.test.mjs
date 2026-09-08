@@ -22,7 +22,13 @@ function responseMock() {
   };
 }
 
-const validCookie = ownerCookie(createOwnerSession(1_700_000_000));
+const validCookie = ownerCookie(createOwnerSession());
+
+const baseProduct = {
+  name: 'Test product', category: 'Audio & Tech', status: 'draft',
+  affiliate_url: 'https://www.aliexpress.com/item/123.html', original_url: 'https://www.aliexpress.com/item/123.html',
+  currency: 'USD', market: 'US'
+};
 
 test('rejects unauthenticated product reads before storage access', async () => {
   const originalFetch = globalThis.fetch;
@@ -46,6 +52,19 @@ test('rejects cross-origin mutation before storage access', async () => {
     await handler({ method: 'POST', headers: { host: 'example.test', origin: 'https://evil.example' }, body: '{}' }, response);
     assert.equal(response.statusCode, 403);
     assert.equal(response.body.error, 'origin_not_allowed');
+    assert.equal(called, false);
+  } finally { globalThis.fetch = originalFetch; }
+});
+
+test('rejects invalid affiliate destination before storage access', async () => {
+  const originalFetch = globalThis.fetch;
+  let called = false;
+  globalThis.fetch = async () => { called = true; throw new Error('storage should not be reached'); };
+  try {
+    const response = responseMock();
+    await handler({ method: 'POST', headers: { host: 'example.test', cookie: validCookie }, body: JSON.stringify({ ...baseProduct, affiliate_url: 'https://evil.example/track' }) }, response);
+    assert.equal(response.statusCode, 400);
+    assert.equal(response.body.error, 'invalid_affiliate_url');
     assert.equal(called, false);
   } finally { globalThis.fetch = originalFetch; }
 });
