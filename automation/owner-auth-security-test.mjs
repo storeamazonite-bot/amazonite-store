@@ -40,6 +40,10 @@ assert.match(security, /ae_access=.*HttpOnly; Secure; SameSite=Strict/);
 assert.match(security, /ae_refresh=.*HttpOnly; Secure; SameSite=Strict/);
 assert.doesNotMatch(security, /SameSite=Lax/);
 
+// Malformed percent-encoding in a client cookie must not crash request handling.
+assert.match(security, /try \{\n\s*return \[v\.slice\(0, i\), decodeURIComponent\(v\.slice\(i \+ 1\)\)\];\n\s*\} catch \{/);
+assert.match(security, /catch \{\n\s*return \[v\.slice\(0, i\), ['"]['"]\];/);
+
 // Product mutations must be owner-protected and method-restricted.
 assert.match(products, /if \(req\.method !== ['"]POST['"]\)/);
 assert.match(productById, /['"]PUT['"], ['"]PATCH['"], ['"]DELETE['"]/);
@@ -51,5 +55,5 @@ assert.match(read('lib/supabase.js'), /SUPABASE_SERVICE_ROLE_KEY/);
 assert.doesNotMatch(read('index.html'), /SUPABASE_SERVICE_ROLE_KEY|SUPABASE_SERVICE_ROLE/);
 
 console.log('Owner auth security contract: PASS');
-console.log('Covered: 401 unauthenticated, 403 non-owner, OWNER authorization, Strict secure cookies, session/logout, CRUD protection, RLS contract, server-only service key.');
+console.log('Covered: 401 unauthenticated, 403 non-owner, OWNER authorization, Strict secure cookies, malformed-cookie resilience, session/logout, CRUD protection, RLS contract, server-only service key.');
 console.log('Note: this is a code/contract test; live Supabase credentials and production runtime are not exercised here.');
