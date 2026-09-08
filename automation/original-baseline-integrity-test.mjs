@@ -7,7 +7,7 @@ const baseline = fs.readFileSync('docs/baseline/AMAZONIT-ELECTRONIC-BASELINE.htm
 
 const scriptStart = html.indexOf('<script>');
 assert.ok(scriptStart >= 0, 'Secure integration script is missing.');
-const visibleMarkup = html.slice(0, scriptStart).trimEnd() + '\n</body>\n</html>\n';
+const visibleMarkup = html.slice(0, scriptStart).trimEnd() + '\n\n</body>\n</html>\n';
 
 assert.equal(
   visibleMarkup,
