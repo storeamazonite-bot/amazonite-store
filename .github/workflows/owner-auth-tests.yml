@@ -5,10 +5,11 @@ on:
     paths:
       - 'api/auth/**'
       - 'api/admin/**'
-      - 'api/mcp.mjs'
+      - 'api/analytics/**'
       - 'lib/internal-auth.mjs'
       - 'lib/owner-auth.mjs'
       - 'lib/product-store.mjs'
+      - 'lib/analytics-store.mjs'
       - 'middleware.js'
       - 'owner-login.html'
       - 'test/**'
@@ -18,10 +19,11 @@ on:
     paths:
       - 'api/auth/**'
       - 'api/admin/**'
-      - 'api/mcp.mjs'
+      - 'api/analytics/**'
       - 'lib/internal-auth.mjs'
       - 'lib/owner-auth.mjs'
       - 'lib/product-store.mjs'
+      - 'lib/analytics-store.mjs'
       - 'middleware.js'
       - 'owner-login.html'
       - 'test/**'
@@ -42,5 +44,5 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Run owner authentication and product storage tests
-        run: node --test test/owner-auth.test.mjs test/internal-auth.test.mjs test/product-api-auth.test.mjs test/product-store.test.mjs
+      - name: Run owner authentication, storage and analytics tests
+        run: node --test test/owner-auth.test.mjs test/internal-auth.test.mjs test/product-api-auth.test.mjs test/product-store.test.mjs test/analytics-store.test.mjs
