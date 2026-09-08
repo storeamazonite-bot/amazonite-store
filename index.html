@@ -1,125 +1,141 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Amazonite Electronic — Electronics Affiliate Store</title>
-<meta name="description" content="متجر Amazonite Electronic الاحترافي للتسويق بالعمولة لمنتجات الإلكترونيات.">
-<style>
-:root{
-  --ink:#10201d;--muted:#6d7774;--cream:#f7f7f2;--paper:#fff;
-  --green:#075447;--green2:#0d6b5c;--gold:#d8ad46;--line:#e6e7e1;
-  --shadow:0 12px 35px rgba(11,38,32,.10);--radius:20px;
-}
-*{box-sizing:border-box} html{scroll-behavior:smooth}
-body{margin:0;background:var(--cream);color:var(--ink);font-family:Arial,"Noto Sans Arabic",sans-serif}
-a{text-decoration:none;color:inherit}.wrap{max-width:1280px;margin:auto;padding:0 24px}
-.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
-.nav{height:76px;display:flex;align-items:center;gap:20px}
-.logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:22px;white-space:nowrap}
-.logoMark{width:42px;height:42px;border-radius:13px;background:linear-gradient(145deg,#f3d478,#bd8e27);display:grid;place-items:center;color:#173d35;font-weight:900}
-.search{flex:1;max-width:610px;margin:auto;position:relative}
-.search input{width:100%;height:48px;border:1px solid var(--line);border-radius:15px;padding:0 18px 0 50px;background:#fafaf7;outline:none;font-size:14px}
-.search button{position:absolute;left:6px;top:6px;width:36px;height:36px;border:0;border-radius:11px;background:var(--green);color:white;cursor:pointer}
-.navbtn{border:1px solid var(--line);background:white;padding:12px 16px;border-radius:13px;font-weight:700;cursor:pointer}
-.hero{margin:28px 0 16px;background:radial-gradient(circle at 82% 20%,rgba(255,255,255,.12),transparent 30%),linear-gradient(120deg,#063f35,#0b5d4e);color:white;border-radius:26px;padding:42px;display:flex;gap:30px;align-items:center;min-height:300px;box-shadow:var(--shadow);overflow:hidden;position:relative}
-.hero:after{content:"";position:absolute;width:360px;height:360px;border-radius:50%;background:rgba(216,173,70,.12);left:-100px;bottom:-190px}
-.heroCopy{flex:1;position:relative;z-index:1}.kicker{color:#e7c867;font-weight:800;font-size:13px;margin-bottom:12px}
-.hero h1{font-size:clamp(34px,5vw,58px);line-height:1.05;margin:0 0 14px}.hero p{color:#d7e5e1;max-width:680px;line-height:1.8;margin:0 0 22px}
-.cta{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:#182c27;padding:14px 20px;border-radius:14px;font-weight:900}
-.heroStat{position:relative;z-index:1;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);padding:22px;border-radius:18px;min-width:180px;text-align:center}
-.heroStat strong{display:block;font-size:34px;color:#f2d57d}.heroStat span{color:#d8e4e1;font-size:13px}
-.triple{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:14px 0 35px}
-.tile{border-radius:18px;padding:22px;background:#fff;border:1px solid var(--line);min-height:110px;box-shadow:0 5px 18px rgba(0,0,0,.04)}
-.tile.green{background:#0b5b4d;color:white}.tile.gold{background:linear-gradient(135deg,#c79732,#e0bd63);color:#1d2b26}.tile.dark{background:#29302e;color:white}
-.tile h3{margin:0 0 8px;font-size:18px}.tile p{margin:0;opacity:.82;font-size:13px;line-height:1.6}
-.sectionHead{display:flex;align-items:end;justify-content:space-between;gap:15px;margin:38px 0 15px}.eyebrow{font-size:12px;color:var(--muted);margin-bottom:6px}.sectionHead h2{margin:0;font-size:28px}.pill{background:#fff;border:1px solid var(--line);padding:10px 14px;border-radius:999px;font-size:12px}
-.videos{background:#063f35;color:white;border-radius:24px;padding:28px;box-shadow:var(--shadow)}.videoGrid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
-.video{border-radius:16px;overflow:hidden;background:#0b5b4d;border:1px solid rgba(255,255,255,.1)}.videoThumb{height:150px;background:linear-gradient(135deg,#113d36,#0a6a5a);display:grid;place-items:center;position:relative}.play{width:52px;height:52px;border-radius:50%;background:white;color:#0a5a4c;display:grid;place-items:center;font-size:20px;box-shadow:0 7px 20px rgba(0,0,0,.18)}.videoInfo{padding:13px}.videoInfo strong{display:block;margin-bottom:5px}.videoInfo small{color:#c9ddd8}
-.filters{display:flex;gap:9px;flex-wrap:wrap;margin:18px 0}.filter{border:1px solid var(--line);background:white;border-radius:999px;padding:10px 16px;cursor:pointer}.filter.active{background:var(--green);color:white;border-color:var(--green)}
-.products{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.card{background:white;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,.05);transition:.2s;display:flex;flex-direction:column}.card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
-.pic{height:210px;background:linear-gradient(145deg,#eef0eb,#dfe5df);position:relative;display:grid;place-items:center;overflow:hidden}.pic .device{font-size:80px;filter:drop-shadow(0 14px 13px rgba(0,0,0,.18))}
-.badge{position:absolute;top:11px;right:11px;background:#e8bf4e;color:#25342f;padding:6px 9px;border-radius:9px;font-size:10px;font-weight:900}.body{padding:15px;display:flex;flex-direction:column;flex:1}.cat{font-size:11px;color:#177160;font-weight:800;margin-bottom:6px}.title{font-size:17px;font-weight:900;line-height:1.35}.meta{font-size:12px;color:var(--muted);margin:8px 0}.rating{color:#9a7318;font-weight:800}.price{font-size:21px;font-weight:900;margin:7px 0 13px}.old{text-decoration:line-through;color:#a1a6a3;font-size:11px;margin-right:5px;font-weight:400}
-.buy{margin-top:auto;background:var(--green);color:white;border:0;padding:13px;border-radius:12px;font-weight:900;cursor:pointer}.buy:hover{background:var(--green2)}
-.note{margin:22px 0;padding:16px;border:1px dashed #c9cbc4;background:#fbfbf7;border-radius:15px;color:#68716e;font-size:12px;line-height:1.7}
-.footer{margin-top:55px;background:#092f28;color:#dbe9e5;padding:35px 0}.footerGrid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:30px}.footer h3{color:white}.footer p{color:#abc1bb;line-height:1.7;font-size:13px}.mobileBar{display:none}
-@media(max-width:1000px){.products{grid-template-columns:repeat(3,1fr)}.videoGrid{grid-template-columns:repeat(3,1fr)}.video:nth-child(n+4){display:none}}
-@media(max-width:720px){.wrap{padding:0 14px}.nav{height:66px;gap:9px}.logo{font-size:16px}.logoMark{width:35px;height:35px}.navbtn{display:none}.search{max-width:none}.search input{height:42px}.hero{padding:28px 22px;min-height:0;display:block;border-radius:20px}.hero h1{font-size:37px}.heroStat{margin-top:22px;display:inline-block;min-width:150px}.triple{grid-template-columns:1fr}.tile{min-height:88px}.tile:nth-child(3){display:none}.videos{padding:18px;border-radius:19px}.videoGrid{grid-template-columns:repeat(2,1fr)}.videoThumb{height:115px}.video:nth-child(n+5){display:none}.sectionHead h2{font-size:24px}.products{grid-template-columns:repeat(2,1fr);gap:10px}.pic{height:155px}.pic .device{font-size:58px}.body{padding:11px}.title{font-size:14px}.price{font-size:17px}.buy{padding:11px;font-size:12px}.footerGrid{grid-template-columns:1fr}.mobileBar{display:flex;position:fixed;bottom:10px;right:10px;left:10px;z-index:60;background:#063f35;color:white;border-radius:16px;padding:8px;box-shadow:0 10px 30px rgba(0,0,0,.22);gap:8px}.mobileBar a{flex:1;text-align:center;padding:11px;border-radius:11px;font-weight:900}.mobileBar a:first-child{background:#e2bb54;color:#1d302a}}
-
-/* Hidden owner dashboard */
-.admin-launch{position:fixed;right:10px;bottom:72px;width:10px;height:10px;opacity:0;z-index:9999;cursor:pointer;border:0;background:transparent}.admin-panel{position:fixed;inset:0;background:rgba(3,7,18,.86);backdrop-filter:blur(8px);z-index:10000;display:none;padding:18px;overflow:auto}.admin-panel.open{display:block}.admin-shell{max-width:1100px;margin:30px auto;background:#0d1424;border:1px solid rgba(255,170,50,.35);border-radius:22px;box-shadow:0 24px 80px rgba(0,0,0,.5);padding:22px;color:#fff}.admin-head{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-bottom:18px}.admin-head h2{margin:0}.admin-close{border:1px solid #334155;background:#111827;color:#fff;border-radius:10px;padding:9px 13px;cursor:pointer}.admin-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}.admin-box{background:#111a2c;border:1px solid #26344d;border-radius:16px;padding:16px}.admin-box h3{margin-top:0}.admin-form{display:grid;gap:10px}.admin-form label{font-size:12px;color:#aebbd0}.admin-form input,.admin-form select{width:100%;box-sizing:border-box;background:#0b1220;color:#fff;border:1px solid #334155;border-radius:10px;padding:11px}.admin-actions{display:flex;gap:8px;flex-wrap:wrap}.admin-actions button{border:0;border-radius:10px;padding:10px 14px;cursor:pointer}.admin-save{background:#f59e0b;color:#111827}.admin-cancel{background:#334155;color:#fff}.admin-list{display:grid;gap:8px;max-height:520px;overflow:auto}.admin-row{display:flex;justify-content:space-between;gap:10px;align-items:center;background:#0b1220;border:1px solid #25324a;border-radius:12px;padding:10px}.admin-row small{display:block;color:#94a3b8}.admin-row button{background:#1e293b;color:#fff;border:1px solid #334155;border-radius:8px;padding:7px 9px;cursor:pointer}.admin-note{font-size:12px;color:#94a3b8;margin-top:12px;line-height:1.6}@media(max-width:760px){.admin-grid{grid-template-columns:1fr}.admin-panel{padding:8px}.admin-shell{margin:8px auto;padding:14px}.admin-head{align-items:flex-start}.admin-row{align-items:flex-start;flex-direction:column}.admin-row .row-actions{display:flex}}
-</style>
+  <meta charset="UTF-8">
+  <title>Amazonit Electronic</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#0d1b2a; color:#fff; margin:0; }
+    .container { width:100%; text-align:center; padding:20px; }
+    .box { width:300px; margin:50px auto; padding:20px; background:#1b263b; border-radius:8px; }
+    input, select { width:90%; padding:10px; margin:10px 0; border:none; border-radius:5px; }
+    button, .buy-btn { padding:10px 20px; background:#e63946; color:#fff; border:none; border-radius:5px; cursor:pointer; text-decoration:none; display:inline-block; }
+    button:hover, .buy-btn:hover { background:#f77f00; }
+    header { background:#1b263b; padding:15px; display:flex; justify-content:space-between; align-items:center; }
+    header h1 { margin:0; font-size:20px; }
+    footer { background:#1b263b; padding:10px; text-align:center; margin-top:50px; }
+    .products { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:20px; }
+    .product { background:#1b263b; padding:15px; border-radius:8px; }
+    .product img { width:100%; border-radius:5px; }
+  </style>
 </head>
 <body>
-<header class="top"><div class="wrap nav"><a class="logo" href="#"><span class="logoMark">A</span> أمازونيت ستور</a><div class="search"><input id="search" placeholder="ابحث عن المنتجات..." oninput="filterProducts()"><button onclick="filterProducts()">⌕</button></div><button class="navbtn" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">تسوّق الآن</button></div></header>
-<main>
-<section class="hero"><div class="heroCopy"><div class="kicker">اختيارات تقنية ذكية</div><h1>إلكترونيات تستحق الاكتشاف.</h1><p>اكتشف منتجات تقنية مختارة بعناية، قارن قبل الشراء، وانتقل إلى AliExpress عبر روابط الإحالة عندما تكون متاحة.</p><a class="cta" href="#products">استكشف المنتجات ←</a></div><div class="heroStat"><strong>20</strong><span>منتجاً مختاراً</span></div></section>
-<section class="triple"><article class="tile green"><h3>منتجات مختارة</h3><p>تركيز على الإلكترونيات والإكسسوارات العملية.</p></article><article class="tile gold"><h3>قيمة واضحة</h3><p>تقييمات وأسعار معروضة بوضوح قبل الانتقال للمتجر الشريك.</p></article><article class="tile dark"><h3>تسوق أذكى</h3><p>اكتشف المنتج أولاً ثم استخدم رابط الأفلييت عند توفره.</p></article></section>
-<section id="watch" class="videos"><div class="sectionHead"><div><div class="eyebrow" style="color:#b9d4ce">شاهد قبل التسوق</div><h2>فيديوهات ومنتجات مختارة</h2></div><div class="pill">Amazonite Electronic</div></div><div class="videoGrid">
-<article class="video"><div class="videoThumb">🎧<span class="play">▶</span></div><div class="videoInfo"><strong>Picun F8 Pro</strong><small>سماعات ANC</small></div></article>
-<article class="video"><div class="videoThumb">🎧<span class="play">▶</span></div><div class="videoInfo"><strong>HAYLOU S40 ANC</strong><small>صوت لاسلكي</small></div></article>
-<article class="video"><div class="videoThumb">🔊<span class="play">▶</span></div><div class="videoInfo"><strong>Ortizan X8 Pro</strong><small>مكبر صوت</small></div></article>
-<article class="video"><div class="videoThumb">🎙️<span class="play">▶</span></div><div class="videoInfo"><strong>FreedConn T-Com VB</strong><small>اتصال لاسلكي</small></div></article>
-<article class="video"><div class="videoThumb">🔌<span class="play">▶</span></div><div class="videoInfo"><strong>UGREEN PD240W</strong><small>كابل USB-C</small></div></article>
-</div></section>
-<section class="sectionHead"><div><div class="eyebrow">اختيارات المتجر</div><h2>المنتجات الرائجة 🔥</h2></div><span class="pill">20 منتج</span></section>
-<div class="filters"><button class="filter active" data-cat="all">الجميع</button><button class="filter" data-cat="صوتي">صوتي</button><button class="filter" data-cat="التكنولوجيا">التكنولوجيا</button><button class="filter" data-cat="قوة">قوة</button><button class="filter" data-cat="مكملات">ملحقات</button></div>
-<section class="products" id="grid">
-<article class="card" data-name="picun f8 pro anc" data-cat="صوتي"><div class="pic"><span class="badge">الأكثر مبيعاً</span><div class="device">🎧</div></div><div class="body"><div class="cat">صوتي</div><div class="title">Picun F8 Pro ANC</div><div class="meta"><span class="rating">★ 4.8</span> · تقييمات المنتج</div><div class="price">$39.99 <span class="old">السعر السابق</span></div><button class="buy" onclick="affiliate('Picun F8 Pro ANC')">تسوّق بالعمولة ←</button></div></article>
-<article class="card" data-name="haylou s40 anc" data-cat="صوتي"><div class="pic"><span class="badge">الأكثر رواجاً</span><div class="device">🎧</div></div><div class="body"><div class="cat">صوتي</div><div class="title">HAYLOU S40 ANC</div><div class="meta"><span class="rating">★ 4.7</span> · تقييمات المنتج</div><div class="price">$49.99 <span class="old">السعر السابق</span></div><button class="buy" onclick="affiliate('HAYLOU S40 ANC')">تسوّق بالعمولة ←</button></div></article>
-<article class="card" data-name="haylou s30 anc" data-cat="صوتي"><div class="pic"><span class="badge">حار</span><div class="device">🎧</div></div><div class="body"><div class="cat">صوتي</div><div class="title">HAYLOU S30 ANC</div><div class="meta"><span class="rating">★ 4.7</span> · تقييمات المنتج</div><div class="price">$35.99 <span class="old">السعر السابق</span></div><button class="buy" onclick="affiliate('HAYLOU S30 ANC')">تسوّق بالعمولة ←</button></div></article>
-<article class="card" data-name="oneodio 110h" data-cat="صوتي"><div class="pic"><span class="badge">الخيار الأفضل</span><div class="device">🎧</div></div><div class="body"><div class="cat">صوتي</div><div class="title">OneOdio 110H</div><div class="meta"><span class="rating">★ 4.8</span> · تقييمات المنتج</div><div class="price">$42.99 <span class="old">السعر السابق</span></div><button class="buy" onclick="affiliate('OneOdio 110H')">تسوّق بالعمولة ←</button></div></article>
-<article class="card" data-name="oneodio fusion a70" data-cat="صوتي"><div class="pic"><span class="badge">شائع</span><div class="device">🎧</div></div><div class="body"><div class="cat">صوتي</div><div class="title">OneOdio Fusion A70</div><div class="meta"><span class="rating">★ 4.7</span> · تقييمات المنتج</div><div class="price">$45.99 <span class="old">السعر السابق</span></div><button class="buy" onclick="affiliate('OneOdio Fusion A70')">تسوّق بالعمولة ←</button></div></article>
-<article class="card" data-name="ugreen studio pro" data-cat="التكنولوجيا"><div class="pic"><span class="badge">الأكثر رواجاً</span><div class="device">💻</div></div><div class="body"><div class="cat">التكنولوجيا</div><div class="title">UGREEN Studio Pro</div><div class="meta"><span class="rating">★ 4.8</span> · تقييمات المنتج</div><div class="price">$59.99 <span class="old">السعر السابق</span></div><button class="buy" onclick="affiliate('UGREEN Studio Pro')">تسوّق بالعمولة ←</button></div></article>
-<article class="card" data-name="ugreen pd240w cable" data-cat="التكنولوجيا"><div class="pic"><span class="badge">الأكثر مبيعاً</span><div class="device">🔌</div></div><div class="body"><div class="cat">التكنولوجيا</div><div class="title">UGREEN PD240W Cable</div><div class="meta"><span class="rating">★ 4.8</span> · تقييمات المنتج</div><div class="price">$9.99 <span class="old">السعر السابق</span></div><button class="buy" onclick="affiliate('UGREEN PD240W Cable')">تسوّق بالعمولة ←</button></div></article>
-<article class="card" data-name="ortizan x8 pro 40w" data-cat="التكنولوجيا"><div class="pic"><span class="badge">حار</span><div class="device">🔊</div></div><div class="body"><div class="cat">التكنولوجيا</div><div class="title">Ortizan X8 Pro 40W</div><div class="meta"><span class="rating">★ 4.7</span> · تقييمات المنتج</div><div class="price">$29.99 <span class="old">السعر السابق</span></div><button class="buy" onclick="affiliate('Ortizan X8 Pro 40W')">تسوّق بالعمولة ←</button></div></article>
-<article class="card" data-name="ortizan x8 pro 40w 6600mah" data-cat="التكنولوجيا"><div class="pic"><span class="badge">شائع</span><div class="device">🔊</div></div><div class="body"><div class="cat">التكنولوجيا</div><div class="title">Ortizan X8 Pro 40W 6600mAh</div><div class="meta"><span class="rating">★ 4.6</span> · تقييمات المنتج</div><div class="price">$39.99 <span class="old">السعر السابق</span></div><button class="buy" onclick="affiliate('Ortizan X8 Pro 40W 6600mAh')">تسوّق بالعمولة ←</button></div></article>
-<article class="card" data-name="ewa a106 pro" data-cat="التكنولوجيا"><div class="pic"><span class="badge">مميز</span><div class="device">🔊</div></div><div class="body"><div class="cat">التكنولوجيا</div><div class="title">EWA A106 Pro</div><div class="meta"><span class="rating">★ 4.7</span> · تقييمات المنتج</div><div class="price">$24.99 <span class="old">السعر السابق</span></div><button class="buy" onclick="affiliate('EWA A106 Pro')">تسوّق بالعمولة ←</button></div></article>
-<article class="card" data-name="freedconn t-com vb" data-cat="مكملات"><div class="pic"><span class="badge">جديد</span><div class="device">🎙️</div></div><div class="body"><div class="cat">مكملات</div><div class="title">FreedConn T-Com VB</div><div class="meta"><span class="rating">★ 4.7</span> · تقييمات المنتج</div><div class="price">$31.99 <span class="old">السعر السابق</span></div><button class="buy" onclick="affiliate('FreedConn T-Com VB')">تسوّق بالعمولة ←</button></div></article>
-<article class="card" data-name="fodsports fx-s" data-cat="مكملات"><div class="pic"><span class="badge">حار</span><div class="device">🎙️</div></div><div class="body"><div class="cat">مكملات</div><div class="title">Fodsports FX-S</div><div class="meta"><span class="rating">★ 4.7</span> · تقييمات المنتج</div><div class="price">$44.99 <span class="old">السعر السابق</span></div><button class="buy" onclick="affiliate('Fodsports FX-S')">تسوّق بالعمولة ←</button></div></article>
-<article class="card" data-name="power bank 5000mah" data-cat="قوة"><div class="pic"><span class="badge">الأكثر مبيعاً</span><div class="device">🔋</div></div><div class="body"><div class="cat">قوة</div><div class="title">Power Bank 5000mAh</div><div class="meta"><span class="rating">★ 4.6</span> · تقييمات المنتج</div><div class="price">$15.99 <span class="old">السعر السابق</span></div><button class="buy" onclick="affiliate('Power Bank 5000mAh')">تسوّق بالعمولة ←</button></div></article>
-<article class="card" data-name="picun g2" data-cat="صوتي"><div class="pic"><span class="badge">اختيار جيد</span><div class="device">🎧</div></div><div class="body"><div class="cat">صوتي</div><div class="title">Picun G2</div><div class="meta"><span class="rating">★ 4.7</span> · تقييمات المنتج</div><div class="price">$32.99 <span class="old">السعر السابق</span></div><button class="buy" onclick="affiliate('Picun G2')">تسوّق بالعمولة ←</button></div></article>
-<article class="card" data-name="uyuxio wireless headphones" data-cat="صوتي"><div class="pic"><span class="badge">شائع</span><div class="device">🎧</div></div><div class="body"><div class="cat">صوتي</div><div class="title">UYUXIO Wireless Headphones</div><div class="meta"><span class="rating">★ 4.6</span> · تقييمات المنتج</div><div class="price">$28.99 <span class="old">السعر السابق</span></div><button class="buy" onclick="affiliate('UYUXIO Wireless Headphones')">تسوّق بالعمولة ←</button></div></article>
-<article class="card" data-name="bluetooth speaker 40w" data-cat="التكنولوجيا"><div class="pic"><span class="badge">حار</span><div class="device">🔊</div></div><div class="body"><div class="cat">التكنولوجيا</div><div class="title">Bluetooth Speaker 40W</div><div class="meta"><span class="rating">★ 4.6</span> · تقييمات المنتج</div><div class="price">$25.99 <span class="old">السعر السابق</span></div><button class="buy" onclick="affiliate('Bluetooth Speaker 40W')">تسوّق بالعمولة ←</button></div></article>
-<article class="card" data-name="usb-c gan charger" data-cat="قوة"><div class="pic"><span class="badge">جديد</span><div class="device">⚡</div></div><div class="body"><div class="cat">قوة</div><div class="title">USB-C GaN Charger</div><div class="meta"><span class="rating">★ 4.8</span> · تقييمات المنتج</div><div class="price">$19.99 <span class="old">السعر السابق</span></div><button class="buy" onclick="affiliate('USB-C GaN Charger')">تسوّق بالعمولة ←</button></div></article>
-<article class="card" data-name="smart rgb desk light" data-cat="التكنولوجيا"><div class="pic"><span class="badge">الأكثر رواجاً</span><div class="device">💡</div></div><div class="body"><div class="cat">التكنولوجيا</div><div class="title">Smart RGB Desk Light</div><div class="meta"><span class="rating">★ 4.7</span> · تقييمات المنتج</div><div class="price">$22.99 <span class="old">السعر السابق</span></div><button class="buy" onclick="affiliate('Smart RGB Desk Light')">تسوّق بالعمولة ←</button></div></article>
-<article class="card" data-name="wireless earbuds" data-cat="صوتي"><div class="pic"><span class="badge">الأكثر مبيعاً</span><div class="device">🎵</div></div><div class="body"><div class="cat">صوتي</div><div class="title">Wireless Earbuds</div><div class="meta"><span class="rating">★ 4.7</span> · تقييمات المنتج</div><div class="price">$18.99 <span class="old">السعر السابق</span></div><button class="buy" onclick="affiliate('Wireless Earbuds')">تسوّق بالعمولة ←</button></div></article>
-<article class="card" data-name="gaming accessories kit" data-cat="مكملات"><div class="pic"><span class="badge">اختيار المحررين</span><div class="device">🎮</div></div><div class="body"><div class="cat">مكملات</div><div class="title">Gaming Accessories Kit</div><div class="meta"><span class="rating">★ 4.6</span> · تقييمات المنتج</div><div class="price">$27.99 <span class="old">السعر السابق</span></div><button class="buy" onclick="affiliate('Gaming Accessories Kit')">تسوّق بالعمولة ←</button></div></article>
+
+<!-- صفحة تسجيل الدخول -->
+<div id="loginPage" class="container">
+  <div class="box">
+    <h2>🔒 تسجيل الدخول</h2>
+    <form id="loginForm">
+      <input type="text" id="loginUser" placeholder="اسم المستخدم" required><br>
+      <input type="password" id="loginPass" placeholder="كلمة المرور" required><br>
+      <button type="submit">دخول</button>
+    </form>
+    <p id="loginError" style="color:red;"></p>
+  </div>
+</div>
+
+<!-- لوحة التحكم -->
+<div id="dashboardPage" style="display:none;">
+  <header>
+    <h1>لوحة التحكم - Amazonit Electronic</h1>
+    <button id="logoutBtn">🚪 تسجيل الخروج</button>
+  </header>
+
+  <!-- قسم المنتجات -->
+  <section class="container">
+    <h2>🛒 المنتجات</h2>
+    <div class="products">
+      <!-- 20 منتج -->
+      <div class="product"><img src="images/phone1.jpg"><h3>هاتف ذكي شاشة 6.5 بوصة</h3><p>299.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/smartwatch1.jpg"><h3>ساعة ذكية مقاومة للماء</h3><p>49.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/headphones1.jpg"><h3>سماعة رأس لاسلكية</h3><p>59.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/laptop1.jpg"><h3>حاسوب محمول i7</h3><p>699.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/tablet1.jpg"><h3>جهاز لوحي 10 بوصة</h3><p>199.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/camera1.jpg"><h3>كاميرا رقمية 24MP</h3><p>349.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/tv1.jpg"><h3>تلفاز ذكي 55 بوصة</h3><p>499.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/speaker1.jpg"><h3>مكبر صوت بلوتوث</h3><p>39.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/keyboard1.jpg"><h3>لوحة مفاتيح ميكانيكية</h3><p>89.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/mouse1.jpg"><h3>فأرة ألعاب RGB</h3><p>49.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/router1.jpg"><h3>راوتر واي فاي سريع</h3><p>59.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/projector1.jpg"><h3>بروجكتور منزلي</h3><p>129.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/console1.jpg"><h3>جهاز ألعاب حديث</h3><p>399.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/drone1.jpg"><h3>طائرة بدون طيار</h3><p>249.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/printer1.jpg"><h3>طابعة ليزر ملونة</h3><p>149.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/ssd1.jpg"><h3>قرص SSD 1TB</h3><p>99.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/powerbank1.jpg"><h3>باور بنك 20000mAh</h3><p>29.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/earbuds1.jpg"><h3>سماعات أذن لاسلكية</h3><p>39.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+      <div class="product"><img src="images/monitor1.jpg"><h3>شاشة كمبيوتر 27 بوصة</h3><p>199.99$</p><a href="رابط_الأفلييت" class="buy-btn">اشترِ الآن</a></div>
+    </div>
+  </section>
+
+  <!-- إعدادات الحساب -->
+  <section id="account-settings" class="container">
+    <h2>⚙️ إعدادات الحساب</h2>
+    <form id="accountForm">
+      <input type="text" id="username" placeholder="أدخل اسم الدخول الجديد">
+      <input type="password" id="password" placeholder="أدخل كلمة المرور الجديدة">
+      <input type="email" id="email" placeholder="أدخل بريدك الإلكتروني">
+
+      <label for="language">اختر اللغة المفضلة</label>
+      <select id="language">
+        <option value="ar">العربية</option>
+        <option value="en">English</option>
+        <option value="fr">Français</option>
+      </select>
+
+      <button type="
+</button>
+</form>
 </section>
-<div class="note"><strong>ملاحظة للقالب:</strong> الأزرار مربوطة حالياً بوظيفة تجريبية. قبل الإطلاق، ضع رابط AliExpress Affiliate الحقيقي لكل منتج في بيانات المنتج. لا نعرض أرقام طلبات أو خصومات وهمية؛ يمكن إظهارها فقط عندما تكون البيانات موثقة.</div>
 </main>
-<footer class="footer"><div class="wrap footerGrid"><div><h3>Amazonite Electronic</h3><p>متجر اكتشافات إلكترونية مبني حول تجربة تصفح سريعة، محتوى بصري، وفصل واضح بين الاستكشاف والانتقال إلى المتجر الشريك.</p></div><div><h3>تصفح</h3><p>الصوتيات<br>التكنولوجيا<br>الطاقة<br>الملحقات</p></div><div><h3>للشركاء</h3><p>روابط الأفلييت<br>تتبع النقرات<br>تحليلات التحويل</p></div></div></footer>
-<div class="mobileBar"><a href="#products">تسوّق الآن</a><a href="#products">شاهد المنتجات</a></div>
-<button class="admin-launch" id="adminLauncher" aria-label="Owner dashboard"></button>
-<div class="admin-panel" id="adminPanel" aria-hidden="true"><div class="admin-shell"><div class="admin-head"><div><div class="eyebrow">OWNER AREA</div><h2>Amazonite Electronic — Dashboard</h2></div><button class="admin-close" id="adminClose">إغلاق</button></div><div class="admin-grid"><div class="admin-box"><h3 id="formTitle">إضافة منتج</h3><form class="admin-form" id="productForm"><input type="hidden" id="editIndex" value="-1"><label>اسم المنتج<input id="pName" required></label><label>التصنيف<input id="pCat" placeholder="صوتي / التكنولوجيا / قوة / مكملات" required></label><label>السعر<input id="pPrice" placeholder="$39.99" required></label><label>التقييم<input id="pRating" placeholder="4.8" required></label><label>الشارة<input id="pBadge" placeholder="الأكثر مبيعاً"></label><label>رابط صورة المنتج<input id="pImage" type="url" placeholder="https://..."></label><label>رابط AliExpress Affiliate<input id="pLink" type="url" placeholder="https://s.click.aliexpress.com/..." required></label><div class="admin-actions"><button class="admin-save" type="submit">حفظ المنتج</button><button class="admin-cancel" type="button" id="formCancel">إلغاء</button></div></form><div class="admin-note">مهم: هذه نسخة Static. لوحة الإدارة مخفية داخل الصفحة وليست مصادقة خادمية حقيقية بعد. عند ربط Backend/Auth لاحقاً تصبح الحماية فعلية.</div></div><div class="admin-box"><h3>المنتجات (<span id="adminCount">0</span>)</h3><div class="admin-list" id="adminList"></div></div></div></div></div>
 <script>
-const cards=[...document.querySelectorAll('.card')];
-let active='all';
-let products=[];
-let ownerAuthenticated=false;
-function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
-function escAttr(v){return esc(v);}
-function seedProducts(){return cards.map(c=>({name:c.querySelector('.title')?.textContent.trim()||'',cat:c.dataset.cat||'',price:c.querySelector('.price')?.childNodes[0]?.textContent.trim()||'',rating:c.querySelector('.rating')?.textContent.replace('★','').trim()||'',badge:c.querySelector('.badge')?.textContent.trim()||'',image:c.querySelector('.pic img')?.src||'',link:c.dataset.link||'',id:null}));}
-function normalizeProduct(p){return {id:p.id||null,name:p.name||'',cat:p.category||p.cat||'',price:p.price??'',rating:p.rating??'',badge:p.badge||'',image:p.image||'',link:p.affiliate_url||p.link||'',status:p.status||'active'};}
-async function publicProducts(){try{const r=await fetch('/api/products?status=active',{credentials:'include',cache:'no-store'});if(!r.ok)return false;const data=await r.json();if(!Array.isArray(data?.products))return false;products=data.products.map(normalizeProduct);renderProducts();return true;}catch(_){return false;}}
-function renderProducts(){const grid=document.getElementById('grid');if(!grid)return;if(!products.length){grid.innerHTML='';return;}grid.innerHTML=products.map((p,i)=>`<article class="card" data-name="${esc(p.name.toLowerCase())}" data-cat="${esc(p.cat)}"><div class="pic">${p.badge?`<span class="badge">${esc(p.badge)}</span>`:''}<div class="device">${p.image?`<img src="${escAttr(p.image)}" alt="${escAttr(p.name)}" loading="lazy" style="max-width:100%;max-height:150px;object-fit:contain;border-radius:12px">`:'🎧'}</div></div><div class="body"><div class="cat">${esc(p.cat)}</div><div class="title">${esc(p.name)}</div><div class="meta"><span class="rating">★ ${esc(p.rating)}</span> · تقييمات المنتج</div><div class="price">${esc(p.price)} <span class="old">السعر السابق</span></div><button class="buy" onclick="affiliateByIndex(${i})">تسوّق بالعمولة ←</button></div></article>`).join('');filterProducts();}
-function filterProducts(){const q=(document.getElementById('search')?.value||'').toLowerCase().trim();document.querySelectorAll('#grid .card').forEach(c=>{const okCat=active==='all'||c.dataset.cat===active;const okQ=!q||c.dataset.name.includes(q);c.style.display=okCat&&okQ?'flex':'none';});}
-document.querySelectorAll('.filter').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');active=b.dataset.cat;filterProducts();}));
-document.getElementById('search')?.addEventListener('input',filterProducts);
-async function apiSession(){try{const r=await fetch('/api/auth/session',{credentials:'include',cache:'no-store'});if(!r.ok)return false;const d=await r.json();return d?.authenticated===true;}catch(_){return false;}}
-async function loginOwner(){const email=prompt('Owner Dashboard — أدخل بريد المالك:');if(email===null)return false;const password=prompt('Owner Dashboard — أدخل كلمة مرور المالك:');if(password===null)return false;try{const r=await fetch('/api/auth/login',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});const d=await r.json().catch(()=>({}));if(!r.ok){alert(d.error||'تعذر تسجيل الدخول.');return false;}return true;}catch(_){alert('تعذر الاتصال بخدمة المصادقة.');return false;}}
-const panel=document.getElementById('adminPanel');
-async function openAdmin(){if(!ownerAuthenticated)ownerAuthenticated=await apiSession();if(!ownerAuthenticated)ownerAuthenticated=await loginOwner();if(!ownerAuthenticated)return;panel.classList.add('open');panel.setAttribute('aria-hidden','false');await loadAdminProducts();}
-document.getElementById('adminLauncher').addEventListener('click',openAdmin);document.addEventListener('keydown',e=>{if(e.ctrlKey&&e.shiftKey&&e.key.toLowerCase()==='a'){e.preventDefault();openAdmin();}if(e.key==='Escape')closeAdmin();});function closeAdmin(){panel.classList.remove('open');panel.setAttribute('aria-hidden','true');}document.getElementById('adminClose').addEventListener('click',closeAdmin);
-async function loadAdminProducts(){if(!ownerAuthenticated)return;try{const r=await fetch('/api/products?status=all',{credentials:'include',cache:'no-store'});if(r.status===401||r.status===403){ownerAuthenticated=false;return;}if(!r.ok)return;const d=await r.json();if(Array.isArray(d?.products)){products=d.products.map(normalizeProduct);renderProducts();renderAdmin();}}catch(_){}}
-function resetForm(){document.getElementById('productForm').reset();document.getElementById('editIndex').value='-1';document.getElementById('formTitle').textContent='إضافة منتج';}document.getElementById('formCancel').addEventListener('click',resetForm);
-document.getElementById('productForm').addEventListener('submit',async e=>{e.preventDefault();if(!ownerAuthenticated||!(await apiSession())){ownerAuthenticated=false;alert('انتهت جلسة المالك.');return;}const i=Number(document.getElementById('editIndex').value);const p={name:pName.value.trim(),category:pCat.value.trim(),price:Number(pPrice.value),rating:Number(pRating.value),badge:pBadge.value.trim(),image:pImage.value.trim(),affiliate_url:pLink.value.trim(),status:'active'};const id=i>=0?products[i]?.id:null;const url=id?`/api/products/${encodeURIComponent(id)}`:'/api/products';const method=id?'PUT':'POST';try{const r=await fetch(url,{method,credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});const d=await r.json().catch(()=>({}));if(!r.ok){alert(d.error||'تعذر حفظ المنتج.');return;}resetForm();await loadAdminProducts();}catch(_){alert('تعذر الاتصال بخدمة المنتجات.');}});
-function renderAdmin(){const list=document.getElementById('adminList');if(!list)return;document.getElementById('adminCount').textContent=products.length;list.innerHTML=products.map((p,i)=>`<div class="admin-row"><div><strong>${esc(p.name)}</strong><small>${esc(p.price)} · ${esc(p.cat)} · ${p.link?'Affiliate ✓':'Affiliate غير مضاف'}</small></div><div class="row-actions"><button onclick="editProduct(${i})">تعديل</button> <button onclick="deleteProduct(${i})">حذف</button></div></div>`).join('');}
-function editProduct(i){const p=products[i];if(!p)return;pName.value=p.name||'';pCat.value=p.cat||'';pPrice.value=p.price??'';pRating.value=p.rating??'';pBadge.value=p.badge||'';pImage.value=p.image||'';pLink.value=p.link||'';document.getElementById('editIndex').value=i;document.getElementById('formTitle').textContent='تعديل المنتج';}
-async function deleteProduct(i){if(!confirm('حذف هذا المنتج؟'))return;if(!ownerAuthenticated||!(await apiSession())){ownerAuthenticated=false;alert('انتهت جلسة المالك.');return;}const id=products[i]?.id;if(!id){alert('هذا المنتج غير موجود في قاعدة البيانات بعد.');return;}try{const r=await fetch(`/api/products/${encodeURIComponent(id)}`,{method:'DELETE',credentials:'include',headers:{'Content-Type':'application/json'}});const d=await r.json().catch(()=>({}));if(!r.ok){alert(d.error||'تعذر حذف المنتج.');return;}await loadAdminProducts();}catch(_){alert('تعذر الاتصال بخدمة المنتجات.');}}
-async function affiliateByIndex(i){const link=products[i]?.link;if(link){window.open(link,'_blank','noopener,noreferrer');}else{alert('أضف رابط AliExpress Affiliate لهذا المنتج من لوحة الإدارة.');}}
-function affiliate(name){const i=products.findIndex(p=>p.name===name);if(i>=0)affiliateByIndex(i);else alert('المنتج غير موجود في لوحة الإدارة.');}
-products=seedProducts();filterProducts();publicProducts();
+(() => {
+  'use strict';
+  const loginPage = document.getElementById('loginPage');
+  const dashboardPage = document.getElementById('dashboardPage');
+  const loginForm = document.getElementById('loginForm');
+  const loginUser = document.getElementById('loginUser');
+  const loginPass = document.getElementById('loginPass');
+  const loginError = document.getElementById('loginError');
+  const logoutBtn = document.getElementById('logoutBtn');
+
+  const showDashboard = () => { loginPage.style.display = 'none'; dashboardPage.style.display = ''; };
+  const showLogin = () => { dashboardPage.style.display = 'none'; loginPage.style.display = ''; };
+
+  async function sessionCheck() {
+    try {
+      const r = await fetch('/api/auth/session', { credentials: 'include', cache: 'no-store' });
+      if (r.ok) showDashboard(); else showLogin();
+    } catch {
+      showLogin();
+    }
+  }
+
+  loginForm?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    loginError.textContent = '';
+    try {
+      const r = await fetch('/api/auth/login', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: loginUser.value.trim(), password: loginPass.value })
+      });
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(data.error || 'تعذر تسجيل الدخول.');
+      loginPass.value = '';
+      showDashboard();
+    } catch (error) {
+      loginError.textContent = error.message || 'تعذر تسجيل الدخول.';
+    }
+  });
+
+  logoutBtn?.addEventListener('click', async () => {
+    try { await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' }); } finally { showLogin(); }
+  });
+
+  sessionCheck();
+})();
 </script>
+
 </body>
 </html>
