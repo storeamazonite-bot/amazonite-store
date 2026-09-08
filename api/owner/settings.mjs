@@ -14,7 +14,13 @@ function json(response, status, body) {
 function originAllowed(request) {
   const origin = request.headers.origin;
   const host = request.headers.host;
-  if (!origin || !host) return true;
+  if (!host) return false;
+  if (request.method === 'GET') return !origin || sameOrigin(origin, host);
+  if (!origin) return false;
+  return sameOrigin(origin, host);
+}
+
+function sameOrigin(origin, host) {
   try { return new URL(origin).host === host; } catch { return false; }
 }
 
