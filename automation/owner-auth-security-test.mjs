@@ -23,9 +23,10 @@ assert.match(auth, /status\(403\)\.json\(\{ error: ['"]Owner access required\./)
 assert.match(products, /const owner = await requireOwner\(req, res\)/);
 assert.match(productById, /const owner = await requireOwner\(req, res\)/);
 
-// Public reads are limited to active products; status=all requires owner auth.
-assert.match(products, /eq\(['"]status['"], ['"]active['"]\)/);
+// Public reads are limited to active products; administrative statuses require owner auth.
+assert.match(products, /status !== ['"]active['"]/);
 assert.match(products, /status === ['"]all['"]/);
+assert.match(products, /query\.eq\(['"]status['"], status\)/);
 assert.match(products, /requireOwner\(req, res\)/);
 assert.match(productById, /eq\(['"]status['"], ['"]active['"]\)/);
 
