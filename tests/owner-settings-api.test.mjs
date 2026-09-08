@@ -7,7 +7,6 @@ const secret = 'test-secret';
 const now = Math.floor(Date.now() / 1000);
 process.env.AMAZONITE_AUTH_SECRET = secret;
 delete process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
-delete process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
 delete process.env.GOOGLE_SHEETS_SPREADSHEET_ID;
 
 function token() {
