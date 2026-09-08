@@ -32,8 +32,24 @@ export default async function handler(req, res) {
 
   if (req.method === 'GET') {
     const status = String(req.query?.status || 'active');
-    const query = supabaseAdmin.from('products').select(FIELDS).order('created_at', { ascending: false });
-    const { data, error } = status === 'all' ? await query : await query.eq('status', status);
+
+    // Only the public active catalog is readable without an authenticated OWNER session.
+    // Administrative statuses (draft, archived, all) never become public data.
+    if (status !== 'active') {
+      const owner = await requireOwner(req, res);
+      if (!owner) return;
+    }
+
+    let query = supabaseAdmin.from('products').select(FIELDS).order('created_at', { ascending: false });
+    if (status === 'all') {
+      // OWNER-only administrative listing; intentionally no status filter.
+    } else if (['active', 'draft', 'archived'].includes(status)) {
+      query = query.eq('status', status);
+    } else {
+      return res.status(400).json({ error: 'Invalid product status.' });
+    }
+
+    const { data, error } = await query;
     if (error) return res.status(500).json({ error: 'Unable to load products.' });
     return res.status(200).json({ products: data || [] });
   }
