@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import crypto from 'node:crypto';
+import fs from 'node:fs/promises';
 import handler from '../api/owner/settings.mjs';
 
 const secret = 'test-secret';
@@ -57,8 +58,26 @@ test('invalid settings are rejected before storage', async () => {
   assert.equal(response.body.error, 'invalid_storeName');
 });
 
+test('full owner editor settings pass validation before storage', async () => {
+  const settings = {
+    storeName: 'Amazonite Electronic', currency: 'USD', seoTitle: 'Amazonite Electronic', seoDescription: 'Tech picks', disclosure: 'Affiliate disclosure',
+    heroTag: 'BEST SELLER', heroTitle: 'Picun F8 Pro', heroHighlight: 'Immersive sound', heroText: 'Discover selected electronics.', heroCta: 'Shop now',
+    heroUrl: '#products', heroImage: 'assets/hero.webp', heroVideo: '',
+  };
+  const response = await run({ method: 'PUT', headers: ownerHeaders, body: JSON.stringify(settings) });
+  assert.equal(response.statusCode, 503);
+  assert.deepEqual(response.body, { ok: false, error: 'storage_unavailable' });
+});
+
 test('authorized GET fails generically when storage is not configured', async () => {
   const response = await run({ method: 'GET', headers: { cookie: `amazonite_owner_session=${token()}` } });
   assert.equal(response.statusCode, 503);
   assert.deepEqual(response.body, { ok: false, error: 'storage_unavailable' });
+});
+
+test('owner editor has no localStorage persistence path', async () => {
+  const editor = await fs.readFile(new URL('../admin/editor.html', import.meta.url), 'utf8');
+  assert.doesNotMatch(editor, /localStorage/i);
+  assert.match(editor, /\.\.\/api\/owner\/settings/);
+  assert.match(editor, /\.\.\/api\/owner\/products/);
 });
