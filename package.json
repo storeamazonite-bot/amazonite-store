@@ -3,12 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "engines": {
-    "node": ">=20"
-  },
+  "engines": { "node": ">=20" },
   "dependencies": {
     "@modelcontextprotocol/node": "latest",
     "@modelcontextprotocol/server": "latest",
+    "@supabase/supabase-js": "^2.57.4",
     "zod": "^4.1.0"
   }
 }
