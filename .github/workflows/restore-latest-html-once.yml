@@ -1,0 +1,36 @@
+name: Restore exact latest Amazonite Electronic HTML once
+
+on:
+  push:
+    paths:
+      - 'automation/_secure_index_payload/part4.b64'
+
+permissions:
+  contents: write
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: security/supabase-owner-auth
+          fetch-depth: 0
+      - name: Restore exact secure HTML
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat automation/_secure_index_payload/part1.b64 automation/_secure_index_payload/part2.b64 automation/_secure_index_payload/part3.b64 automation/_secure_index_payload/part4.b64 > /tmp/index.gz.b64
+          base64 -d /tmp/index.gz.b64 > /tmp/index.html.gz
+          gunzip -c /tmp/index.html.gz > index.html
+          test "$(sha256sum index.html | cut -d' ' -f1)" = "e45f6e0ac3e3d51e6057f54bc45882dd97220e62ab08e8610b1156487cb858ea"
+      - name: Commit exact file and remove staging payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm -rf automation/_secure_index_payload .github/workflows/restore-latest-html-once.yml
+          git add index.html automation/_secure_index_payload .github/workflows/restore-latest-html-once.yml
+          git commit -m "fix: restore exact latest HTML secure baseline"
+          git push origin HEAD:security/supabase-owner-auth
