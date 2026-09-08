@@ -36,7 +36,10 @@ test('blocks admin with malformed owner cookie without throwing', async () => {
 
 test('blocks admin with tampered owner session', async () => {
   const token = auth.createOwnerSession(Math.floor(Date.now() / 1000));
-  const tampered = `${token.slice(0, -1)}${token.endsWith('a') ? 'b' : 'a'}`;
+  const dot = token.lastIndexOf('.');
+  const signature = token.slice(dot + 1);
+  const replacement = signature[0] === 'A' ? 'B' : 'A';
+  const tampered = `${token.slice(0, dot + 1)}${replacement}${signature.slice(1)}`;
   const response = await run('/admin/index.html', { cookie: `amazonite_owner_session=${encodeURIComponent(tampered)}` });
   assert.equal(response.status, 302);
 });
