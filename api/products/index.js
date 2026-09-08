@@ -1,5 +1,6 @@
 import { requireOwner } from '../../lib/auth.js';
 import { supabaseAdmin } from '../../lib/supabase.js';
+import { enforceSameOrigin, rateLimit, setSecurityHeaders } from '../../lib/http-security.js';
 
 const FIELDS = 'id,name,category,price,rating,badge,image,affiliate_url,status,created_at,updated_at';
 
@@ -28,6 +29,7 @@ function productPayload(input, partial = false) {
 }
 
 export default async function handler(req, res) {
+  setSecurityHeaders(res, { noStore: true });
   if (!supabaseAdmin) return res.status(503).json({ error: 'Database service is not configured.' });
 
   if (req.method === 'GET') {
@@ -54,13 +56,15 @@ export default async function handler(req, res) {
     return res.status(200).json({ products: data || [] });
   }
 
-  const owner = await requireOwner(req, res);
-  if (!owner) return;
-
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'GET, POST');
     return res.status(405).json({ error: 'Method not allowed.' });
   }
+  if (!enforceSameOrigin(req, res)) return;
+  if (!rateLimit(req, res, { limit: 60, windowMs: 60 * 1000, prefix: 'products-write' })) return;
+
+  const owner = await requireOwner(req, res);
+  if (!owner) return;
 
   try {
     const payload = productPayload(bodyOf(req));
