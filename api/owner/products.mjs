@@ -4,6 +4,7 @@ import { listProducts, replaceProducts } from '../../lib/google-sheets-store.mjs
 const METHODS = new Set(['GET', 'POST', 'PATCH', 'DELETE']);
 const STATUS = new Set(['draft', 'testing', 'active', 'hidden', 'needs_review', 'out_of_stock', 'link_invalid', 'retired']);
 const MARKETS = new Set(['US', 'UK', 'Canada', 'EU']);
+const ALLOWED_AFFILIATE_HOSTS = new Set(['aliexpress.com', 'aliexpress.us', 's.click.aliexpress.com']);
 const MAX_BODY = 32_000;
 
 function json(response, status, body) {
@@ -23,6 +24,15 @@ function readBody(request) {
   const raw = typeof request.body === 'string' ? request.body : JSON.stringify(request.body ?? {});
   if (raw.length > MAX_BODY) throw new Error('body_too_large');
   return JSON.parse(raw);
+}
+
+function allowedAffiliateUrl(value) {
+  try {
+    const url = new URL(String(value || ''));
+    const host = url.hostname.toLowerCase();
+    const approved = ALLOWED_AFFILIATE_HOSTS.has(host) || [...ALLOWED_AFFILIATE_HOSTS].some(base => host.endsWith(`.${base}`));
+    return url.protocol === 'https:' && approved;
+  } catch { return false; }
 }
 
 function cleanProduct(input, existing = {}) {
@@ -49,7 +59,7 @@ function cleanProduct(input, existing = {}) {
   if (!STATUS.has(out.status)) throw new Error('invalid_status');
   if (!MARKETS.has(out.market)) throw new Error('invalid_market');
   if (!/^[A-Z]{3}$/.test(out.currency)) throw new Error('invalid_currency');
-  if (!/^https?:\/\//i.test(out.affiliate_url)) throw new Error('invalid_affiliate_url');
+  if (!allowedAffiliateUrl(out.affiliate_url)) throw new Error('invalid_affiliate_url');
   if (out.original_url && !/^https?:\/\//i.test(out.original_url)) throw new Error('invalid_original_url');
   if (out.image_url && !/^https?:\/\//i.test(out.image_url)) throw new Error('invalid_image_url');
 
