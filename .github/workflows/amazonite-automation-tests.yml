@@ -4,13 +4,23 @@ on:
   push:
     paths:
       - 'automation/**'
+      - 'api/**'
+      - 'lib/**'
+      - 'supabase/**'
       - 'data/products.json'
+      - 'docs/baseline/**'
+      - 'index.html'
       - '.github/workflows/amazonite-automation-tests.yml'
       - 'package.json'
   pull_request:
     paths:
       - 'automation/**'
+      - 'api/**'
+      - 'lib/**'
+      - 'supabase/**'
       - 'data/products.json'
+      - 'docs/baseline/**'
+      - 'index.html'
       - '.github/workflows/amazonite-automation-tests.yml'
       - 'package.json'
   workflow_dispatch:
@@ -24,10 +34,20 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Run Latest baseline integrity test
+        run: node automation/original-baseline-integrity-test.mjs
+      - name: Run Owner Auth security contract test
+        run: node automation/owner-auth-security-test.mjs
+      - name: Run HTTP security contract test
+        run: node automation/http-security-contract-test.mjs
+      - name: Run Dashboard integration contract test
+        run: node automation/dashboard-integration-test.mjs
       - name: Run Product Intelligence tests
         run: node automation/product-intelligence-test.mjs
       - name: Run Affiliate Readiness tests

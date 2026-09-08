@@ -87,55 +87,6 @@
 </form>
 </section>
 </main>
-<script>
-(() => {
-  'use strict';
-  const loginPage = document.getElementById('loginPage');
-  const dashboardPage = document.getElementById('dashboardPage');
-  const loginForm = document.getElementById('loginForm');
-  const loginUser = document.getElementById('loginUser');
-  const loginPass = document.getElementById('loginPass');
-  const loginError = document.getElementById('loginError');
-  const logoutBtn = document.getElementById('logoutBtn');
-
-  const showDashboard = () => { loginPage.style.display = 'none'; dashboardPage.style.display = ''; };
-  const showLogin = () => { dashboardPage.style.display = 'none'; loginPage.style.display = ''; };
-
-  async function sessionCheck() {
-    try {
-      const r = await fetch('/api/auth/session', { credentials: 'include', cache: 'no-store' });
-      if (r.ok) showDashboard(); else showLogin();
-    } catch {
-      showLogin();
-    }
-  }
-
-  loginForm?.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    loginError.textContent = '';
-    try {
-      const r = await fetch('/api/auth/login', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: loginUser.value.trim(), password: loginPass.value })
-      });
-      const data = await r.json().catch(() => ({}));
-      if (!r.ok) throw new Error(data.error || 'تعذر تسجيل الدخول.');
-      loginPass.value = '';
-      showDashboard();
-    } catch (error) {
-      loginError.textContent = error.message || 'تعذر تسجيل الدخول.';
-    }
-  });
-
-  logoutBtn?.addEventListener('click', async () => {
-    try { await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' }); } finally { showLogin(); }
-  });
-
-  sessionCheck();
-})();
-</script>
 
 </body>
 </html>

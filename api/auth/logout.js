@@ -1,0 +1,16 @@
+import { parseCookies, clearSessionCookies } from '../../lib/security.js';
+import { supabaseAdmin } from '../../lib/supabase.js';
+import { enforceSameOrigin, rateLimit, setSecurityHeaders } from '../../lib/http-security.js';
+
+export default async function handler(req, res) {
+  setSecurityHeaders(res, { noStore: true });
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed.' });
+  if (!enforceSameOrigin(req, res)) return;
+  if (!rateLimit(req, res, { limit: 10, prefix: 'logout' })) return;
+  const cookies = parseCookies(req.headers.cookie || '');
+  if (supabaseAdmin && cookies.ae_access) {
+    try { await supabaseAdmin.auth.admin.signOut(cookies.ae_access, 'local'); } catch (_) {}
+  }
+  res.setHeader('Set-Cookie', clearSessionCookies());
+  return res.status(200).json({ authenticated: false });
+}
