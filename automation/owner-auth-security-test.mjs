@@ -29,15 +29,16 @@ assert.match(productById, /eq\(['"]status['"], ['"]active['"]\)/);
 
 assert.match(login, /signInWithPassword/);
 assert.match(login, /if \(error \|\| !data\?\.session \|\| !data\?\.user\)/);
-assert.match(login, /if \(!isOwner\(data\.user\)\)/);
+assert.match(login, /if \(!isOwner\(data\.user\)/);
 assert.match(login, /sessionCookie\(['"]ae_access['"]/);
 assert.match(login, /sessionCookie\(['"]ae_refresh['"]/);
 
 assert.match(session, /resolveSession\(req, res\)/);
 assert.match(session, /if \(!isOwner\(user\)\)/);
 assert.match(logout, /clearSessionCookies\(\)/);
-assert.match(security, /ae_access=.*HttpOnly; Secure; SameSite=Lax/);
-assert.match(security, /ae_refresh=.*HttpOnly; Secure; SameSite=Lax/);
+assert.match(security, /ae_access=.*HttpOnly; Secure; SameSite=Strict/);
+assert.match(security, /ae_refresh=.*HttpOnly; Secure; SameSite=Strict/);
+assert.doesNotMatch(security, /SameSite=Lax/);
 
 // Product mutations must be owner-protected and method-restricted.
 assert.match(products, /if \(req\.method !== ['"]POST['"]\)/);
@@ -50,5 +51,5 @@ assert.match(read('lib/supabase.js'), /SUPABASE_SERVICE_ROLE_KEY/);
 assert.doesNotMatch(read('index.html'), /SUPABASE_SERVICE_ROLE_KEY|SUPABASE_SERVICE_ROLE/);
 
 console.log('Owner auth security contract: PASS');
-console.log('Covered: 401 unauthenticated, 403 non-owner, OWNER authorization, secure cookies, session/logout, CRUD protection, RLS contract, server-only service key.');
+console.log('Covered: 401 unauthenticated, 403 non-owner, OWNER authorization, Strict secure cookies, session/logout, CRUD protection, RLS contract, server-only service key.');
 console.log('Note: this is a code/contract test; live Supabase credentials and production runtime are not exercised here.');
