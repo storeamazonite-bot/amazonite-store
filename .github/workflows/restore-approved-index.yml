@@ -1,0 +1,28 @@
+name: Restore Approved Index
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: security/supabase-owner-auth
+          fetch-depth: 0
+      - name: Restore approved artifact
+        run: |
+          set -euo pipefail
+          base64 -d automation/restore-index.gz.b64 | gzip -d > index.html
+          sha256sum index.html
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "fix: restore approved original storefront integration" || true
+          git push origin HEAD:security/supabase-owner-auth
+      - name: Remove temporary restore assets
+        run: |
+          git rm -f automation/restore-index.gz.b64 .github/workflows/restore-approved-index.yml
+          git commit -m "chore: remove one-time restore workflow"
+          git push origin HEAD:security/supabase-owner-auth
