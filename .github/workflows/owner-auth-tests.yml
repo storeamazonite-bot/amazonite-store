@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'api/auth/**'
+      - 'api/admin/**'
       - 'api/mcp.mjs'
       - 'lib/internal-auth.mjs'
       - 'lib/owner-auth.mjs'
@@ -15,6 +16,7 @@ on:
   pull_request:
     paths:
       - 'api/auth/**'
+      - 'api/admin/**'
       - 'api/mcp.mjs'
       - 'lib/internal-auth.mjs'
       - 'lib/owner-auth.mjs'
@@ -39,4 +41,4 @@ jobs:
         with:
           node-version: 20
       - name: Run owner authentication tests
-        run: node --test test/owner-auth.test.mjs test/internal-auth.test.mjs
+        run: node --test test/owner-auth.test.mjs test/internal-auth.test.mjs test/product-api-auth.test.mjs
