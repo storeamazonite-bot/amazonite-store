@@ -46,6 +46,13 @@ test('cross-origin PUT is rejected before storage', async () => {
   assert.equal(response.body.error, 'origin_not_allowed');
 });
 
+test('missing Origin on PUT is rejected before storage', async () => {
+  const { origin: _origin, ...headersWithoutOrigin } = ownerHeaders;
+  const response = await run({ method: 'PUT', headers: headersWithoutOrigin, body: '{}' });
+  assert.equal(response.statusCode, 403);
+  assert.equal(response.body.error, 'origin_not_allowed');
+});
+
 test('oversized PUT is rejected', async () => {
   const response = await run({ method: 'PUT', headers: ownerHeaders, body: JSON.stringify({ storeName: 'x'.repeat(15000) }) });
   assert.equal(response.statusCode, 413);
