@@ -9,7 +9,9 @@ function base64urlDecode(value) {
 
 async function verifySession(token, secret) {
   if (!token || !secret) return false;
-  const [payload, signature] = token.split('.');
+  const parts = token.split('.');
+  if (parts.length !== 2) return false;
+  const [payload, signature] = parts;
   if (!payload || !signature) return false;
   try {
     const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['verify']);
