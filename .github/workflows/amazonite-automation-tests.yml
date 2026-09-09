@@ -39,4 +39,4 @@ jobs:
       - name: Run AliExpress API contract test
         run: node automation/aliexpress-api-contract-test.mjs
       - name: Run Security regression tests
-        run: node --test tests/owner-auth.test.mjs tests/middleware-boundary.test.mjs tests/owner-products-api.test.mjs tests/owner-settings-api.test.mjs tests/admin-data-source.test.mjs tests/login-rate-limit.test.mjs
+        run: node --test tests/owner-auth.test.mjs tests/middleware-boundary.test.mjs tests/owner-products-api.test.mjs tests/owner-settings-api.test.mjs tests/admin-data-source.test.mjs tests/login-rate-limit.test.mjs tests/auth-origin.test.mjs
