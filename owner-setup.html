@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Amazonite Electronic — 2FA Setup</title>
+  <style>
+    body{margin:0;min-height:100vh;display:grid;place-items:center;font:16px system-ui,sans-serif;background:#f4f7f7;color:#173b3b}
+    main{width:min(620px,calc(100% - 32px));padding:28px;box-sizing:border-box;background:#fff;border:1px solid #dbe6e5;border-radius:18px;box-shadow:0 12px 40px #173b3b18}
+    h1{margin:0 0 8px;font-size:24px}.muted{color:#667b7b;margin:0 0 22px;line-height:1.6}
+    label{display:block;margin-bottom:8px;font-weight:600}input,textarea{width:100%;box-sizing:border-box;padding:13px;border:1px solid #c8d8d7;border-radius:10px;font:inherit;margin-bottom:12px}
+    textarea{min-height:110px;resize:vertical;font-size:12px}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    button{width:100%;margin-top:4px;padding:13px;border:0;border-radius:10px;background:#c9973e;color:#fff;font-weight:700;cursor:pointer}.error{min-height:22px;margin-top:14px;color:#a12828}.ok{margin-top:18px;padding:14px;border-radius:12px;background:#edf7f5;border:1px solid #cfe5e1}.secret{font-family:ui-monospace,SFMono-Regular,monospace;word-break:break-all}.back{display:block;margin-top:18px;text-align:center;color:#356767;text-decoration:none}
+    @media(max-width:560px){.row{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Authenticator setup</h1>
+    <p class="muted">One-time owner enrollment for Microsoft Authenticator. The server generates the TOTP secret only after the owner email and password are verified. Nothing is stored by this page.</p>
+    <form id="setupForm" autocomplete="off">
+      <div class="row"><div><label for="email">Owner email</label><input id="email" type="email" autocomplete="username" required maxlength="320"></div><div><label for="password">Owner password</label><input id="password" type="password" autocomplete="current-password" required maxlength="1024"></div></div>
+      <button id="generate" type="submit">Generate enrollment secret</button>
+      <div id="error" class="error" role="alert" aria-live="polite"></div>
+    </form>
+    <section id="result" class="ok" hidden>
+      <strong>Enrollment generated.</strong>
+      <p>In Microsoft Authenticator choose <b>+</b> → <b>Other account</b> → <b>Enter code manually</b>, then use the secret below. After saving <code>AMAZONITE_TOTP_SECRET</code> in the deployment environment, sign in with the 6-digit code.</p>
+      <label for="secret">TOTP secret</label><textarea id="secret" readonly></textarea>
+      <label for="uri">Provisioning URI</label><textarea id="uri" readonly></textarea>
+      <p><b>Important:</b> this secret is the second factor. Do not put it in GitHub, frontend source, screenshots, or chat. Store it only as the server environment variable <code>AMAZONITE_TOTP_SECRET</code>.</p>
+    </section>
+    <a class="back" href="/owner-login.html">Back to owner login</a>
+  </main>
+  <script>
+    const form=document.getElementById('setupForm'),generate=document.getElementById('generate'),email=document.getElementById('email'),password=document.getElementById('password'),error=document.getElementById('error'),result=document.getElementById('result'),secret=document.getElementById('secret'),uri=document.getElementById('uri');
+    form.addEventListener('submit',async e=>{e.preventDefault();error.textContent='';result.hidden=true;generate.disabled=true;try{const r=await fetch('/api/auth/setup',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',cache:'no-store',body:JSON.stringify({email:email.value,password:password.value})});const data=await r.json().catch(()=>({}));if(!r.ok||!data.ok)throw new Error(data.error||'setup_failed');secret.value=data.secret;uri.value=data.provisioningUri;result.hidden=false;password.value='';form.reset();}catch(e){error.textContent=e.message==='two_factor_already_configured'?'Two-factor authentication is already configured. Use the owner login page.':'Setup denied or not configured.';}finally{generate.disabled=false;}});
+  </script>
+</body>
+</html>
