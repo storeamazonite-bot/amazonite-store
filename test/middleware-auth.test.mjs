@@ -43,3 +43,9 @@ test('middleware rejects expired sessions', async () => {
   const response = await middleware(requestFor('/admin/products.html', token));
   assert.equal(response.status, 302);
 });
+
+test('middleware rejects a valid session token with an extra segment', async () => {
+  const token = `${createOwnerSession()}.extra`;
+  const response = await middleware(requestFor('/admin/products.html', token));
+  assert.equal(response.status, 302);
+});
