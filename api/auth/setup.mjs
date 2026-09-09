@@ -1,10 +1,13 @@
 import { buildTotpUri, generateTotpSecret, verifyOwnerEmail, verifyOwnerPassword } from '../../lib/owner-auth.mjs';
+import { clearLoginFailures, isLoginRateLimited, recordLoginFailure } from '../../lib/login-rate-limit.mjs';
 
 function json(response, status, body) {
   response.status(status);
   response.setHeader('Content-Type', 'application/json; charset=utf-8');
   response.setHeader('Cache-Control', 'no-store, max-age=0');
+  response.setHeader('X-Content-Type-Options', 'nosniff');
   response.setHeader('X-Robots-Tag', 'noindex, nofollow, noarchive');
+  response.setHeader('Referrer-Policy', 'no-referrer');
   response.end(JSON.stringify(body));
 }
 
@@ -22,8 +25,18 @@ export default async function handler(request, response) {
     const email = typeof body.email === 'string' ? body.email : '';
     const password = typeof body.password === 'string' ? body.password : '';
     if (!email || email.length > 320 || !password || password.length > 1024) return json(response, 401, { ok: false, error: 'invalid_credentials' });
-    if (!verifyOwnerEmail(email) || !verifyOwnerPassword(password)) return json(response, 401, { ok: false, error: 'invalid_credentials' });
 
+    if (isLoginRateLimited(request, email)) {
+      response.setHeader('Retry-After', '900');
+      return json(response, 429, { ok: false, error: 'too_many_attempts' });
+    }
+
+    if (!verifyOwnerEmail(email) || !verifyOwnerPassword(password)) {
+      recordLoginFailure(request, email);
+      return json(response, 401, { ok: false, error: 'invalid_credentials' });
+    }
+
+    clearLoginFailures(request, email);
     const secret = generateTotpSecret();
     return json(response, 200, {
       ok: true,
