@@ -1,5 +1,5 @@
-import { appendAnalyticsEvent, readAnalyticsEvents } from '../../../lib/analytics-store.mjs';
-import { isOwnerRequest } from '../../../lib/owner-auth.mjs';
+import { appendAnalyticsEvent, readAnalyticsEvents } from '../../lib/analytics-store.mjs';
+import { isOwnerRequest } from '../../lib/owner-auth.mjs';
 
 function json(response, status, body) {
   response.statusCode = status;
