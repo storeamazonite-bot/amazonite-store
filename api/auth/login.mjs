@@ -10,18 +10,20 @@ function clientKey(request) {
   return String(value).split(',')[0].trim().slice(0, 200) || 'unknown';
 }
 
-export default function handler(request, response) {
-  if (request.method !== 'POST') return json(response, 405, { ok: false, error: 'method_not_allowed' }, { Allow: 'POST' });
-
+function sameOrigin(request) {
   const origin = request.headers.origin;
   const host = request.headers.host;
-  if (origin && host) {
-    try {
-      if (new URL(origin).host !== host) return json(response, 403, { ok: false, error: 'origin_not_allowed' });
-    } catch {
-      return json(response, 403, { ok: false, error: 'origin_not_allowed' });
-    }
+  if (!origin || !host) return false;
+  try {
+    return new URL(origin).host === host;
+  } catch {
+    return false;
   }
+}
+
+export default function handler(request, response) {
+  if (request.method !== 'POST') return json(response, 405, { ok: false, error: 'method_not_allowed' }, { Allow: 'POST' });
+  if (!sameOrigin(request)) return json(response, 403, { ok: false, error: 'origin_not_allowed' });
 
   const key = clientKey(request);
   if (isLoginRateLimited(key)) {
