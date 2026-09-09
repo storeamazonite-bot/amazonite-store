@@ -8,6 +8,7 @@ on:
       - 'api/analytics/**'
       - 'lib/internal-auth.mjs'
       - 'lib/owner-auth.mjs'
+      - 'lib/login-rate-limit.mjs'
       - 'lib/product-store.mjs'
       - 'lib/analytics-store.mjs'
       - 'middleware.js'
@@ -23,6 +24,7 @@ on:
       - 'api/analytics/**'
       - 'lib/internal-auth.mjs'
       - 'lib/owner-auth.mjs'
+      - 'lib/login-rate-limit.mjs'
       - 'lib/product-store.mjs'
       - 'lib/analytics-store.mjs'
       - 'middleware.js'
@@ -47,4 +49,4 @@ jobs:
         with:
           node-version: 20
       - name: Run owner authentication, middleware, storage and analytics tests
-        run: node --test test/owner-auth.test.mjs test/middleware-auth.test.mjs test/internal-auth.test.mjs test/product-api-auth.test.mjs test/product-store.test.mjs test/analytics-store.test.mjs
+        run: node --test test/owner-auth.test.mjs test/middleware-auth.test.mjs test/internal-auth.test.mjs test/product-api-auth.test.mjs test/product-store.test.mjs test/analytics-store.test.mjs test/login-rate-limit.test.mjs
