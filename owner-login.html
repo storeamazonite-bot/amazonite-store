@@ -9,8 +9,8 @@
     body{margin:0;min-height:100vh;display:grid;place-items:center;font:16px system-ui,sans-serif;background:#f4f7f7;color:#173b3b}
     main{width:min(420px,calc(100% - 32px));padding:28px;box-sizing:border-box;background:#fff;border:1px solid #dbe6e5;border-radius:18px;box-shadow:0 12px 40px #173b3b18}
     h1{margin:0 0 8px;font-size:24px}.muted{color:#667b7b;margin:0 0 22px}
-    label{display:block;margin-bottom:8px;font-weight:600}input{width:100%;box-sizing:border-box;padding:13px;border:1px solid #c8d8d7;border-radius:10px;font:inherit}
-    button{width:100%;margin-top:16px;padding:13px;border:0;border-radius:10px;background:#c9973e;color:#fff;font-weight:700;cursor:pointer}
+    label{display:block;margin-bottom:8px;font-weight:600}input{width:100%;box-sizing:border-box;padding:13px;border:1px solid #c8d8d7;border-radius:10px;font:inherit;margin-bottom:12px}
+    button{width:100%;margin-top:4px;padding:13px;border:0;border-radius:10px;background:#c9973e;color:#fff;font-weight:700;cursor:pointer}
     .error{min-height:22px;margin-top:14px;color:#a12828}.back{display:block;margin-top:18px;text-align:center;color:#356767;text-decoration:none}
   </style>
 </head>
@@ -19,24 +19,31 @@
     <h1>Owner access</h1>
     <p class="muted">Amazonite Electronic private management area.</p>
     <form id="loginForm" autocomplete="on">
+      <label for="email">Owner email</label>
+      <input id="email" name="email" type="email" autocomplete="username" required maxlength="320">
       <label for="password">Owner password</label>
       <input id="password" name="password" type="password" autocomplete="current-password" required maxlength="1024">
+      <label for="totp">Authenticator code</label>
+      <input id="totp" name="totp" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" minlength="6" maxlength="6" required>
       <button type="submit">Sign in</button>
       <div id="error" class="error" role="alert" aria-live="polite"></div>
     </form>
     <a class="back" href="/">Back to store</a>
   </main>
   <script>
-    const form=document.getElementById('loginForm'), input=document.getElementById('password'), error=document.getElementById('error');
+    const form=document.getElementById('loginForm'),email=document.getElementById('email'),password=document.getElementById('password'),totp=document.getElementById('totp'),error=document.getElementById('error');
     const next=new URLSearchParams(location.search).get('next');
     form.addEventListener('submit',async e=>{
       e.preventDefault(); error.textContent='';
       try{
-        const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({password:input.value})});
+        const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({email:email.value,password:password.value,totp:totp.value})});
         const data=await r.json().catch(()=>({}));
-        if(!r.ok||!data.ok) throw new Error('invalid');
+        if(!r.ok||!data.ok) throw new Error(data.error||'invalid');
         location.replace(next && next.startsWith('/') && !next.startsWith('//') ? next : '/admin/');
-      }catch{ error.textContent='Access denied. Check the owner password.'; input.select(); }
+      }catch(e){
+        error.textContent=e.message==='two_factor_not_configured'?'Two-factor authentication is not configured on the server.':'Access denied. Check your email, password and Authenticator code.';
+        totp.select();
+      }
     });
   </script>
 </body>
