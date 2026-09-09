@@ -14,9 +14,8 @@ function json(response, status, body) {
 function originAllowed(request) {
   const origin = request.headers.origin;
   const host = request.headers.host;
-  if (!host) return false;
-  if (request.method === 'GET') return !origin || sameOrigin(origin, host);
-  if (!origin) return false;
+  if (request.method === 'GET') return !origin || (Boolean(host) && sameOrigin(origin, host));
+  if (!origin || !host) return false;
   return sameOrigin(origin, host);
 }
 
