@@ -8,10 +8,9 @@ process.env.AMAZONITE_OWNER_EMAIL = 'owner@example.com';
 process.env.AMAZONITE_OWNER_PASSWORD_HASH = generatePasswordHash('correct-password');
 
 function totp(secret, nowMs) {
-  const alphabet='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'; let bits=0,buffer=0,key=Buffer.alloc(0),out=[];
+  const alphabet='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'; let bits=0,buffer=0,out=[];
   for(const c of secret){const n=alphabet.indexOf(c);buffer=(buffer<<5)|n;bits+=5;while(bits>=8){bits-=8;out.push((buffer>>bits)&255);}}
-  key=Buffer.from(out);
-  const counter=Math.floor(nowMs/1000/30), message=Buffer.alloc(8); message.writeBigUInt64BE(BigInt(counter));
+  const key=Buffer.from(out), counter=Math.floor(nowMs/1000/30), message=Buffer.alloc(8); message.writeBigUInt64BE(BigInt(counter));
   const digest=createHmac('sha1',key).update(message).digest(),i=digest[digest.length-1]&15;
   return String((((digest[i]&127)<<24)|(digest[i+1]<<16)|(digest[i+2]<<8)|digest[i+3])%1000000).padStart(6,'0');
 }
@@ -24,17 +23,14 @@ test('owner password and configured owner email validate', () => {
 });
 
 test('TOTP accepts current code and rejects invalid code', () => {
-  const secret='JBSWY3DPEHPK3PXP';
-  const now=1_800_000_000_000;
-  const code=totp(secret,now);
+  const secret='JBSWY3DPEHPK3PXP', now=1_800_000_000_000, code=totp(secret,now);
   assert.equal(verifyTotp(code,secret,now),true);
   assert.equal(verifyTotp('000000',secret,now),false);
-  assert.match(buildTotpUri(secret),'^otpauth://totp/');
+  assert.match(buildTotpUri(secret),/^otpauth:\/\/totp\//);
 });
 
 test('owner session requires password + TOTP assurance marker', () => {
-  const now=1_800_000_000;
-  const token=createOwnerSession(now);
+  const now=1_800_000_000, token=createOwnerSession(now);
   assert.equal(verifyOwnerSession(token,now+60),true);
   const payload=JSON.parse(Buffer.from(token.split('.')[0],'base64url').toString('utf8'));
   payload.amr=['pwd'];
