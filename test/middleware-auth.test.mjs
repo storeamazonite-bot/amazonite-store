@@ -27,19 +27,19 @@ test('middleware accepts a session with password + TOTP assurance', async () => 
 test('middleware rejects a signed owner token without TOTP assurance', async () => {
   const token = tokenFor({ sub: 'owner', amr: ['pwd'], iat: 1, exp: Math.floor(Date.now() / 1000) + 3600 });
   const response = await middleware(requestFor('/admin/products.html', token));
-  assert.equal(response.status, 307);
+  assert.equal(response.status, 302);
   assert.match(response.headers.get('location'), /\/owner-login\.html\?next=%2Fadmin%2Fproducts\.html/);
 });
 
 test('middleware rejects a signed owner token without password assurance', async () => {
   const token = tokenFor({ sub: 'owner', amr: ['totp'], iat: 1, exp: Math.floor(Date.now() / 1000) + 3600 });
   const response = await middleware(requestFor('/dashboard/index.html', token));
-  assert.equal(response.status, 307);
+  assert.equal(response.status, 302);
   assert.match(response.headers.get('location'), /\/owner-login\.html\?next=%2Fdashboard%2Findex\.html/);
 });
 
 test('middleware rejects expired sessions', async () => {
   const token = tokenFor({ sub: 'owner', amr: ['pwd', 'totp'], iat: 1, exp: Math.floor(Date.now() / 1000) - 1 });
   const response = await middleware(requestFor('/admin/products.html', token));
-  assert.equal(response.status, 307);
+  assert.equal(response.status, 302);
 });
