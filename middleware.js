@@ -13,11 +13,18 @@ async function verifySession(token, secret) {
   if (!payload || !signature) return false;
   try {
     const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['verify']);
-    const sigBytes = Uint8Array.from(atob(signature.replace(/-/g, '+').replace(/_/g, '/').padEnd(Math.ceil(signature.length / 4) * 4, '=')), c => c.charCodeAt(0));
+    const sigNormalized = signature.replace(/-/g, '+').replace(/_/g, '/');
+    const sigPadded = sigNormalized + '='.repeat((4 - sigNormalized.length % 4) % 4);
+    const sigBytes = Uint8Array.from(atob(sigPadded), c => c.charCodeAt(0));
     const data = new TextEncoder().encode(payload);
     if (!(await crypto.subtle.verify('HMAC', key, sigBytes, data))) return false;
     const json = JSON.parse(base64urlDecode(payload));
-    return json?.sub === 'owner' && Number.isInteger(json.exp) && json.exp > Math.floor(Date.now() / 1000);
+    return json?.sub === 'owner'
+      && Array.isArray(json.amr)
+      && json.amr.includes('pwd')
+      && json.amr.includes('totp')
+      && Number.isInteger(json.exp)
+      && json.exp > Math.floor(Date.now() / 1000);
   } catch { return false; }
 }
 
