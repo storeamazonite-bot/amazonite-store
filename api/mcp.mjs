@@ -1,6 +1,8 @@
 import { createMcpHandler, McpServer } from '@modelcontextprotocol/server';
+import { toNodeHandler } from '@modelcontextprotocol/node';
 import * as z from 'zod/v4';
 import { searchAliExpress, getAliExpressProduct } from '../automation/aliexpress-mcp-adapter.mjs';
+import { hasValidInternalToken } from '../lib/internal-auth.mjs';
 
 function buildServer() {
   const server = new McpServer(
@@ -84,4 +86,16 @@ function buildServer() {
   return server;
 }
 
-export default createMcpHandler(buildServer, { legacy: 'stateless' });
+const mcpHandler = createMcpHandler(buildServer, { legacy: 'stateless' });
+const nodeHandler = toNodeHandler(mcpHandler);
+
+export default function handler(request, response) {
+  if (!hasValidInternalToken(request)) {
+    response.statusCode = 401;
+    response.setHeader('Content-Type', 'application/json; charset=utf-8');
+    response.end(JSON.stringify({ ok: false, error: 'Unauthorized' }));
+    return;
+  }
+
+  return nodeHandler(request, response);
+}

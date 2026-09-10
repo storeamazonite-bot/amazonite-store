@@ -1,0 +1,62 @@
+name: Amazonite Owner Auth Tests
+
+on:
+  push:
+    paths:
+      - 'api/auth/**'
+      - 'api/admin/**'
+      - 'api/analytics/**'
+      - 'api/products.mjs'
+      - 'api/products/**'
+      - 'lib/internal-auth.mjs'
+      - 'lib/owner-auth.mjs'
+      - 'lib/login-rate-limit.mjs'
+      - 'lib/public-rate-limit.mjs'
+      - 'lib/product-mutation-lock.mjs'
+      - 'lib/product-store.mjs'
+      - 'lib/analytics-store.mjs'
+      - 'lib/request-security.mjs'
+      - 'middleware.js'
+      - 'owner-login.html'
+      - 'owner-setup.html'
+      - 'test/**'
+      - 'package.json'
+      - '.github/workflows/owner-auth-tests.yml'
+  pull_request:
+    paths:
+      - 'api/auth/**'
+      - 'api/admin/**'
+      - 'api/analytics/**'
+      - 'api/products.mjs'
+      - 'api/products/**'
+      - 'lib/internal-auth.mjs'
+      - 'lib/owner-auth.mjs'
+      - 'lib/login-rate-limit.mjs'
+      - 'lib/public-rate-limit.mjs'
+      - 'lib/product-mutation-lock.mjs'
+      - 'lib/product-store.mjs'
+      - 'lib/analytics-store.mjs'
+      - 'lib/request-security.mjs'
+      - 'middleware.js'
+      - 'owner-login.html'
+      - 'owner-setup.html'
+      - 'test/**'
+      - 'package.json'
+      - '.github/workflows/owner-auth-tests.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Run owner authentication, middleware, storage, analytics and security tests
+        run: node --test test/owner-auth.test.mjs test/middleware-auth.test.mjs test/internal-auth.test.mjs test/product-api-auth.test.mjs test/public-product-api.test.mjs test/product-store.test.mjs test/analytics-store.test.mjs test/login-rate-limit.test.mjs test/request-security.test.mjs test/csrf-owner-api.test.mjs test/public-rate-limit.test.mjs test/product-mutation-lock.test.mjs
