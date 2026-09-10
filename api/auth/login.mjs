@@ -1,5 +1,6 @@
 import { buildOwnerCookie, createOwnerSession, verifyOwnerEmail, verifyOwnerPassword, verifyTotp } from '../../lib/owner-auth.mjs';
 import { clearLoginFailures, getClientIp, isLoginRateLimited, recordLoginFailure } from '../../lib/login-rate-limit.mjs';
+import { isSameOriginRequest } from '../../lib/request-security.mjs';
 
 function json(response, status, body) {
   response.status(status).setHeader('Content-Type', 'application/json; charset=utf-8');
@@ -12,6 +13,7 @@ export default async function handler(request, response) {
     response.setHeader('Allow', 'POST');
     return json(response, 405, { ok: false, error: 'method_not_allowed' });
   }
+  if (!isSameOriginRequest(request)) return json(response, 403, { ok: false, error: 'cross_origin_request' });
 
   try {
     const contentType = request.headers['content-type'] || '';
