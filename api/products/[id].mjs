@@ -1,6 +1,7 @@
 import { deleteProduct, updateProduct } from '../../lib/product-store.mjs';
 import { isOwnerRequest } from '../../lib/owner-auth.mjs';
 import { validateProductInput } from '../admin/products.mjs';
+import { isSameOriginRequest } from '../../lib/request-security.mjs';
 
 function json(response, status, body) {
   response.statusCode = status;
@@ -48,6 +49,7 @@ export default async function handler(request, response) {
   if (!isOwnerRequest(request)) return json(response, 401, { ok: false, error: 'Unauthorized' });
   const id = String(request.query?.id || '').trim();
   if (!id || id.length > 120) return json(response, 400, { ok: false, error: 'Product id is required' });
+  if (!isSameOriginRequest(request)) return json(response, 403, { ok: false, error: 'cross_origin_request' });
 
   try {
     if (request.method === 'PUT' || request.method === 'PATCH') {
