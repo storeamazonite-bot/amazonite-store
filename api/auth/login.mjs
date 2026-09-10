@@ -1,5 +1,5 @@
 import { buildOwnerCookie, createOwnerSession, verifyOwnerEmail, verifyOwnerPassword, verifyTotp } from '../../lib/owner-auth.mjs';
-import { clearLoginFailures, getClientIp, isLoginRateLimited, recordLoginFailure } from '../../lib/login-rate-limit.mjs';
+import { clearLoginFailures, isLoginRateLimited, recordLoginFailure } from '../../lib/login-rate-limit.mjs';
 import { isSameOriginRequest } from '../../lib/request-security.mjs';
 
 function json(response, status, body) {
