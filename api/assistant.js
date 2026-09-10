@@ -1,8 +1,25 @@
+const buckets = globalThis.__amazoniteAiBuckets || new Map();
+globalThis.__amazoniteAiBuckets = buckets;
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Method not allowed' });
   }
+
+  res.setHeader('Cache-Control', 'no-store');
+  const ip = String(req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'unknown').split(',')[0].trim();
+  const now = Date.now();
+  const windowMs = 60_000;
+  const limit = 12;
+  const bucket = buckets.get(ip) || { started: now, count: 0 };
+  if (now - bucket.started >= windowMs) { bucket.started = now; bucket.count = 0; }
+  bucket.count += 1;
+  buckets.set(ip, bucket);
+  if (buckets.size > 2000) {
+    for (const [key, value] of buckets) if (now - value.started >= windowMs) buckets.delete(key);
+  }
+  if (bucket.count > limit) return res.status(429).json({ error: 'Too many requests' });
 
   const key = process.env.GROQ_API_KEY?.trim();
   if (!key) return res.status(503).json({ error: 'AI assistant is not configured' });
