@@ -41,9 +41,10 @@ test('product API accepts a valid owner session for catalog reads', async () => 
   assert.equal(response.headers['x-content-type-options'], 'nosniff');
 });
 
-test('product validation rejects non-AliExpress affiliate URLs and unsafe numeric values', () => {
+test('product validation rejects non-AliExpress affiliate URLs, missing affiliate URLs, and unsafe numeric values', () => {
   const base = { name:'Test Gadget', category:'technology', status:'Draft', affiliateUrl:'https://www.aliexpress.com/item/123', price:49.99, currency:'USD', rating:4.8, orders:500, market:'US', imageUrl:'https://cdn.example.com/item.webp' };
   assert.equal(validateProductInput({...base, affiliateUrl:'javascript:alert(1)'}), 'Invalid AliExpress affiliate URL');
+  assert.equal(validateProductInput({...base, affiliateUrl:null}), 'Invalid AliExpress affiliate URL');
   assert.equal(validateProductInput({...base, rating:6}), 'Invalid rating');
   assert.equal(validateProductInput({...base, orders:1.5}), 'Invalid orders');
 });
