@@ -1,5 +1,6 @@
 import { createProduct, deleteProduct, getProductCatalog, updateProduct } from '../../lib/product-store.mjs';
 import { isOwnerRequest } from '../../lib/owner-auth.mjs';
+import { isSameOriginRequest } from '../../lib/request-security.mjs';
 
 function json(response, status, body) {
   response.statusCode = status;
@@ -65,6 +66,8 @@ export default async function handler(request, response) {
       const catalog = await getProductCatalog();
       return json(response, 200, { ok: true, ...catalog });
     }
+
+    if (!isSameOriginRequest(request)) return json(response, 403, { ok: false, error: 'cross_origin_request' });
 
     if (request.method === 'POST') {
       const body = requestBody(request);
