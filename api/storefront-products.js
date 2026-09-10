@@ -44,7 +44,7 @@ export default async function handler(req, res) {
     const items = Array.isArray(data.items) ? data.items.filter(isPublishable).map(normalize) : [];
     res.statusCode = 200;
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
-    return res.end(JSON.stringify({ schemaVersion: '1.0.0', count: items.length, items }));
+    return res.end(JSON.stringify({ schemaVersion: '1.0.0', count: items.length, items, products: items }));
   } catch (_) {
     res.statusCode = 503;
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
