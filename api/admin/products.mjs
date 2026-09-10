@@ -54,6 +54,8 @@ function storageError(response, error) {
   if (error?.code === 'PRODUCT_STORAGE_NOT_CONFIGURED') return json(response, 503, { ok: false, error: error.message, code: error.code });
   if (error?.code === 'PRODUCT_NOT_FOUND') return json(response, 404, { ok: false, error: error.message, code: error.code });
   if (error?.code === 'PRODUCT_DELETE_NOT_CONFIGURED') return json(response, 503, { ok: false, error: error.message, code: error.code });
+  if (error?.code === 'PRODUCT_ID_CONFLICT') return json(response, 409, { ok: false, error: error.message, code: error.code });
+  if (error?.code === 'PRODUCT_INVALID') return json(response, 400, { ok: false, error: error.message, code: error.code });
   console.error('[admin/products]', error);
   return json(response, 500, { ok: false, error: 'Product storage operation failed' });
 }
