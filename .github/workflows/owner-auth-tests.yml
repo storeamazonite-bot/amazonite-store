@@ -59,4 +59,4 @@ jobs:
         with:
           node-version: 20
       - name: Run owner authentication, middleware, storage, analytics and security tests
-        run: node --test test/owner-auth.test.mjs test/middleware-auth.test.mjs test/internal-auth.test.mjs test/product-api-auth.test.mjs test/product-store.test.mjs test/analytics-store.test.mjs test/login-rate-limit.test.mjs test/request-security.test.mjs test/csrf-owner-api.test.mjs test/public-rate-limit.test.mjs test/product-mutation-lock.test.mjs
+        run: node --test test/owner-auth.test.mjs test/middleware-auth.test.mjs test/internal-auth.test.mjs test/product-api-auth.test.mjs test/public-product-api.test.mjs test/product-store.test.mjs test/analytics-store.test.mjs test/login-rate-limit.test.mjs test/request-security.test.mjs test/csrf-owner-api.test.mjs test/public-rate-limit.test.mjs test/product-mutation-lock.test.mjs
