@@ -19,14 +19,19 @@ export default async function handler(req, res) {
   if (buckets.size > 2000) {
     for (const [key, value] of buckets) if (now - value.started >= windowMs) buckets.delete(key);
   }
-  if (bucket.count > limit) return res.status(429).json({ error: 'Too many requests' });
+  if (bucket.count > limit) {
+    res.setHeader('Retry-After', '60');
+    return res.status(429).json({ error: 'Too many requests' });
+  }
 
   const key = process.env.GROQ_API_KEY?.trim();
   if (!key) return res.status(503).json({ error: 'AI assistant is not configured' });
 
   const body = req.body || {};
   const message = String(body.message || '').trim().slice(0, 1200);
-  const products = Array.isArray(body.products) ? body.products.slice(0, 24) : [];
+  const products = Array.isArray(body.products)
+    ? body.products.filter((p) => p && typeof p === 'object').slice(0, 24)
+    : [];
   if (!message) return res.status(400).json({ error: 'message is required' });
 
   const catalog = products.map((p, i) =>
