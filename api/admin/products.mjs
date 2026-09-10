@@ -34,7 +34,7 @@ export function validateProductInput(body, { partial = false } = {}) {
   if ('name' in body && (typeof body.name !== 'string' || body.name.trim().length < 2 || body.name.length > 180)) return 'Invalid product name';
   if ('category' in body && (typeof body.category !== 'string' || body.category.trim().length < 1 || body.category.length > 80)) return 'Invalid product category';
   if ('status' in body && (typeof body.status !== 'string' || !['Draft','Testing','Active','draft','testing','active'].includes(body.status))) return 'Invalid product status';
-  if ('affiliateUrl' in body && body.affiliateUrl !== null && !validHttpUrl(body.affiliateUrl, ['aliexpress.com'])) return 'Invalid AliExpress affiliate URL';
+  if ('affiliateUrl' in body && !validHttpUrl(body.affiliateUrl, ['aliexpress.com'])) return 'Invalid AliExpress affiliate URL';
   if ('sourceProductUrl' in body && body.sourceProductUrl !== null && body.sourceProductUrl !== undefined && !validHttpUrl(body.sourceProductUrl, ['aliexpress.com'])) return 'Invalid AliExpress source URL';
   if ('imageUrl' in body && body.imageUrl !== null && body.imageUrl !== undefined && body.imageUrl !== '' && !validHttpUrl(body.imageUrl)) return 'Invalid image URL';
   for (const [field, min, max] of [['price', 0, Number.MAX_SAFE_INTEGER], ['commissionRate', 0, 100], ['rating', 0, 5], ['orders', 0, Number.MAX_SAFE_INTEGER], ['intelligenceScore', 0, 100]]) {
