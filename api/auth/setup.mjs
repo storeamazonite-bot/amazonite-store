@@ -1,5 +1,6 @@
 import { buildTotpUri, generateTotpSecret, verifyOwnerEmail, verifyOwnerPassword } from '../../lib/owner-auth.mjs';
 import { clearLoginFailures, isLoginRateLimited, recordLoginFailure } from '../../lib/login-rate-limit.mjs';
+import { isSameOriginRequest } from '../../lib/request-security.mjs';
 
 function json(response, status, body) {
   response.status(status);
@@ -16,6 +17,7 @@ export default async function handler(request, response) {
     response.setHeader('Allow', 'POST');
     return json(response, 405, { ok: false, error: 'method_not_allowed' });
   }
+  if (!isSameOriginRequest(request)) return json(response, 403, { ok: false, error: 'cross_origin_request' });
 
   try {
     if (process.env.AMAZONITE_TOTP_SECRET) return json(response, 409, { ok: false, error: 'two_factor_already_configured' });
