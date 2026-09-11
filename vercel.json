@@ -11,6 +11,9 @@
       ]
     }
   ],
+  "redirects": [
+    { "source": "/index.html", "destination": "/storefront-v2.html", "permanent": false }
+  ],
   "rewrites": [
     { "source": "/", "destination": "/storefront-v2.html" }
   ]
