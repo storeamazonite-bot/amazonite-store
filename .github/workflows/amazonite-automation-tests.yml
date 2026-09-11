@@ -40,3 +40,5 @@ jobs:
         run: node automation/aliexpress-api-contract-test.mjs
       - name: Run TOTP security tests
         run: node automation/totp-test.mjs
+      - name: Run Owner authentication security tests
+        run: node automation/owner-auth-test.mjs
