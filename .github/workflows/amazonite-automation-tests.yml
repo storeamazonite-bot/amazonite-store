@@ -5,12 +5,14 @@ on:
     paths:
       - 'automation/**'
       - 'data/products.json'
+      - 'lib/**'
       - '.github/workflows/amazonite-automation-tests.yml'
       - 'package.json'
   pull_request:
     paths:
       - 'automation/**'
       - 'data/products.json'
+      - 'lib/**'
       - '.github/workflows/amazonite-automation-tests.yml'
       - 'package.json'
   workflow_dispatch:
@@ -36,3 +38,5 @@ jobs:
         run: node automation/aliexpress-mcp-test.mjs
       - name: Run AliExpress API contract test
         run: node automation/aliexpress-api-contract-test.mjs
+      - name: Run TOTP security tests
+        run: node automation/totp-test.mjs
