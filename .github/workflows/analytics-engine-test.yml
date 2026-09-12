@@ -6,12 +6,14 @@ on:
       - 'assets/analytics-engine.js'
       - 'assets/affiliate-tracker.js'
       - 'automation/analytics-engine-test.mjs'
+      - 'automation/analytics-tracker-integration-test.mjs'
       - '.github/workflows/analytics-engine-test.yml'
   pull_request:
     paths:
       - 'assets/analytics-engine.js'
       - 'assets/affiliate-tracker.js'
       - 'automation/analytics-engine-test.mjs'
+      - 'automation/analytics-tracker-integration-test.mjs'
       - '.github/workflows/analytics-engine-test.yml'
   workflow_dispatch:
 
@@ -29,4 +31,4 @@ jobs:
         with:
           node-version: 20
       - name: Run Analytics Engine tests
-        run: node --test automation/analytics-engine-test.mjs
+        run: node --test automation/analytics-engine-test.mjs automation/analytics-tracker-integration-test.mjs
