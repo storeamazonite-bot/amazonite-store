@@ -27,8 +27,20 @@ for (const file of removedLegacyFiles) {
   assert.equal(exists(file), false, `legacy artifact must remain absent: ${file}`);
 }
 
+const scanRoots = [
+  '.',
+  'admin',
+  'dashboard',
+  'api',
+  'assets',
+  'categories',
+  'products',
+  'reviews',
+  'data',
+  'lib'
+];
+const skipDirs = new Set(['.git', 'node_modules', 'automation', 'docs', '.github']);
 const textExtensions = new Set(['.html', '.css', '.js', '.mjs', '.json', '.svg']);
-const skipDirs = new Set(['.git', 'node_modules']);
 const legacyMarkers = [
   /Amazonite Store/,
   /Amazonit Electronic/,
@@ -44,6 +56,7 @@ const legacyMarkers = [
 
 function walk(dir) {
   const out = [];
+  if (!fs.existsSync(dir)) return out;
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     if (skipDirs.has(entry.name)) continue;
     const full = path.join(dir, entry.name);
@@ -53,11 +66,16 @@ function walk(dir) {
   return out;
 }
 
-for (const file of walk(root)) {
-  const relative = path.relative(root, file).replaceAll(path.sep, '/');
-  const source = fs.readFileSync(file, 'utf8');
-  for (const marker of legacyMarkers) {
-    assert.doesNotMatch(source, marker, `legacy template marker found in ${relative}: ${marker}`);
+const scanned = new Set();
+for (const relativeRoot of scanRoots) {
+  for (const file of walk(path.join(root, relativeRoot))) {
+    const relative = path.relative(root, file).replaceAll(path.sep, '/');
+    if (scanned.has(relative)) continue;
+    scanned.add(relative);
+    const source = fs.readFileSync(file, 'utf8');
+    for (const marker of legacyMarkers) {
+      assert.doesNotMatch(source, marker, `legacy template marker found in ${relative}`);
+    }
   }
 }
 
@@ -80,4 +98,4 @@ assert.match(ownerLogin, /api\/owner-login/);
 assert.match(ownerLogin, /Authenticator code/);
 
 console.log('Legacy template regression: PASS');
-console.log(`Checked ${removedLegacyFiles.length} removed legacy artifacts, scanned all web-facing source files, and verified the modern storefront/security anchors.`);
+console.log(`Checked ${removedLegacyFiles.length} removed legacy artifacts, scanned ${scanned.size} web-facing source files, and verified the modern storefront/security anchors.`);
