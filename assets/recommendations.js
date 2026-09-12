@@ -2,7 +2,17 @@
   const KEY='amazonite_recommendations_v1';
   function get(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch(_){return{}}}
   function save(v){try{localStorage.setItem(KEY,JSON.stringify(v))}catch(_){} }
-  function vote(id,value){const data=get();data[id]=value;save(data);sync();return value}
+  function vote(id,value){
+    const data=get();
+    const previous=data[id]||null;
+    data[id]=value;
+    save(data);
+    sync();
+    if(window.AmazoniteTracker&&typeof window.AmazoniteTracker.track==='function'){
+      window.AmazoniteTracker.track('recommendation_vote',{product_id:id,vote:value,previous_vote:previous});
+    }
+    return value;
+  }
   function sync(){
     const data=get();
     document.querySelectorAll('[data-recommendation-id]').forEach(box=>{
