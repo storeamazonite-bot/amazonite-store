@@ -1,10 +1,28 @@
 (function(){
-  const K='amazonite_events_v1';
+  let analyticsReady=null;
+  function loadAnalyticsEngine(){
+    if(window.AmazoniteAnalyticsEngine?.createAnalyticsEngine)return Promise.resolve();
+    if(analyticsReady)return analyticsReady;
+    analyticsReady=new Promise(function(resolve){
+      const s=document.createElement('script');
+      s.src='assets/analytics-engine.js';
+      s.async=false;
+      s.onload=resolve;
+      s.onerror=resolve;
+      document.head.appendChild(s);
+    });
+    return analyticsReady;
+  }
+  let engine=null;
+  async function initAnalytics(){
+    await loadAnalyticsEngine();
+    try{if(!engine&&window.AmazoniteAnalyticsEngine?.createAnalyticsEngine)engine=window.AmazoniteAnalyticsEngine.createAnalyticsEngine();}catch(_){}
+    return engine;
+  }
   function t(type,data){
     try{
-      const a=JSON.parse(localStorage.getItem(K)||'[]');
-      a.push(Object.assign({type,timestamp:new Date().toISOString(),page:location.pathname},data||{}));
-      localStorage.setItem(K,JSON.stringify(a.slice(-5000)));
+      if(engine){engine.track(type,data||{});return}
+      initAnalytics().then(function(e){if(e)e.track(type,data||{})}).catch(function(){});
     }catch(_){}
   }
   window.AmazoniteTracker={
@@ -21,6 +39,6 @@
   function localReply(q){const s=q.toLowerCase();const items=catalog();if(!items.length)return 'المنتجات مازال ما تحمّلوش. جرب البحث من بعد لحظات.';let matches=items.filter(x=>(x.name+' '+x.category).toLowerCase().includes(s));const priceMatch=s.match(/(?:under|less than|أقل من|تحت|moins de)\s*\$?\s*(\d+(?:\.\d+)?)/);if(priceMatch){const max=Number(priceMatch[1]);matches=items.filter(x=>{const m=x.price.match(/\$([\d.]+)/);return m&&Number(m[1])<=max})}if(/headphone|سماعات|casque/.test(s))matches=items.filter(x=>/سماعات|audio|earbud/i.test(x.name+' '+x.category));if(/watch|ساعة|smartwatch/.test(s))matches=items.filter(x=>/watch|ساعة/i.test(x.name+' '+x.category));if(/power|charger|شحن|بطارية/.test(s))matches=items.filter(x=>/power|charger|شحن|طاقة/i.test(x.name+' '+x.category));if(!matches.length)return 'ما لقيتش تطابق واضح في الكاتالوغ الحالي. عطيني الميزانية أو الفئة (سماعات، شحن، ساعة، موبايل...) ونعاونك نختار.';return 'لقيت لك هاد الخيارات من المنتجات المعروضة:\n'+matches.slice(0,4).map((x,i)=>`${i+1}. ${x.name} — ${x.price} — ${x.rating}`).join('\n')+'\n\nإذا بغيتي، قول لي الميزانية والاستعمال ديالك ونضيّق الاختيار.'}
   async function aiReply(q){const items=catalog();try{const r=await fetch('/api/assistant',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({message:q,products:items})});if(r.ok){const d=await r.json();if(d.reply)return d.reply}}catch(_){}return localReply(q)}
   function addMessage(root,text,who){const el=document.createElement('div');el.className='ai-msg '+(who==='user'?'ai-user':'ai-bot');el.textContent=text;root.appendChild(el);root.scrollTop=root.scrollHeight}
-  function buildAssistant(){if(document.getElementById('amazonite-ai'))return;const root=document.createElement('div');root.id='amazonite-ai';root.innerHTML='<div class="ai-panel"><div class="ai-head"><div class="ai-avatar">✦</div><div><strong>Amazonite AI</strong><small>المساعد التجاري الذكي • متاح الآن</small></div><button class="ai-close" aria-label="إغلاق">×</button></div><div class="ai-body"></div><div class="ai-quick"><button class="ai-q">أفضل سماعات تحت $50</button><button class="ai-q">قارن لي منتجين</button><button class="ai-q">شنو مناسب للألعاب؟</button><button class="ai-q">أفضل شاحن للسفر</button></div><form class="ai-form"><input class="ai-input" placeholder="اسألني عن منتج أو ميزانية..." aria-label="Amazonite AI"><button class="ai-send" aria-label="إرسال">➤</button></form></div><button class="ai-launch" aria-label="فتح Amazonite AI">✦</button>';document.body.appendChild(root);const body=root.querySelector('.ai-body'),input=root.querySelector('.ai-input');addMessage(body,'مرحبا 👋 أنا Amazonite AI. نقدر نعاونك تلقى المنتج الأنسب حسب الميزانية والاستعمال، ونبقى داخل المنتجات المتاحة في المتجر قدر الإمكان. شنو كتقلب عليه؟','bot');root.querySelector('.ai-launch').onclick=()=>{root.classList.add('open');input.focus()};root.querySelector('.ai-close').onclick=()=>root.classList.remove('open');root.querySelectorAll('.ai-q').forEach(b=>b.onclick=()=>{input.value=b.textContent;root.querySelector('.ai-form').requestSubmit()});root.querySelector('.ai-form').onsubmit=async e=>{e.preventDefault();const q=input.value.trim();if(!q)return;input.value='';addMessage(body,q,'user');const wait=document.createElement('div');wait.className='ai-msg ai-bot';wait.textContent='كنحلل المنتجات المتاحة...';body.appendChild(wait);body.scrollTop=body.scrollHeight;wait.textContent=await aiReply(q)}}}
-  document.addEventListener('DOMContentLoaded',function(){injectAssistantStyle();buildAssistant();document.querySelectorAll('[data-product-view]').forEach(x=>t('product_view',{product_id:x.dataset.productView}));document.querySelectorAll('[data-affiliate-url]').forEach(x=>x.addEventListener('click',()=>window.AmazoniteTracker.affiliateClick(x.dataset.productId,x.dataset.offerId,x.dataset.affiliateUrl)))});
+  function buildAssistant(){if(document.getElementById('amazonite-ai'))return;const root=document.createElement('div');root.id='amazonite-ai';root.innerHTML='<div class="ai-panel"><div class="ai-head"><div class="ai-avatar">✦</div><div><strong>Amazonite AI</strong><small>المساعد التجاري الذكي • متاح الآن</small></div><button class="ai-close" aria-label="إغلاق">×</button></div><div class="ai-body"></div><div class="ai-quick"><button class="ai-q">أفضل سماعات تحت $50</button><button class="ai-q">قارن لي منتجين</button><button class="ai-q">شنو مناسب للألعاب؟</button><button class="ai-q">أفضل شاحن للسفر</button></div><form class="ai-form"><input class="ai-input" placeholder="اسألني عن منتج أو ميزانية..." aria-label="Amazonite AI"><button class="ai-send" aria-label="إرسال">➤</button></form></div><button class="ai-launch" aria-label="فتح Amazonite AI">✦</button>';document.body.appendChild(root);const body=root.querySelector('.ai-body'),input=root.querySelector('.ai-input');addMessage(body,'مرحبا 👋 أنا Amazonite AI. نقدر نعاونك تلقى المنتج الأنسب حسب الميزانية والاستعمال، ونبقى داخل المنتجات المتاحة في المتجر قدر الإمكان. شنو كتقلب عليه؟','bot');root.querySelector('.ai-launch').onclick=()=>{root.classList.add('open');input.focus()};root.querySelector('.ai-close').onclick=()=>root.classList.remove('open');root.querySelectorAll('.ai-q').forEach(b=>b.onclick=()=>{input.value=b.textContent;root.querySelector('.ai-form').requestSubmit()});root.querySelector('.ai-form').onsubmit=async e=>{e.preventDefault();const q=input.value.trim();if(!q)return;input.value='';addMessage(body,q,'user');t('ai_interaction',{interaction:'query',query_type:'user_message',query_length:q.length,surface:'assistant'});const wait=document.createElement('div');wait.className='ai-msg ai-bot';wait.textContent='كنحلل المنتجات المتاحة...';body.appendChild(wait);body.scrollTop=body.scrollHeight;wait.textContent=await aiReply(q)}}}
+  document.addEventListener('DOMContentLoaded',function(){injectAssistantStyle();buildAssistant();initAnalytics().then(function(){document.querySelectorAll('[data-product-view]').forEach(x=>t('product_view',{product_id:x.dataset.productView}));document.querySelectorAll('[data-affiliate-url]').forEach(x=>x.addEventListener('click',()=>window.AmazoniteTracker.affiliateClick(x.dataset.productId,x.dataset.offerId,x.dataset.affiliateUrl)))}).catch(function(){})});
 })();
