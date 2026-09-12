@@ -10,11 +10,5 @@
         { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains" }
       ]
     }
-  ],
-  "redirects": [
-    { "source": "/index.html", "destination": "/storefront-v2.html", "permanent": false }
-  ],
-  "rewrites": [
-    { "source": "/", "destination": "/storefront-v2.html" }
   ]
 }
