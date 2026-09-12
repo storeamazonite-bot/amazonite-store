@@ -4,6 +4,11 @@ on:
   push:
     paths:
       - 'automation/**'
+      - 'admin/**'
+      - 'assets/**'
+      - 'index.html'
+      - 'owner-login.html'
+      - 'vercel.json'
       - 'data/products.json'
       - 'lib/**'
       - 'middleware.js'
@@ -12,6 +17,11 @@ on:
   pull_request:
     paths:
       - 'automation/**'
+      - 'admin/**'
+      - 'assets/**'
+      - 'index.html'
+      - 'owner-login.html'
+      - 'vercel.json'
       - 'data/products.json'
       - 'lib/**'
       - 'middleware.js'
@@ -46,3 +56,5 @@ jobs:
         run: node automation/owner-auth-test.mjs
       - name: Run Owner route guard security tests
         run: node automation/owner-route-guard-test.mjs
+      - name: Run legacy template regression test
+        run: node automation/legacy-template-regression-test.mjs
