@@ -150,6 +150,7 @@
   function createAnalyticsEngine(options){
     const opts = options || {};
     const store = opts.store || createLocalStore(opts.storage);
+    // Central aggregation is deliberately opt-in; no central sink means local-browser data only.
     const centralSink = opts.centralSink && typeof opts.centralSink.append === 'function' ? opts.centralSink : null;
 
     return {
