@@ -44,7 +44,19 @@
   function createLocalStore(storage,key='amazonite_events_v2'){
     const backend=storage||(typeof localStorage!=='undefined'?localStorage:null);
     return {
-      append(event){if(!backend)return;try{const current=JSON.parse(backend.getItem(key)||'[]');const next=Array.isArray(current)?current:[];next.push(event);backend.setItem(key,JSON.stringify(next.slice(-5000)));}catch(_){/* analytics must never break storefront UX */}},
+      append(event){
+        if(!backend)return;
+        let next=[];
+        try{
+          const raw=backend.getItem(key);
+          if(raw){
+            const current=JSON.parse(raw);
+            if(Array.isArray(current)) next=current;
+          }
+        }catch(_){ next=[]; }
+        next.push(event);
+        try{backend.setItem(key,JSON.stringify(next.slice(-5000)));}catch(_){/* analytics must never break storefront UX */}
+      },
       read(){if(!backend)return[];try{const current=JSON.parse(backend.getItem(key)||'[]');return Array.isArray(current)?current:[];}catch(_){return[];}}
     };
   }
