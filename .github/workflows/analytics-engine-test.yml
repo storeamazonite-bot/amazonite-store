@@ -4,11 +4,13 @@ on:
   push:
     paths:
       - 'assets/analytics-engine.js'
+      - 'assets/affiliate-tracker.js'
       - 'automation/analytics-engine-test.mjs'
       - '.github/workflows/analytics-engine-test.yml'
   pull_request:
     paths:
       - 'assets/analytics-engine.js'
+      - 'assets/affiliate-tracker.js'
       - 'automation/analytics-engine-test.mjs'
       - '.github/workflows/analytics-engine-test.yml'
   workflow_dispatch:
