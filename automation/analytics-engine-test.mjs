@@ -1,6 +1,14 @@
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import vm from 'node:vm';
 import test from 'node:test';
-import { createAnalyticsEngine, AnalyticsValidationError } from '../analytics/engine.mjs';
+
+const source = fs.readFileSync(path.join(process.cwd(), 'assets/analytics-engine.js'), 'utf8');
+const sandbox = { console };
+vm.createContext(sandbox);
+vm.runInContext(source, sandbox, { filename: 'analytics-engine.js' });
+const { createAnalyticsEngine, AnalyticsValidationError } = sandbox.AmazoniteAnalyticsEngine;
 
 function memoryStore() {
   const events = [];
