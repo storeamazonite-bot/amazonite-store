@@ -59,6 +59,18 @@ test('rejects direct, nested, and disguised PII before storage', () => {
   }
 });
 
+test('rejects phone-like and card-like values even without PII field names', () => {
+  for (const payload of [
+    { cta_label: '+1 234 567 8901' },
+    { placement: '4111 1111 1111 1111' }
+  ]) {
+    const store = memoryStore();
+    const engine = createAnalyticsEngine({ store });
+    assert.throws(() => engine.track('cta_click', payload), AnalyticsValidationError);
+    assert.equal(store.read().length, 0);
+  }
+});
+
 test('rejects unknown event types and invalid payload fields', () => {
   const store = memoryStore();
   const engine = createAnalyticsEngine({ store });
