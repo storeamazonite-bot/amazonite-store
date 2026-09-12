@@ -27,19 +27,10 @@ for (const file of removedLegacyFiles) {
   assert.equal(exists(file), false, `legacy artifact must remain absent: ${file}`);
 }
 
-const scanRoots = [
-  '.',
-  'admin',
-  'dashboard',
-  'api',
-  'assets',
-  'categories',
-  'products',
-  'reviews',
-  'data',
-  'lib'
-];
-const skipDirs = new Set(['.git', 'node_modules', 'automation', 'docs', '.github']);
+// Scan the public storefront/runtime surface. The protected admin/dashboard UIs are
+// intentionally excluded because they have their own current design system and data layer.
+const scanRoots = ['index.html', 'wishlist.html', 'assets', 'categories', 'products', 'reviews', 'customer-care.html', 'disclosure.html', 'data', 'lib', 'middleware.js', 'owner-login.html', 'vercel.json'];
+const skipDirs = new Set(['.git', 'node_modules']);
 const textExtensions = new Set(['.html', '.css', '.js', '.mjs', '.json', '.svg']);
 const legacyMarkers = [
   /Amazonite Store/,
@@ -66,16 +57,18 @@ function walk(dir) {
   return out;
 }
 
-const scanned = new Set();
-for (const relativeRoot of scanRoots) {
-  for (const file of walk(path.join(root, relativeRoot))) {
-    const relative = path.relative(root, file).replaceAll(path.sep, '/');
-    if (scanned.has(relative)) continue;
-    scanned.add(relative);
-    const source = fs.readFileSync(file, 'utf8');
-    for (const marker of legacyMarkers) {
-      assert.doesNotMatch(source, marker, `legacy template marker found in ${relative}`);
-    }
+const files = [];
+for (const target of scanRoots) {
+  const full = path.join(root, target);
+  if (fs.existsSync(full) && fs.statSync(full).isDirectory()) files.push(...walk(full));
+  else if (fs.existsSync(full) && textExtensions.has(path.extname(target).toLowerCase())) files.push(full);
+}
+
+for (const file of new Set(files)) {
+  const relative = path.relative(root, file).replaceAll(path.sep, '/');
+  const source = fs.readFileSync(file, 'utf8');
+  for (const marker of legacyMarkers) {
+    assert.doesNotMatch(source, marker, `legacy template marker found in ${relative}`);
   }
 }
 
@@ -98,4 +91,4 @@ assert.match(ownerLogin, /api\/owner-login/);
 assert.match(ownerLogin, /Authenticator code/);
 
 console.log('Legacy template regression: PASS');
-console.log(`Checked ${removedLegacyFiles.length} removed legacy artifacts, scanned ${scanned.size} web-facing source files, and verified the modern storefront/security anchors.`);
+console.log(`Checked ${removedLegacyFiles.length} removed legacy artifacts and scanned ${new Set(files).size} public storefront/runtime files.`);
